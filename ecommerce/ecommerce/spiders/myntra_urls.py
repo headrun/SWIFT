@@ -5,6 +5,10 @@ import requests
 import json
 import math
 from datetime import datetime
+from ecommerce.items import *
+from ecommerce.generic_functions import *
+from pydispatch import dispatcher
+from scrapy import signals
 headers = {
     'authority': 'www.myntra.com',
     'upgrade-insecure-requests': '1',
@@ -19,16 +23,22 @@ category_array = ['men-tshirts']
 
 class MyntraSpider(scrapy.Spider):
 	name = "Myntra"
+	def __init__(self, *args, **kwargs):
+		create_default_dirs()
+		self.out_put_file = get_out_file("%s__%s" % ('url_queue_meta', self.name))
+		dispatcher.connect(self.spider_closed, signals.spider_closed)
+	def spider_closed(self, spider):
+		crawlout_processing(self.out_put_file)
 	def start_requests(self):
 		yield Request('https://www.myntra.com/web/v1/search/men-tshirts?p=3&rows=50&o=99',headers=headers,callback=self.parse)	
 	def parse(self,response):
 		final_dict = []
 		for ele in category_array:
 			params = (
-			    ('p', '2'),
+			    ('p', '1'),
 			    ('rows', '50'),
 			    ('sort', 'popularity'),
-			    ('o', '49'),
+			    ('o', '0'),
 			)
 			url = 'https://www.myntra.com/web/v1/search/'+ele+'?'+urlencode(params)
 			response = requests.get(url,headers=headers)
@@ -44,14 +54,15 @@ class MyntraSpider(scrapy.Spider):
 				params = (
 				    ('p', str(i)),
 				    ('rows', '100'),
+				    ('sort', 'popularity'),
 				    ('o', str(starting_index)),
 				)
-				request_url = url+urlencode(params) 
+				request_url = url+urlencode(params)
 				res = requests.get(request_url,headers=headers)
 				res_json_data = json.loads(res.text)
 				products = res_json_data.get('products',[])
 				for product in products:
-					final_sub_dict = {}
+					final_sub_dict = urlQueuemeta()
 					final_sub_dict["sk"] = product.get('productId','')
 					final_sub_dict["url"] = "https://www.myntra.com/" + product.get('landingPageUrl','')
 					final_sub_dict["source"] = "Myntra"
@@ -60,10 +71,8 @@ class MyntraSpider(scrapy.Spider):
 					final_sub_dict["related_type"] = ""
 					final_sub_dict["crawl_status"] = 0
 					final_sub_dict["meta_data"] = ""
-					final_sub_dict["created_at"] = datetime.now().strftime("%M-%d-%Y %H:%M:%S")
-					final_sub_dict["modified_at"] = datetime.now().strftime("%M-%d-%Y %H:%M:%S")
-					final_dict.append(final_sub_dict)
-
-		yield final_dict
+					final_sub_dict["created_at"] = str(datetime.now().now()).split('.')[0]
+					final_sub_dict["modified_at"] = str(datetime.now().now()).split('.')[0]
+					yield final_sub_dict
 
 
