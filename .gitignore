@@ -1,0 +1,5 @@
+*.pyc
+*.log
+*.queries
+*/__pycache__
+*/OUTPUT

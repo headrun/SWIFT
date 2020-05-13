@@ -5,8 +5,14 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
+from os import path, getcwd
+from random import choice
+from inspect import isgenerator
+from w3lib.http import basic_auth_header
 from scrapy import signals
+from scrapy.utils.project import get_project_settings
 
+settings = get_project_settings()
 
 class EcommerceSpiderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
@@ -101,3 +107,36 @@ class EcommerceDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class SpiderMiddleware(object):
+
+    def process_spider_output(self, response, result, spider):
+        if isgenerator(result):
+            result = list(result)
+            _result = []
+            for r in result:
+                if isinstance(r, (list, tuple)):
+                    _result.extend(r)
+                else:
+                    _result.append(r)
+            result = _result
+
+        return result
+
+class ProxyMiddleware(object):
+
+    PROXY_ENABLED_SOURCES = settings.get('PROXY_ENABLED_SOURCES', [])
+
+    def process_request(self, request, spider):
+        source = spider.name.split('_')[0]
+        if source in self.PROXY_ENABLED_SOURCES:
+            proxy_path = path.abspath(path.join(getcwd(), '../proxies.txt'))
+            with open(proxy_path, 'r') as _file:
+                proxy_list = _file.readlines()
+            proxy, port  = choice(proxy_list).strip().split(':')
+            request.meta['proxy'] = 'https://%s:%s' % (proxy, port)
+            print (request.meta['proxy'])
+            #request.headers['Proxy-Authorization'] = basic_auth_header('hr@headrun.com','hdrn^123!')
+            request.headers['Proxy-Authorization'] = basic_auth_header('lum-customer-headrunmain-zone-static-country-in', 'v4iey84gn7b7') 
+
