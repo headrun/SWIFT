@@ -50,7 +50,6 @@ class MyntraProductSpider(scrapy.Spider):
 						images.append(imgurl)
 			sizes = product_data.get('sizes',[])
 			for size_element in sizes:
-				import pdb;pdb.set_trace()
 				products_info = productInfo()
 				products_info["source"] = "Myntra"
 				products_info["sku"] = size_element.get('skuId','') 
