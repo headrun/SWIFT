@@ -1,6 +1,7 @@
 import os
 from datetime import datetime
 from scrapy import signals
+import hashlib
 OUTPUT_DIR = os.path.join(os.getcwd(), 'OUTPUT')
 CRAWL_OUT_PATH = os.path.join(OUTPUT_DIR, 'crawl_out')
 PROCESSING_PATH = os.path.join(OUTPUT_DIR, 'processing')
@@ -25,7 +26,7 @@ def make_dir_list(dir_list, par_dir=OUTPUT_DIR):
     make_dir(par_dir)
     for dir_name in dir_list:
         make_dir(os.path.join(par_dir, dir_name))
-        
+
 def get_out_file(source):
     out_file = os.path.join(CRAWL_OUT_PATH, "%s_out_file_%s.queries" %(source, get_current_ts_with_ms()))
     out_put = open(out_file, 'a+')
@@ -34,3 +35,7 @@ def crawlout_processing(source):
     os.chdir(CRAWL_OUT_PATH)
     cmd = 'mv %s  %s'%(source.name, PROCESSING_PATH)
     os.system(cmd)
+def xcode(text, encoding='utf8', mode='strict'):
+    return text.encode(encoding, mode) if isinstance(text, bytes) else text
+def md5(x):
+    return hashlib.md5(xcode(x).encode('utf-8')).hexdigest()
