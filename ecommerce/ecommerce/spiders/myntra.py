@@ -26,7 +26,7 @@ class MyntraSpider(scrapy.Spider):
 		create_default_dirs()
 		self.out_put_file = get_out_file("%s__%s" % ('meta_data', self.name))
 		self.out_put_file1 = get_out_file("%s__%s" % ('insights_data', self.name))
-		self.category_array = ['men-tshirts','men-casual-shirts']
+		self.category_array = ['men-tshirts','men-casual-shirts','men-formal-shirts','men-sweatshirts','men-sweaters','men-jackets','men-blazers','men-suits','rain-jacket']
 		dispatcher.connect(self.spider_closed, signals.spider_closed)
 	def spider_closed(self, spider):
 		crawlout_processing(self.out_put_file)
