@@ -22,7 +22,7 @@ headers = {
 category_array = ['men-tshirts']
 
 class MyntraSpider(scrapy.Spider):
-	name = "Myntra"
+	name = "MyntraUrls"
 	def __init__(self, *args, **kwargs):
 		create_default_dirs()
 		self.out_put_file = get_out_file("%s__%s" % ('url_queue_meta', self.name))
