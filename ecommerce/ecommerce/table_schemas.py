@@ -15,5 +15,47 @@ CREATE TABLE `#CRAWL-TABLE#` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 """
 
+PRODUCTS_INFO_TABLE_CREATE_QUERY="""
+CREATE TABLE `products_info` (
+  `hd_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `source` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `sku` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `size` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `descripion` text COLLATE utf8_unicode_ci,
+  `specs` text COLLATE utf8_unicode_ci,
+  `image_url` text COLLATE utf8_unicode_ci,
+  `reference_url` text COLLATE utf8_unicode_ci,
+  `aux_info` text COLLATE utf8_unicode_ci,
+  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`hd_id`),
+  UNIQUE KEY `source` (`source`,`sku`,`size`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+"""
+
+PRODUCSTS_INSIGHTS_TABLE_CREATE_QUERY="""
+CREATE TABLE `products_insights` (
+  `hd_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `source` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `sku` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `size` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `category` text COLLATE utf8_unicode_ci NOT NULL,
+  `sub_category` text COLLATE utf8_unicode_ci NOT NULL,
+  `brand` text COLLATE utf8_unicode_ci NOT NULL,
+  `ratings_count` int DEFAULT '0',
+  `reviews_count` int DEFAULT '0',
+  `mrp` float DEFAULT '0.0',
+  `selling_price` float DEFAULT '0.0',
+  `discount_percentage` float DEFAULT '0.0',
+  `is_available` int DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`hd_id`),
+  UNIQUE KEY `source` (`source`,`sku`,`size`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+"""
+
+
 CRAWL_TABLE_SELECT_QUERY = 'SELECT sk, url, meta_data FROM %s WHERE content_type="%s" AND crawl_status=0 ORDER BY crawl_type DESC LIMIT %s;'
 
