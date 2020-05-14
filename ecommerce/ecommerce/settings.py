@@ -33,7 +33,7 @@ DOWNLOADER_MIDDLEWARES = {
 PROXY_ENABLED_SOURCES = ['amazon']
 DB_HOST = 'localhost'
 DB_USERNAME = 'root'
-DB_PASSWORD = 'Ecomm@34^$!'
+DB_PASSWORD = 'Ecomm@34^$'
 URLQ_DATABASE_NAME = 'urlqueue'
 LOGS_DIR = '%s/logs/' % PROJECT_DIR
 
