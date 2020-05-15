@@ -5,7 +5,7 @@ from ecommerce.items import InsightItem, MetaItem
 
 
 class NowSpider(EcommSpider):
-    name = "nnow_browse"
+    name = "nnnow_browse"
 
     def __init__(self, *args, **kwargs):
         super(NowSpider, self).__init__(*args, **kwargs)
@@ -62,7 +62,7 @@ class NowSpider(EcommSpider):
         for data in datas:
             total_data = re.findall('window.DATA= (.*)',data)
             for total in total_data:
-                source = 'nnow'
+                source = 'nnnow'
                 data1 = json.loads(total)
                 style = data1.get('ProductStore',{}).get('PdpData',{}).get('mainStyle','')
                 product_id = style.get('styleId','')
