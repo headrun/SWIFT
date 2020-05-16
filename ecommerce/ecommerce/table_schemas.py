@@ -28,9 +28,8 @@ CREATE TABLE `products_info` (
   `reference_url` text COLLATE utf8_unicode_ci,
   `aux_info` text COLLATE utf8_unicode_ci,
   `created_at` datetime NOT NULL,
-  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`hd_id`),
-  UNIQUE KEY `source` (`source`,`sku`,`size`)
+  UNIQUE KEY `source` (`source`,`sku`,`size`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 """
 
@@ -50,9 +49,8 @@ CREATE TABLE `products_insights` (
   `discount_percentage` float DEFAULT '0.0',
   `is_available` int DEFAULT '0',
   `created_at` datetime NOT NULL,
-  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`hd_id`),
-  UNIQUE KEY `source` (`source`,`sku`,`size`)
+  UNIQUE KEY `source` (`source`,`sku`,`size`,`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 """
 
