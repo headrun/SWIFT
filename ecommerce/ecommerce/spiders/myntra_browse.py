@@ -21,7 +21,7 @@ class MyntraSpider(EcommSpider):
 
     def start_requests(self):
         for category in self.category_array:
-            url = 'https://www.myntra.com/web/v1/search/%s?p=1&rows=100&o=0&sort=popularity' % category
+            url = 'https://www.myntra.com/web/v2/search/%s?p=1&rows=100&o=0&sort=popularity' % category
             meta = {'range': 0, 'page': 1, 'category': category}
             yield Request(url, headers=self.headers, callback=self.parse, meta=meta)
 
@@ -75,6 +75,6 @@ class MyntraSpider(EcommSpider):
         if products:
             page += 1
             page_range = (page-1) * 100 - 1
-            url = 'https://www.myntra.com/web/v1/search/%s?p=%s&rows=100&o=%s&sort=popularity' % (request_category, page, page_range)
+            url = 'https://www.myntra.com/web/v2/search/%s?p=%s&rows=100&o=%s&sort=popularity' % (request_category, page, page_range)
             meta = {'range': page_range, 'page': page,'category': request_category}
             yield Request(url, callback=self.parse, headers=self.headers, meta=meta)
