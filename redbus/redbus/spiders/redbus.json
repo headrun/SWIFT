@@ -1,0 +1,7 @@
+{
+	"fromCity":["84832","733","1439","1439","1439"],
+	"toCity" : ["70429","1439", "70429","1377","84832"],
+	"src" : ["Prayagraj","New Delhi","Lucknow (All Locations)","Lucknow (All Locations)","Lucknow (All Locations)"],
+	"dst" : ["Varanasi","Lucknow (All Locations)","Varanasi","Kanpur","Prayagraj"],
+	"DOJ" : ["07-Jun-2020","08-Jun-2020","09-Jun-2020"]
+}	
