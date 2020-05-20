@@ -57,8 +57,6 @@ def search_keyword(driver):
     keyword = "jobs"
     driver.get("https://www.google.com/search?q=" + keyword)
     driver.find_element_by_xpath('//*[@id="fMGJ3e"]/a').click()
-    result = {}
-    company_list = ['True Caller']
     for company_name in company_list:
         print(company_name)
         driver.find_element_by_id("hs-qsb").click()
@@ -78,9 +76,9 @@ def search_keyword(driver):
         final_data = []
         while first - second:
             scr1 = driver.find_element_by_xpath('//*[@id="immersive_desktop_root"]/div/div[3]/div[1]')
-            time.sleep(4)
+            time.sleep(2)
             driver.execute_script("arguments[0].scrollTop = arguments[0].scrollHeight", scr1)
-            time.sleep(4)
+            time.sleep(2)
             left_data = driver.find_elements_by_xpath(left_bar_xpath)
             left_data = left_data[:-1] #Removing the repeatative data
             print ('first:%s'%(first), 'second:%s'%(second))
@@ -89,13 +87,14 @@ def search_keyword(driver):
             first = len(left_data)
             scrolled_data = get_scroll_data(driver,left_data) # Every scroll records
             final_data = final_data + scrolled_data
-       
+
+        result = {}
         final_data = initial_data + final_data
         final_data = [ast.literal_eval(el1) for el1 in set([str(el2) for el2 in final_data])] 
         result[company_name] = final_data
         df = json.dumps(result)
         df = json.loads(df)
-        path = '/home/jaffrin/json_files/'+company_name+'.json'
+        path = '/home/jaffrin/files/'+company_name+'.json'
         with open(path, 'w') as outfile:
             json.dump(df, outfile, indent=4)
 
