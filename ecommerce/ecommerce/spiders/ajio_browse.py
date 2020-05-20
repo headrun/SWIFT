@@ -30,7 +30,7 @@ class ajiospider(EcommSpider):
         yield Request(url, callback=self.parse, headers=self.headers)
 
     def parse(self,response):
-        nodes = response.xpath('//ul[@class="level-first false"]/li')[0:2]
+        nodes = response.xpath('//ul[@class="level-first false"]/li')
         for node in nodes:
             url = ''.join(node.xpath('./a/@href').extract())
             link =  urljoin(self.domain_url, url)
