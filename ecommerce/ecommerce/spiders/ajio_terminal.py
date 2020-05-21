@@ -6,6 +6,7 @@ from ecommerce.items import InsightItem, MetaItem
 
 class AjioSpider(EcommSpider):
     name = 'ajio_fashion_terminal'
+    handle_httpstatus_list = [400]
     
     def parse(self,response):
         text = ''.join(response.xpath('//script[contains(text(),"window.__PRELOADED_STATE__")]/text()').extract()).replace('\r\n','').replace(';','')
