@@ -74,6 +74,7 @@ class ajiospider(EcommSpider):
                 insight_item = InsightItem()
                 hd_id = encode_md5('%s%s%s' % (source, str(sku), sizes))
                 aux_info = {'product_id': product, 'json_page': response.url}
+                insight_item = InsightItem()
                 insight_item.update({
                             'hd_id': hd_id, 'source': source, 'sku': sku, 'size': sizes, 'category':category,
                             'sub_category': '', 'brand': brandname, 'ratings_count': '',
