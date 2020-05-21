@@ -1,13 +1,15 @@
 import logging
 import traceback
+import re
 from hashlib import md5
+from itertools import chain
 from datetime import datetime
 from inspect import isgenerator
 from collections import defaultdict
 from os import path, getcwd, mkdir, system
 from pydispatch import dispatcher
 from MySQLdb import connect, IntegrityError,\
-        ProgrammingError, escape_string
+        ProgrammingError
 from MySQLdb.cursors import Cursor,\
 DictCursor, SSCursor, SSDictCursor
 from scrapy import signals
@@ -139,7 +141,7 @@ class EcommSpider(Spider):
                 req_meta = {'data': None}
                 req = Request(
                     #start_url, self.parse, None, meta=req_meta,
-                    url, self.parse, meta=req_meta,
+                    start_url, self.parse, meta=req_meta,
                     headers=self.request_headers,
                     dont_filter=self.allow_duplicate_urls,
                 )
@@ -315,9 +317,10 @@ class EcommSpider(Spider):
     def close_all_opened_query_files(self):
         files_list = [self.insights_file, self.metadata_file]
         for f in files_list:
-            f.flush()
-            f.close()
-            move_file(f.name, QUERY_FILES_PROCESSING_DIR)
+            if f is not None:
+                f.flush()
+                f.close()
+                move_file(f.name, QUERY_FILES_PROCESSING_DIR)
 
     def get_source_content_and_crawl_type(self, spider_name):
         content_type = ''
@@ -406,6 +409,56 @@ def encode_md5(x):
 def move_file(source, dest):
     cmd = "mv %s %s" % (source, dest)
     system(cmd)
+
+def clean(text):
+    if not text:
+        return text
+
+    value = text
+    value = re.sub("&amp;", "&", value)
+    value = re.sub("&lt;", "<", value)
+    value = re.sub("&gt;", ">", value)
+    value = re.sub("&quot;", '"', value)
+    value = re.sub("&apos;", "'", value)
+    value = re.sub("              ", " ", value)
+
+    return value
+
+def compact(text, level=0):
+    if text is None:
+        return ''
+
+    if level == 0:
+        text = text.replace("\n", " ")
+        text = text.replace("\r", " ")
+
+    compacted = re.sub("\s\s(?m)", " ", text)
+    if compacted != text:
+        compacted = compact(compacted, level+1)
+
+    return compacted.strip()
+
+def textify(nodes, sep=' '):
+    if not isinstance(nodes, (list, tuple)):
+        nodes = [nodes]
+
+    def _t(x):
+        if isinstance(x, (str, str)):
+            return [x]
+
+        if hasattr(x, 'xmlNode'):
+            if not x.xmlNode.get_type() == 'element':
+                return [x.extract()]
+        else:
+            if isinstance(x.root, (str, str)):
+                return [x.root]
+
+        return (n.extract() for n in x.select('.//text()'))
+
+    nodes = chain(*(_t(node) for node in nodes))
+    nodes = (node.strip() for node in nodes if node.strip())
+
+    return sep.join(nodes)
 
 def extract(sel, xpath, sep=' '):
     return clean(compact(textify(sel.xpath(xpath).extract(), sep)))
