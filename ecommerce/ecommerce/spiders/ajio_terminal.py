@@ -1,15 +1,12 @@
-import json
 import re
+import json
 from ecommerce.common_utils import *
 from ecommerce.items import InsightItem, MetaItem
-from ecommerce.settings import USER_AGENT
 
 
 class AjioSpider(EcommSpider):
     name = 'ajio_fashion_terminal'
-    handle_httpstatus_list = [404,402,400,500]
     
-
     def parse(self,response):
         text = ''.join(response.xpath('//script[contains(text(),"window.__PRELOADED_STATE__")]/text()').extract()).replace('\r\n','').replace(';','')
         data = ''.join(re.findall('window.__PRELOADED_STATE__ = (.*)',text)).strip()
@@ -21,19 +18,18 @@ class AjioSpider(EcommSpider):
         products  = datas.get('grid',{}).get('results',[])
         for product in products:
             product = product
+            data = datas.get('grid','').get('entities','').get(product,'').get('fnlColorVariantData',{})
             details = datas.get('grid',{}).get('entities',{}).get(product,{})
-            sku = details.get('code','')
-            discountpercentage = details.get('discountPercent','')
             price = details.get('price',{}).get('displayformattedValue','')
             web_price = details.get('wasPriceData','').get('displayformattedValue','')
+            sizes = details.get('productSizeData',{}).get('sizeVariants',[])
+            discountpercentage = details.get('discountPercent','')
             productname = details.get('name','')
             producturl = details.get('url','')
-            sizes = details.get('productSizeData',{}).get('sizeVariants',[])
-            data = datas.get('grid','').get('entities','').get(product,'').get('fnlColorVariantData',{})
+            sku = details.get('code','')
             brandname = data.get('brandName','')
             color = data.get('colorGroup','')
             Imagepath = data.get('outfitPictureURL','')
-            product_id = ''
             insight_item = InsightItem()
             hd_id = encode_md5('%s%s%s' % (source, str(sku), sizes))
             aux_info = {'product_id': product, 'json_page': response.url}
