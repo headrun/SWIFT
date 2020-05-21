@@ -1,0 +1,447 @@
+<link href="{{ url_for('static',filename = 'css/bootstrap.min.css')}}" rel="stylesheet" id="bootstrap-css">
+<script src="{{ url_for('static',filename = 'js/bootstrap.min.js')}}"></script>
+<script src="{{ url_for('static',filename = 'js/jquery.min.js')}}"></script>
+<script src="{{ url_for('static',filename = 'css/daterangepicker.css')}}" rel="stylesheet"></script>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+
+<link href="{{ url_for('static',filename = 'css/daterangepicker.css')}}" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
+<link href="{{ url_for('static',filename = 'css/daily_monitoring.css')}}" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+<!-- <script>
+    $('.datepicker').datepicker({
+        inline: true
+    });
+</script> -->
+<script type="text/javascript">
+$(function(){
+var xmlhttp = new XMLHttpRequest();
+var from_date;
+var to_date;
+var sort_element;
+var source;
+$('#date').html(moment().subtract(1, 'days').format('MMMM DD, YYYY') + ' - ' + moment().subtract(1, 'days').format('MMMM DD, YYYY'));
+$('#picker').daterangepicker({
+    startDate: moment().subtract(1, 'days'),
+    endDate: moment(),
+    ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last Week': [moment().subtract(6, 'days'), moment()],
+        'This Week': [moment(), moment().add(6, 'days')],
+        'Next Week': [moment().add(6, 'days'), moment().add(12, 'days')],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'Next 30 Days': [moment(), moment().add(29, 'days')],
+        'Next 60 Days': [moment(), moment().add(59, 'days')],
+        'Next 120 Days': [moment(), moment().add(199, 'days')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        }
+    }, function(start, end){
+        from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
+        to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
+        var url = "http://localhost:5000/?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+        window.location.href = url
+        $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
+    });
+
+  from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
+  to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
+  sort_element = $("#sorted_names option:selected").val();
+  source = $("#sources option:selected").val();
+  console.log(from_date)
+  console.log(to_date)
+  console.log(sort_element)
+  console.log(source)
+  $('body').on('change', '#sorted_names', function(){
+    sort_element = $("#sorted_names option:selected").val();
+    var url = "http://localhost:5000/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+    window.location.href = url
+    // $.get(domain_url + 'sports/event_list/',{'tournament' : tournament},function(res) {
+    //     var x = _.template($('#events_tmpl').text());
+    //     $( "select#events" ).html(x({'resp' : res}));
+  });
+  $('body').on('change', '#sources', function(){
+    source = $("#sources option:selected").val();
+    var url = "http://localhost:5000/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+    window.location.href = url
+    // $.get(domain_url + 'sports/event_list/',{'tournament' : tournament},function(res) {
+    //     var x = _.template($('#events_tmpl').text());
+    //     $( "select#events" ).html(x({'resp' : res}));
+  });
+
+});
+// $('body').on('change', '#picker', function(){
+//   var from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
+//   var to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
+//   console.log(from_date)
+//   console.log(to_date)
+// });
+</script>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light" id="top-nav">
+	<a class="navbar-brand" href="/">Headrun</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+	    <li class="nav-item dropdown">
+		    <a class="nav-link dropdown-toggle" href="#" id="source-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sources</a>
+		    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+			    <a class="dropdown-item" href="#">Action</a>
+			    <a class="dropdown-item" href="#">Another action</a>
+			    <a class="dropdown-item" href="#">Something else here</a>
+		    </div>
+	    </li>
+
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="sort-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Popularity</a>
+                <a class="dropdown-item" href="#">Price</a>
+                <a class="dropdown-item" href="#">Availability</a>
+            </div>
+        </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form>
+  </div>
+</nav>
+
+
+<div class="container">
+<div class="row">
+{% for product in products %}
+<div class="col-md-3">
+	<figure class="card card-product">
+		<div class="img-wrap"> 
+			<img src={{product.image_url}}>
+		</div>
+		<figcaption class="info-wrap">
+      <h6 class="title text-dots"><strong>{{product.brand}}</strong></h6>
+      <h6 class="title text-dots">{{product.title}}</h6>
+			<div class="action-wrap">
+				<!-- <a href="#" class="btn btn-primary btn-sm float-right"> Order </a> -->
+				<div class="price-wrap h5">
+					<span class="price-new">{{product.selling_price}}</span>
+					<del class="price-old">{{product.mrp}}</del>
+				</div>
+			</div> 
+		</figcaption>
+	</figure> 
+</div> 
+{% endfor %}
+
+</div> 
+
+<br><br><br>
+
+<style>
+
+  #top-nav {
+    margin-bottom: 25px;
+  }
+
+  .margin-down{
+      margin-bottom: 15px;
+      margin-top: 15px;
+      padding-left: 0px !important;
+      padding-right: 0px !important;
+  }
+  .card-product:after {
+    content: "";
+    display: table;
+    clear: both;
+    visibility: hidden; }
+  .card-product .price-new, .card-product .price {
+    margin-right: 5px; }
+  .card-product .price-old {
+    color: #999; }
+  .card-product .img-wrap {
+    border-radius: 3px 3px 0 0;
+    overflow: hidden;
+    position: relative;
+    height: 220px;
+    text-align: center; }
+    .card-product .img-wrap img {
+      max-height: 100%;
+      max-width: 100%;
+      object-fit: cover; }
+      
+      .card-product .info-wrap {
+    overflow: hidden;
+    padding: 15px;
+    border-top: 1px solid #eee; }
+  .card-product .action-wrap {
+    padding-top: 4px;
+    margin-top: 4px; }
+  .card-product .bottom-wrap {
+    padding: 15px;
+    border-top: 1px solid #eee; }
+  .card-product .title {
+    margin-top: 0; }
+    .content {
+    height: 200px;
+    }
+    a { text-decoration: none; }
+
+
+    .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    }
+
+    .nav-fostrap {
+    display: block;
+    margin-bottom: 15px 0;
+    background: #03A9F4;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -ms-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -o-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    border-radius: 3px;
+    }
+
+    .nav-fostrap ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: block;
+    }
+
+    .nav-fostrap li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    position: relative;
+    font-size: 14;
+    color: #def1f0;
+    }
+
+    .nav-fostrap li a {
+    padding: 15px 20px;
+    font-size: 14;
+    color: #def1f0;
+    display: inline-block;
+    outline: 0;
+    font-weight: 400;
+    }
+
+    .nav-fostrap li:hover ul.dropdown { display: block; }
+
+    .nav-fostrap li ul.dropdown {
+    position: absolute;
+    display: none;
+    width: 200px;
+    background: #2980B9;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -ms-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -o-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    padding-top: 0;
+    }
+
+    .nav-fostrap li ul.dropdown li {
+    display: block;
+    list-style-type: none;
+    }
+
+    .nav-fostrap li ul.dropdown li a {
+    padding: 15px 20px;
+    font-size: 15px;
+    color: #fff;
+    display: block;
+    font-weight: 400;
+    }
+
+    .nav-fostrap li ul.dropdown li:last-child a { border-bottom: none; }
+
+    .nav-fostrap li:hover a {
+    background: #2980B9;
+    color: #fff !important;
+    }
+
+    .nav-fostrap li:first-child:hover a { border-radius: 3px 0 0 3px; }
+
+    .nav-fostrap li ul.dropdown li:hover a { background: rgba(0,0,0, .1); }
+
+    .nav-fostrap li ul.dropdown li:first-child:hover a { border-radius: 0; }
+
+    .nav-fostrap li:hover .arrow-down { border-top: 5px solid #fff; }
+
+    .arrow-down {
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid #def1f0;
+    position: relative;
+    top: 15px;
+    right: -5px;
+    content: '';
+    }
+    .title-mobile {
+    display: none;
+    }
+    @media only screen and (max-width:900px) {
+
+    .nav-fostrap {
+    background: #fff;
+    width: 200px;
+    height: 100%;
+    display: block;
+    position: fixed;
+    left: -200px;
+    top: 0px;
+    -webkit-transition: left 0.25s ease;
+    -moz-transition: left 0.25s ease;
+    -ms-transition: left 0.25s ease;
+    -o-transition: left 0.25s ease;
+    transition: left 0.25s ease;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+    }
+    .title-mobile {
+    position: fixed;
+    display: block;
+        top: 10px;
+        font-size: 20px;
+        left: 100px;
+        right: 100px;
+        text-align: center;
+        color: #FFF;
+    }
+    .nav-fostrap.visible {
+    left: 0px;
+    -webkit-transition: left 0.25s ease;
+    -moz-transition: left 0.25s ease;
+    -ms-transition: left 0.25s ease;
+    -o-transition: left 0.25s ease;
+    transition: left 0.25s ease;
+    }
+
+    .nav-bg-fostrap {
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    height: 50px;
+    margin: 0;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: #03A9F4;
+    padding: 12px 0 0 10px;
+    -webkit-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -moz-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -ms-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    -o-box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+    }
+
+    .navbar-fostrap {
+    display: inline-block;
+    vertical-align: middle;
+    height: 50px;
+    cursor: pointer;
+    margin: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 12px;
+    }
+
+    .navbar-fostrap span {
+    height: 2px;
+    background: #fff;
+    margin: 5px;
+    display: block;
+    width: 20px;
+    }
+
+    .navbar-fostrap span:nth-child(2) { width: 20px; }
+
+    .navbar-fostrap span:nth-child(3) { width: 20px; }
+
+    .nav-fostrap ul { padding-top: 50px; }
+
+    .nav-fostrap li { display: block; }
+
+    .nav-fostrap li a {
+    display: block;
+    color: #505050;
+    font-weight: 600;
+    }
+
+    .nav-fostrap li:first-child:hover a { border-radius: 0; }
+
+    .nav-fostrap li ul.dropdown { position: relative; }
+
+    .nav-fostrap li ul.dropdown li a {
+    background: #2980B9 !important;
+    border-bottom: none;
+    color: #fff !important;
+    }
+
+    .nav-fostrap li:hover a {
+    background: #03A9F4;
+    color: #fff !important;
+    }
+
+    .nav-fostrap li ul.dropdown li:hover a {
+    background: rgba(0,0,0,.1) !important;
+    color: #fff !important;
+    }
+
+    .nav-fostrap li ul.dropdown li a { padding: 10px 10px 10px 30px; }
+
+    .nav-fostrap li:hover .arrow-down { border-top: 5px solid #fff; }
+
+    .arrow-down {
+    border-top: 5px solid #505050;
+    position: absolute;
+    top: 20px;
+    right: 10px;
+    }
+
+    .cover-bg {
+    background: rgba(0,0,0,0.5);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    }
+    @media only screen and (max-width:1199px) {
+
+    .container { width: 96%; }
+    }
+
+    .fixed-top {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    }
+    }
+</style>
