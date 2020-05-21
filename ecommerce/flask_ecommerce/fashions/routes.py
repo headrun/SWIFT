@@ -6,7 +6,7 @@ from fashions import app, db
 from flask_mysqldb import MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'Ecomm@34^$'
 app.config['MYSQL_DB'] = 'ECOMMERCEDB'
 
 mysql = MySQL(app)
