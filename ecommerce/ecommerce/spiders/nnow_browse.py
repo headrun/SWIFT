@@ -9,8 +9,8 @@ class NowSpider(EcommSpider):
 
     def __init__(self, *args, **kwargs):
         super(NowSpider, self).__init__(*args, **kwargs)
-        self.category_array = ['men-t-shirts-polos', 'men-casual-shirts']
-        self.cids = ['men_t_shirts_polos','men_casual_shirts']
+        self.category_array = ['men-t-shirts-polos', 'men-casual-shirts','women-tops-shirts-and-t-shirts','women-kurtas-kurtis','women-shirts']
+        self.cids = ['men_t_shirts_polos','men_casual_shirts','women_tops_shirts_and_t_shirts','women_kurtas_kurtis','women_shirts']
         self.headers = headers = {
                 'Connection': 'keep-alive',
                 'Pragma': 'no-cache',
@@ -35,7 +35,7 @@ class NowSpider(EcommSpider):
                 cid_nu = 'tn_'+cid
                 data = {"deeplinkurl":"/%s?p=1&cid=%s"%(category,cid_nu)}
                 url = 'https://api.nnnow.com/d/apiV2/listing/products'
-                meta = {'range': 0, 'page': 1, 'category': category,'cid':cid_nu}
+                meta = {'range': 0, 'page': 1, 'category': category,'cid':cid_nu,"handle_httpstatus_list":[400]}
                 yield Request(url, headers=self.headers, callback=self.parse, meta=meta,body=json.dumps(data),method = 'POST')
 
     def parse(self, response):
@@ -61,6 +61,6 @@ class NowSpider(EcommSpider):
             page += 1
             data = {"deeplinkurl":"/%s?p=%s&cid=%s"%(request_category,page,cid2)}
             url = 'https://api.nnnow.com/d/apiV2/listing/products'
-            meta = {'page': page,'category': request_category,'cid':cid2}
+            meta = {'page': page,'category': request_category,'cid':cid2,"handle_httpstatus_list":[400]}
             yield Request(url, headers=self.headers, callback=self.parse, meta=meta,body=json.dumps(data),method = 'POST')
 
