@@ -36,7 +36,7 @@ class ajiospider(EcommSpider):
         for node in nodes:
             url = ''.join(node.xpath('./a/@href').extract())
             link =  urljoin(self.domain_url, url) 
-            yield Request(link,callback=self.parse_next,meta = {"node" : node,"handle_httpstatus_list" : [400]},headers=self.headers)
+            yield Request(link,callback=self.parse_next,meta = {"node" : node},headers=self.headers)
 
     def parse_next(self,response):
         urls = response.xpath('//li//a[contains(@href, "/men") or contains(@href, "/women") or contains(@href, "/kids") or contains(@href, "/indie") or contains(@href, "/all") or contains(@href, "/sale") or contains(@href, "/update-your-wardrobe-3951-66521")]//..//div[@class="menu-flyout close-seo-dropdown-menu"]//a/@href').extract()
