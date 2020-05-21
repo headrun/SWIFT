@@ -1,12 +1,10 @@
 from urllib.parse import urljoin
 from ecommerce.common_utils import *
-from ecommerce.items import InsightItem, MetaItem
 
 
 class ajiospider(EcommSpider):
     name = 'ajio_browse'
     domain_url = "https://www.ajio.com"
-    handle_httpstatus_list = [404,402,400,500]
     start_urls = []
 
     def __init__(self, *args, **kwargs):
@@ -33,10 +31,10 @@ class ajiospider(EcommSpider):
         nodes = response.xpath('//ul[@class="level-first false"]/li')
         for node in nodes:
             url = ''.join(node.xpath('./a/@href').extract())
-            link =  urljoin(self.domain_url, url)
-            yield Request(link,callback=self.parse_next,meta = {"node" : node})
+            link =  urljoin(self.domain_url, url) 
+            yield Request(link,callback=self.parse_next,meta = {"node" : node,"handle_httpstatus_list":[400]},headers=self.headers)
 
-    def parse_next(self,response):
+    def parse_next(self,response): 
         node = response.meta['node']
         urls =  node.xpath('.//div[@class="items"]//span//a//@href').extract()
         for url in urls:
@@ -48,7 +46,6 @@ class ajiospider(EcommSpider):
                 sub_category = url.split('-')[1]
             except:
                 sub_category = ''
-            #product_url = 'https://www.ajio.com'+url
             product_url = urljoin(self.domain_url, url)
             meta_data = {'category':category,'sub_category':sub_category}
             sk = url.split('/')[-1]
