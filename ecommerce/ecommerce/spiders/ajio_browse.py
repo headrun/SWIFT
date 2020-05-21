@@ -6,6 +6,7 @@ class ajiospider(EcommSpider):
     name = 'ajio_browse'
     domain_url = "https://www.ajio.com"
     start_urls = []
+    handle_httpstatus_list =[400]
 
     def __init__(self, *args, **kwargs):
         super(ajiospider, self).__init__(*args, **kwargs)
@@ -32,7 +33,7 @@ class ajiospider(EcommSpider):
         for node in nodes:
             url = ''.join(node.xpath('./a/@href').extract())
             link =  urljoin(self.domain_url, url) 
-            yield Request(link,callback=self.parse_next,meta = {"node" : node,"handle_httpstatus_list":[400]},headers=self.headers)
+            yield Request(link,callback=self.parse_next,meta = {"node" : node},headers=self.headers)
 
     def parse_next(self,response): 
         node = response.meta['node']
