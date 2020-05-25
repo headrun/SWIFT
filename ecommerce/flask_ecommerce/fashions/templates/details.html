@@ -41,7 +41,7 @@ $('#pagination-here, #pagination_here_down').bootpag({
     })
 $('#pagination-here').on("page", function (event, num) {
 
-  var url = "http://fashion.head.run/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element, page_num: num })
+  var url = "/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element, page_num: num })
   $.get(url, function (response) {
     var res = JSON.parse(response)
     var items = ''
@@ -81,7 +81,7 @@ $('#picker').daterangepicker({
     }, function(start, end){
         from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
         to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
-        var url = "http://fashion.head.run/?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+        var url = "/?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
         $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
         $.get(url,function(response) {
             var res = JSON.parse(response)
@@ -112,7 +112,7 @@ $('#picker').daterangepicker({
   console.log(to_date)
   console.log(sort_element)
   console.log(source)
-  var url = "http://fashion.head.run/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+  var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
   $.get(url,function(response) {
         var res = JSON.parse(response)
         var items = ''
@@ -134,7 +134,7 @@ $('#picker').daterangepicker({
 
   $('body').on('change', '#sorted_names', function(){
     sort_element = $("#sorted_names option:selected").val();
-    var url = "http://fashion.head.run/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
     $.get(url,function(response) {
         var res = JSON.parse(response)
         var items = ''
@@ -157,7 +157,7 @@ $('#picker').daterangepicker({
   });
   $('body').on('change', '#sources', function(){
     source = $("#sources option:selected").val();
-    var url = "http://fashion.head.run/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
     $.get(url,function(response) {
         var res = JSON.parse(response)
         var items = ''
