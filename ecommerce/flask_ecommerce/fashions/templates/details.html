@@ -6,22 +6,18 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 
-
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-
 <link href="{{ url_for('static',filename = 'css/daterangepicker.css')}}" rel="stylesheet">
 <link href="https://cdn.datatables.net/1.10.12/css/jquery.dataTables.min.css" rel="stylesheet">
 <link href="{{ url_for('static',filename = 'css/daily_monitoring.css')}}" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.css" rel="stylesheet">
-<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
-<!-- <script>
-    $('.datepicker').datepicker({
-        inline: true
-    });
-</script> -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<script type="text/javascript"
+  src="//cdn.rawgit.com/botmonster/jquery-bootpag/master/lib/jquery.bootpag.min.js"></script>
+
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet"/>
 <script type="text/javascript">
 $(function(){
 var xmlhttp = new XMLHttpRequest();
@@ -29,20 +25,60 @@ var from_date;
 var to_date;
 var sort_element;
 var source;
-$('#date').html(moment().subtract(1, 'days').format('MMMM DD, YYYY') + ' - ' + moment().subtract(1, 'days').format('MMMM DD, YYYY'));
+// var page_number=1;
+$('#pagination-here, #pagination_here_down').bootpag({
+      total: 100,
+      page: 1,
+      leaps: true,
+      firstLastUse: true,
+      first: '←',
+      last: '→',
+      wrapClass: 'pagination',
+      activeClass: 'active',
+      disabledClass: 'disabled',
+      nextClass: 'next',
+      prevClass: 'prev',
+      lastClass: 'last',
+      firstClass: 'first',
+      maxVisible: 10,
+      href: "#{{number}}",
+    })
+$('#pagination-here').on("page", function (event, num) {
+
+  var url = "http://localhost:5000/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element, page_num: num })
+  $.get(url, function (response) {
+    var res = JSON.parse(response)
+    var items = ''
+    for(var i=0;i<res.length;i++){
+            items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
+            items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+            if (res[i]['source'] == 'myntra'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
+            }
+            console.log(res[i]['source'])
+            if (res[i]['source'] == 'nnnow'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
+            }
+            items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
+    }
+    $('#add_element').html(items);
+    console.log(res[1])
+  });
+});
+$('#date').html(moment().subtract(29, 'days').format('MMMM DD, YYYY') + ' - ' + moment().subtract(0, 'days').format('MMMM DD, YYYY'));
 $('#picker').daterangepicker({
-    startDate: moment().subtract(1, 'days'),
+    startDate: moment().subtract(29, 'days'),
     endDate: moment(),
     ranges: {
         'Today': [moment(), moment()],
         'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
         'Last Week': [moment().subtract(6, 'days'), moment()],
-        'This Week': [moment(), moment().add(6, 'days')],
-        'Next Week': [moment().add(6, 'days'), moment().add(12, 'days')],
+        // 'This Week': [moment(), moment().add(6, 'days')],
+        // 'Next Week': [moment().add(6, 'days'), moment().add(12, 'days')],
         'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'Next 30 Days': [moment(), moment().add(29, 'days')],
-        'Next 60 Days': [moment(), moment().add(59, 'days')],
-        'Next 120 Days': [moment(), moment().add(199, 'days')],
+        // 'Next 30 Days': [moment(), moment().add(29, 'days')],
+        // 'Next 60 Days': [moment(), moment().add(59, 'days')],
+        // 'Next 120 Days': [moment(), moment().add(199, 'days')],
         'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
         'This Month': [moment().startOf('month'), moment().endOf('month')],
         }
@@ -50,8 +86,26 @@ $('#picker').daterangepicker({
         from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
         to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
         var url = "http://localhost:5000/?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
-        window.location.href = url
         $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
+        $.get(url,function(response) {
+            var res = JSON.parse(response)
+            var items = ''
+            for(var i=0;i<res.length;i++){
+                items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
+                items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+                if (res[i]['source'] == 'myntra'){
+                    items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
+                }
+                console.log(res[i]['source'])
+                if (res[i]['source'] == 'nnnow'){
+                    items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
+                }
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
+            }
+            $('#add_element').html(items);
+            $('ul.bootpag>li').not('.prev').first().trigger('click');
+            console.log(res[1])
+        });
     });
 
   from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
@@ -62,99 +116,132 @@ $('#picker').daterangepicker({
   console.log(to_date)
   console.log(sort_element)
   console.log(source)
+  var url = "http://localhost:5000/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
+  $.get(url,function(response) {
+        var res = JSON.parse(response)
+        var items = ''
+        for(var i=0;i<res.length;i++){
+            items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
+            items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+            if (res[i]['source'] == 'myntra'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
+            }
+            console.log(res[i]['source'])
+            if (res[i]['source'] == 'nnnow'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
+            }
+            items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
+        }
+        $('#add_element').html(items);
+        console.log(res[1])
+  });
+
   $('body').on('change', '#sorted_names', function(){
     sort_element = $("#sorted_names option:selected").val();
     var url = "http://localhost:5000/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
-    window.location.href = url
-    // $.get(domain_url + 'sports/event_list/',{'tournament' : tournament},function(res) {
-    //     var x = _.template($('#events_tmpl').text());
-    //     $( "select#events" ).html(x({'resp' : res}));
+    $.get(url,function(response) {
+        var res = JSON.parse(response)
+        var items = ''
+        for(var i=0;i<res.length;i++){
+            items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
+            items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+            if (res[i]['source'] == 'myntra'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
+            }
+            console.log(res[i]['source'])
+            if (res[i]['source'] == 'nnnow'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
+            }
+            items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
+        }
+        $('#add_element').html(items);
+        $('ul.bootpag>li').not('.prev').first().trigger('click');
+        console.log(res[1])
+   });
   });
   $('body').on('change', '#sources', function(){
     source = $("#sources option:selected").val();
     var url = "http://localhost:5000/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
-    window.location.href = url
-    // $.get(domain_url + 'sports/event_list/',{'tournament' : tournament},function(res) {
-    //     var x = _.template($('#events_tmpl').text());
-    //     $( "select#events" ).html(x({'resp' : res}));
+    $.get(url,function(response) {
+        var res = JSON.parse(response)
+        var items = ''
+        for(var i=0;i<res.length;i++){
+            items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
+            items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+            if (res[i]['source'] == 'myntra'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
+            }
+            console.log(res[i]['source'])
+            if (res[i]['source'] == 'nnnow'){
+                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
+            }
+            items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
+        }
+        $('#add_element').html(items);
+        console.log(res[1])
+        $('ul.bootpag>li').not('.prev').first().trigger('click');
+  });
   });
 
 });
-// $('body').on('change', '#picker', function(){
-//   var from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
-//   var to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
-//   console.log(from_date)
-//   console.log(to_date)
-// });
 </script>
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light" id="top-nav">
-	<a class="navbar-brand" href="/">Headrun</a>
-	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-		<span class="navbar-toggler-icon"></span>
-	</button>
-
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-	    <li class="nav-item dropdown">
-		    <a class="nav-link dropdown-toggle" href="#" id="source-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sources</a>
-		    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-			    <a class="dropdown-item" href="#">Action</a>
-			    <a class="dropdown-item" href="#">Another action</a>
-			    <a class="dropdown-item" href="#">Something else here</a>
-		    </div>
-	    </li>
-
-        <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="sort-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Sort</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Popularity</a>
-                <a class="dropdown-item" href="#">Price</a>
-                <a class="dropdown-item" href="#">Availability</a>
-            </div>
-        </li>
-    </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
-  </div>
-</nav>
-
-
 <div class="container">
-<div class="row">
-{% for product in products %}
-<div class="col-md-3">
-	<figure class="card card-product">
-		<div class="img-wrap"> 
-			<img src={{product.image_url}}>
-		</div>
-		<figcaption class="info-wrap">
-      <h6 class="title text-dots"><strong>{{product.brand}}</strong></h6>
-      <h6 class="title text-dots">{{product.title}}</h6>
-			<div class="action-wrap">
-				<!-- <a href="#" class="btn btn-primary btn-sm float-right"> Order </a> -->
-				<div class="price-wrap h5">
-					<span class="price-new">{{product.selling_price}}</span>
-					<del class="price-old">{{product.mrp}}</del>
-				</div>
-			</div> 
-		</figcaption>
-	</figure> 
-</div> 
-{% endfor %}
+<nav class="navbar navbar-light bg-primary margin-down">
+    <div id="picker" class="col-md-3 nav-item nav-align">
+        <i class="fa fa-calender"></i> &nbsp;
+        <span id="date"></span>
+        &nbsp; <i class="fa fa-caret-down"></i>
+    </div>
+    <div id="sorted_names" class="col-md-3 nav-item nav-align">
+        <select class="browser-default custom-select header-styles">
+          <option selected value="popularity">Popularity</option>
+          <option value="All">All</option>
+        </select>
+    </div>
+    <div id="sources" class="col-md-3 nav-item nav-align">
+        <select class="browser-default custom-select header-styles">
+          <option selected value="all">All</option>
+          <option value="myntra">Myntra</option>
+          <option value="nnnow">Nnnow</option>
+        </select>
+    </div>
+
+</nav>
+<div class="row" id="add_element">
 
 </div> 
-
+<div class="wrapper">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-12 text-center">
+          <p id="pagination-here"></p>
+        </div>
+      </div>
+    </div>
+</div>
 <br><br><br>
 
 <style>
-
-  #top-nav {
-    margin-bottom: 25px;
-  }
-
+    .header-styles{
+        padding: 5px 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        color: black;
+        height: 34px;
+    }
+    .numberCircle {
+        width: 40px;
+        line-height: 30px;
+        /*border-radius: 50%;*/
+        text-align: center;
+        /*font-size: 32px;*/
+        border: 2px solid #666;
+    }
+  .bg-primary {
+    background-color: #337ab7!important;
+   }
   .margin-down{
       margin-bottom: 15px;
       margin-top: 15px;
