@@ -1,7 +1,7 @@
 import json
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
-from fashions import app
+#from fashions import app
 
 app = Flask(__name__, static_url_path="/static", static_folder="static")
 app.config['MYSQL_HOST'] = 'localhost'
@@ -15,7 +15,6 @@ mysql = MySQL(app)
 @app.route('/')
 def home():
     return render_template('details.html')
-
 
 @app.route('/search')
 def data():
@@ -60,4 +59,7 @@ def data():
     products = json.dumps(json_data)
     cur.close()
     return products
+
+if __name__ == "__main__":
+    app.run()
 
