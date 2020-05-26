@@ -5,8 +5,8 @@ from fashions import app
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'Ecomm@34^$'
-app.config['MYSQL_DB'] = 'ECOMMERCEDB'
+app.config['MYSQL_PASSWORD'] = 'dbms'
+app.config['MYSQL_DB'] = 'EcommerceDB'
 
 mysql = MySQL(app)
 
@@ -31,24 +31,16 @@ def data():
         offset = (int(page_num)-1)*limit
     cur = mysql.connection.cursor()
     if sort_by == "popularity":
-        if source == "myntra":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source='myntra' ORDER BY t2.ratings_count DESC limit %s offset %s;", [start_date, end_date, limit, offset])
-
-        elif source == "nnnow":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source='nnnow' ORDER BY t2.ratings_count DESC limit %s offset %s;", [start_date, end_date, limit, offset])
-
-        else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') ORDER BY t2.ratings_count DESC limit %s offset %s;", [start_date, end_date, limit, offset])
+    	if source == "all":
+    		cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') ORDER BY t2.ratings_count DESC limit %s offset %s;", [start_date, end_date, limit, offset])
+    	else:
+            cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s ORDER BY t2.ratings_count DESC limit %s offset %s;", [start_date, end_date, source, limit, offset])
 
     else:
-        if source == "myntra":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source='myntra' limit %s offset %s;", [start_date, end_date, limit, offset])
-
-        elif source == "nnnow":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source='nnnow' limit %s offset %s;", [start_date, end_date, limit, offset])
-
-        else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') limit %s offset %s;", [start_date, end_date, limit, offset])
+    	if source == "all":
+    		cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') limit %s offset %s;", [start_date, end_date, limit, offset])
+    	else:
+    		cur.execute("select DISTINCT t1.hd_id,t2.brand,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s limit %s offset %s;", [start_date, end_date, source, limit, offset])
 
     row_headers = [x[0] for x in cur.description if x]
     results = cur.fetchall()

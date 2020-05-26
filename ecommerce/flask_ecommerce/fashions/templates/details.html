@@ -21,6 +21,12 @@ var from_date;
 var to_date;
 var sort_element;
 var source;
+var image_dict  = {
+    "myntra":"/static/images/myntra.png",
+    "nnnow":"/static/images/nnnow.png",
+    "amazon":"/static/images/amazon-img.jpg",
+    "ajio":"/static/images/ajio.png"
+}
 // var page_number=1;
 $('#pagination-here, #pagination_here_down').bootpag({
       total: 100,
@@ -48,13 +54,7 @@ $('#pagination-here').on("page", function (event, num) {
     for(var i=0;i<res.length;i++){
             items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
             items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-            if (res[i]['source'] == 'myntra'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
-            }
-            console.log(res[i]['source'])
-            if (res[i]['source'] == 'nnnow'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
-            }
+            items = items + "<img class='float-right' style='margin:0 10px' src="+image_dict[res[i]['source']]+"width='30px' height='30px'>"
             items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
     }
     $('#add_element').html(items);
@@ -89,13 +89,7 @@ $('#picker').daterangepicker({
             for(var i=0;i<res.length;i++){
                 items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                if (res[i]['source'] == 'myntra'){
-                    items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
-                }
-                console.log(res[i]['source'])
-                if (res[i]['source'] == 'nnnow'){
-                    items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
-                }
+                items = items + "<img class='float-right' style='margin:0 10px' src="+image_dict[res[i]['source']]+"width='30px' height='30px'>"
                 items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
             }
             $('#add_element').html(items);
@@ -116,16 +110,11 @@ $('#picker').daterangepicker({
   $.get(url,function(response) {
         var res = JSON.parse(response)
         var items = ''
+        var items = ''
         for(var i=0;i<res.length;i++){
             items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
             items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-            if (res[i]['source'] == 'myntra'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
-            }
-            console.log(res[i]['source'])
-            if (res[i]['source'] == 'nnnow'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
-            }
+            items = items + "<img class='float-right' style='margin:0 10px' src="+image_dict[res[i]['source']]+"width='30px' height='30px'>"
             items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
         }
         $('#add_element').html(items);
@@ -141,13 +130,7 @@ $('#picker').daterangepicker({
         for(var i=0;i<res.length;i++){
             items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
             items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-            if (res[i]['source'] == 'myntra'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
-            }
-            console.log(res[i]['source'])
-            if (res[i]['source'] == 'nnnow'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
-            }
+            items = items + "<img class='float-right' style='margin:0 10px' src="+image_dict[res[i]['source']]+"width='30px' height='30px'>"
             items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
         }
         $('#add_element').html(items);
@@ -164,13 +147,7 @@ $('#picker').daterangepicker({
         for(var i=0;i<res.length;i++){
             items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
             items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-            if (res[i]['source'] == 'myntra'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/myntra.png' width='30px' height='30px'>"
-            }
-            console.log(res[i]['source'])
-            if (res[i]['source'] == 'nnnow'){
-                items = items+"<img class='float-right' style='margin:0 10px' src='/static/images/nnnow.png' width='30px' height='30px'>"
-            }
+            items = items + "<img class='float-right' style='margin:0 10px' src="+image_dict[res[i]['source']]+"width='30px' height='30px'>"
             items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
         }
         $('#add_element').html(items);
@@ -200,6 +177,8 @@ $('#picker').daterangepicker({
           <option selected value="all">All</option>
           <option value="myntra">Myntra</option>
           <option value="nnnow">Nnnow</option>
+          <option value="amazon">Amazon</option>
+          <option value="ajio">Ajio</option>
         </select>
     </div>
 
