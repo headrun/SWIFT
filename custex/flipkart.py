@@ -4,7 +4,7 @@ import scrapy
 
 class Flipkart(scrapy.Spider):
     name = 'flipkart_spider'
-    start_urls = ['https://www.flipkart.com/b-natural-orange-juice/p/itmeuc5ghtyau3xh']
+    start_urls = ['https://www.flipkart.com/b-natural-orange-juice/p/itmeuc5ghtyau3xh','https://www.flipkart.com/b-natural-guava/p/itmeuc5gsdbgh2ch']
 
     def parse(self, response):
         data_text = response.xpath('//script[contains(text(), "window.__INITIAL_STATE__")]/text()').extract()
