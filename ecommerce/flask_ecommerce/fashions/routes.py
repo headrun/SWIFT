@@ -55,3 +55,6 @@ def data():
     products = json.dumps(json_data)
     cur.close()
     return products
+
+if __name__ == "__main__":
+    app.run()
