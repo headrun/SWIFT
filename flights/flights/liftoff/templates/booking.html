@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+ <head>
+ <!-- Required meta tags -->
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1">
+
+ <!-- CoreUI CSS -->
+ <link rel="stylesheet" href="https://unpkg.com/@coreui/coreui@3.0.0-rc.0/dist/css/coreui.min.css" crossorigin="anonymous">
+
+ <title>CoreUI</title>
+ </head>
+ <style type="text/css">
+   .cd-example {
+    background-color: #fafbfc;
+}
+@media (min-width: 576px)
+.cd-example {
+    padding: 1.5rem;
+    margin-right: 0;
+    margin-left: 0;
+    border-width: .2rem;
+}
+.cd-example {
+    position: relative;
+    padding: 1rem;
+    margin: 1rem 0 0;
+    border: solid #f1f4f6;
+    border-width: .2rem 0 0;
+    border-radius: 4px 4px 0 0;
+}
+.card-body {
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    min-height: 1px;
+    padding: 1.25rem;
+    border-radius: 3px;
+    text-align: center;
+    /*box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.17);*/
+    /*height: 350px;*/
+}
+.Review_bookingdiv {
+    font-family: Montserrat;
+    font-size: 27px;
+    font-weight: bold;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #4d4d4f;
+    margin: 0px 0px;
+}
+.card-header {
+    padding: 1rem 2rem;
+    border-bottom: 1px solid;
+    background-color: #fff;
+    border-color: #d8dbe0;
+  }
+  .card {
+    position: relative;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    margin-bottom: 1.5rem;
+    word-wrap: break-word;
+    background-clip: border-box;
+    border: 1px solid;
+    border-radius: .25rem;
+    background-color: #fff;
+    border-color: #d8dbe0;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.17);
+}
+ </style>
+ <body class="c-app">
+
+
+ <!-- Optional JavaScript -->
+ <!-- Popper.js first, then CoreUI JS -->
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.15.0/umd/popper.min.js" integrity="sha384-L2pyEeut/H3mtgCBaUNw7KWzp5n9&#43;4pDQiExs933/5QfaTh8YStYFFkOzSoXjlTb" crossorigin="anonymous"></script>
+ <script src="https://unpkg.com/@coreui/coreui@3.0.0-rc.0/dist/js/coreui.min.js"></script>
+<div class="cd-example">
+ <div class="row">
+  <div class="col-sm-9">
+    <div class="card">
+    <div class="card-header">
+    <h1 class="Review_bookingdiv">Review your booking</h1>
+    </div>
+      <div class="card-body">
+        <h5 class="card-title">Special title </h5>
+        <p class="card-text">It's a broader card with text below as a natural lead-in to extra content. This content is a little longer.</p>
+        <a href="#" class="btn btn-primary">Go somewhere</a>
+      </div>
+      <div class="card-footer text-muted">
+      Footer
+      </div>
+    </div>
+  </div>
+  <div class="col-sm-3">
+    <div class="card">
+    <div class="card-header">
+    <h1 class="Review_bookingdiv">Fare Details</h1>
+    </div>
+      <div class="card-body">
+        <h5 class="card-title">InterMiles Redeemed</h5>
+        <h5 class="card-title">25,000 InterMiles</h5>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+ </body>
+</html>
