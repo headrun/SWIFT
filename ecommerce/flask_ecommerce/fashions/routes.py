@@ -5,8 +5,8 @@ from fashions import app
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'dbms'
-app.config['MYSQL_DB'] = 'EcommerceDB'
+app.config['MYSQL_PASSWORD'] = 'Ecomm@34^$'
+app.config['MYSQL_DB'] = 'ECOMMERCEDB'
 
 mysql = MySQL(app)
 
