@@ -23,7 +23,11 @@ class LoadFiles(object):
     def dump_file_into_db(self, query_file, table):
         cmd = 'mysql -uroot -pEcomm@34^$ -hlocalhost -A ECOMMERCEDB --local-infile=1 -e "%s"'
         query = "LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE %s CHARACTER SET utf8 FIELDS TERMINATED BY '#<>#'" % (query_file, table)
-        query += "SET created_at=NOW();"
+        if 'info' in table:
+            query += "SET created_at=NOW(), modified_at=NOW();"
+        else:
+            query += "SET created_at=NOW();"
+
         try:
             os.system(cmd % query)
             return True

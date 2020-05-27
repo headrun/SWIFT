@@ -4,6 +4,7 @@
 #
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
+
 from scrapy.item import Item, Field
 
 class InsightItem(Item):
@@ -25,6 +26,7 @@ class MetaItem(Item):
     hd_id                       = Field()
     source                      = Field()
     sku                         = Field()
+    web_id                      = Field()
     size                        = Field()
     title                       = Field()
     descripion                  = Field()
