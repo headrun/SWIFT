@@ -10,7 +10,7 @@ class MyntraSpider(EcommSpider):
 
     def __init__(self, *args, **kwargs):
         super(MyntraSpider, self).__init__(*args, **kwargs)
-        self.category_array = ['men-tshirts', 'men-casual-shirts', 'men-formal-shirts', 'men-sweatshirts', 'men-sweaters', 'men-jackets', 'men-blazers', 'men-suits', 'rain-jacket','women-kurtas-kurtis-suits','ethnic-tops','ethnic-wear-dresses-menu']
+        self.category_array = ['men-tshirts', 'men-casual-shirts', 'men-formal-shirts', 'men-sweatshirts', 'men-sweaters', 'men-jackets', 'men-blazers', 'men-suits', 'rain-jacket','women-kurtas-kurtis-suits','ethnic-tops','ethnic-wear-dresses-menu','skirts-palazzos','saree','dress-material','lehenga-choli','dupatta-shawl','women-ethnic-wear-jackets','women-ethnic-bottomwear']
         self.headers = headers = {
             'authority': 'www.myntra.com',
             'upgrade-insecure-requests': '1',

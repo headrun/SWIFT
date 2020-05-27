@@ -1,6 +1,6 @@
+import re
 import json
 from ecommerce.common_utils import *
-import re
 from ecommerce.items import InsightItem, MetaItem
 
 
@@ -9,8 +9,8 @@ class NowSpider(EcommSpider):
 
     def __init__(self, *args, **kwargs):
         super(NowSpider, self).__init__(*args, **kwargs)
-        self.category_array = ['men-t-shirts-polos', 'men-casual-shirts','women-tops-shirts-and-t-shirts','women-kurtas-kurtis','women-shirts']
-        self.cids = ['men_t_shirts_polos','men_casual_shirts','women_tops_shirts_and_t_shirts','women_kurtas_kurtis','women_shirts']
+        self.category_array = ['men-t-shirts-polos', 'men-casual-shirts', 'men-formal-shirts', 'men-sweatshirts', 'men-jackets', 'men-suits-blazers', 'men-sweaters', 'women-tops-shirts-and-t-shirts','women-kurtas-kurtis','women-shirts', 'women-dresses-and-jumpsuits', 'women-jackets', 'women-sweatshirts', 'women-tunics', 'women-sweaters']
+        self.cids = ['men_t_shirts_polos','men_casual_shirts','men_formal_shirts','men_sweatshirts','men_jackets','men_suits_blazers','men_sweaters','women_tops_shirts_and_t_shirts','women_kurtas_kurtis','women_shirts','women_dresses_and_jumpsuits','women_jackets','women_sweatshirts','women_tunics','women_sweaters']
         self.headers = headers = {
                 'Connection': 'keep-alive',
                 'Pragma': 'no-cache',

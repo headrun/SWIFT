@@ -25,20 +25,20 @@ class AjioSpider(EcommSpider):
 
     def start_requests(self):
         url = 'https://www.ajio.com/shop/men'
-        yield Request(url, callback=self.parse)
+        yield Request(url, callback=self.parse, headers=self.headers)
 
     def parse(self, response):
         nodes = response.xpath('//ul[@class="level-first false"]/li')
         for node in nodes:
             url = ''.join(node.xpath('./a/@href').extract())
             link = self.domain_url+url 
-            yield Request(link, callback=self.parse_next, meta={"node":node, "handle_httpstatus_list":[400]})
+            yield Request(link, callback=self.parse_next, meta={"node":node, "handle_httpstatus_list":[400]}, headers=self.headers)
 
     def parse_next(self, response):
         urls = response.xpath('//li//a[contains(@href, "/men") or contains(@href, "/women") or contains(@href, "/kids") or contains(@href, "/indie") or contains(@href, "/all") or contains(@href, "/sale") or contains(@href, "/update-your-wardrobe-3951-66521")]//..//div[@class="menu-flyout close-seo-dropdown-menu"]//a/@href').extract()
         for url in urls:
             sub_category_url = self.domain_url+url
-            yield Request(sub_category_url, callback=self.parse_meta) 
+            yield Request(sub_category_url, callback=self.parse_meta, headers=self.headers) 
 
     def parse_meta(self, response):
         text = ''.join(response.xpath('//script[contains(text(), "window.__PRELOADED_STATE__")]/text()').extract()).replace('\r\n', '').replace(';', '')
@@ -58,7 +58,7 @@ class AjioSpider(EcommSpider):
                 num = response.url.split('/')[-1]
                 url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=1&pageSize=45&format=json&query=relevance&sortBy=relevance&gridColumns=3&facets=&advfilter=true'% num
             meta = {'range': 0, 'page': 1, 'curatedId':curatedId, 'num':num, "handle_httpstatus_list":[400]}
-            yield Request(url, callback=self.parse_data, meta=meta)
+            yield Request(url, callback=self.parse_data, meta=meta, headers=self.headers)
 
     def parse_data(self, response):
         curatedId = response.meta['curatedId']
