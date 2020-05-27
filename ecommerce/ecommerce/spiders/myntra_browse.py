@@ -1,10 +1,12 @@
 import json
 from re import findall
+from urllib.parse import urljoin
 from ecommerce.common_utils import *
 from ecommerce.items import InsightItem, MetaItem
 
 class MyntraSpider(EcommSpider):
     name = "myntra_browse"
+    domain_url = "https://www.myntra.com"
 
     def __init__(self, *args, **kwargs):
         super(MyntraSpider, self).__init__(*args, **kwargs)
@@ -43,7 +45,7 @@ class MyntraSpider(EcommSpider):
             sub_category = product.get('category', '')
             category = product.get('gender', '')
             image_url = product.get('searchImage', '')
-            reference_url = product.get('landingPageUrl', '')
+            reference_url = urljoin(self.domain_url, product.get('landingPageUrl', ''))
             discount_percentage = ''.join(findall('\(([^\)]+)\)', product.get('discountDisplayLabel', '')))
             aux_info = {'product_id': product_id, 'json_page': response.url}
 
@@ -66,7 +68,7 @@ class MyntraSpider(EcommSpider):
 
                 meta_item = MetaItem()
                 meta_item.update({
-                    'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'title': name,
+                    'hd_id': hd_id, 'source': source, 'sku': sku, 'web_id': product_id, 'size': size, 'title': name,
                     'descripion': '', 'specs': '', 'image_url': image_url, 
                     'reference_url': reference_url, 'aux_info': json.dumps(aux_info)
                 })
