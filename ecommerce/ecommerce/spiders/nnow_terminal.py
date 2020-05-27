@@ -1,6 +1,6 @@
 import json
-from ecommerce.common_utils import *
 import re
+from ecommerce.common_utils import *
 from ecommerce.items import InsightItem, MetaItem
 
 class NowSpider(EcommSpider):
@@ -46,7 +46,7 @@ class NowSpider(EcommSpider):
                     insight_item = InsightItem()
                     hd_id = encode_md5('%s%s%s' % (source, str(skuid), size))
                     insight_item.update({
-                        'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'category':category,
+                        'hd_id': hd_id, 'source': source, 'sku': skuid, 'size': size, 'category':category,
                         'sub_category': '', 'brand': brandname, 'ratings_count': '',
                         'reviews_count': '', 'mrp': mrp, 'selling_price': price,
                         'discount_percentage': discount,'is_available': availability
@@ -55,7 +55,7 @@ class NowSpider(EcommSpider):
                     
                     meta_item = MetaItem()
                     meta_item.update({
-                        'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'title': name,
+                        'hd_id': hd_id, 'source': source, 'sku': skuid, 'web_id':product_id, 'size': size, 'title': name,
                         'descripion': description, 'specs':specs, 'image_url': large_image, 
                         'reference_url': response.url, 'aux_info': json.dumps(aux_info)
                     })
