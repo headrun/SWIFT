@@ -5,7 +5,7 @@ from ecommerce.common_utils import *
 from ecommerce.items import InsightItem, MetaItem
 
 class AjioSpider(EcommSpider):
-    name = 'ajio_siri'
+    name = 'ajio_browse'
     domain_url = "https://www.ajio.com"
     handle_httpstatus_list = [400] 
     def __init__(self, *args, **kwargs):
@@ -90,7 +90,7 @@ class AjioSpider(EcommSpider):
             insight_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'size': sizes, 'category':category, 'sub_category': sub_category, 'brand': brandname, 'ratings_count': '', 'reviews_count': '', 'mrp':mrp, 'selling_price': selling_price, 'discount_percentage': discount, 'is_available': ''})
             yield insight_item
             meta_item = MetaItem()
-            meta_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'size': sizes, 'title': product_name, 'descripion': '', 'specs':'', 'image_url':outfiturl, 'reference_url': response.url, 'aux_info': json.dumps(aux_info)})
+            meta_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'web_id':code_, 'size': sizes, 'title': product_name, 'descripion': '', 'specs':'', 'image_url':outfiturl, 'reference_url': product_url, 'aux_info': json.dumps(aux_info)})
             yield meta_item
 
         if products:
