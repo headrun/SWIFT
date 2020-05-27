@@ -101,4 +101,4 @@ class AjioSpider(EcommSpider):
                 url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=%s&pageSize=45&format=json&query=relevance&sortBy=relevance&curated=true&curatedid=scotch-and-soda-3483-6296&gridColumns=3&facets=&advfilter=true'% (number, page)
     
             meta = {'page': page, 'num':number, 'curatedId':curatedId}
-            yield Request(url, headers=self.headers, callback=self.parse_data, meta=meta, headers=self.headers)
+            yield Request(url, headers=self.headers, callback=self.parse_data, meta=meta)
