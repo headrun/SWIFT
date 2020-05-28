@@ -36,7 +36,7 @@ class AmazonFashionTerminal(EcommSpider):
             _id = response.meta['sk']
             category = response.meta.get('meta_data', {}).get('category', '')
             sub_category = response.meta.get('meta_data', {}).get('sub_category', '')
-            brand = extract_data(sel, '//a[@id="bylineInfo"]/text()')
+            brand = extract_data(sel, '//a[@id="bylineInfo"]/text()').lower().replace('brand:', '').strip()
             title = extract_data(sel, '//span[@id="productTitle"]/text()').strip()
             description = extract_data(sel, '//div[@id="productDescription"]/p/text()').strip()
             rating_text = extract_data(sel, '//span[@id="acrPopover"]/@title')
@@ -77,6 +77,28 @@ class AmazonFashionTerminal(EcommSpider):
                 })
 
                 yield insights_item
+
+            if not size_nodes:
+                size = ''
+                hd_id = encode_md5('%s%s%s' % (self.source, sku, ''))
+                meta_item = MetaItem()
+                meta_item.update({
+                    'hd_id': hd_id, 'source': self.source, 'sku': sku, 'web_id': _id, 'size': size,
+                    'title': title, 'descripion': description, 'specs': specs, 'image_url': image_url,
+                    'reference_url': response.url
+                })
+                yield meta_item
+
+                insights_item = InsightItem()
+                insights_item.update({
+                    'hd_id': hd_id, 'source': self.source, 'sku': sku, 'size': size, 'category': category,
+                    'sub_category': sub_category, 'brand': brand, 'ratings_count': rating_count,
+                    'reviews_count': 0, 'mrp': mrp, 'selling_price': price, 'discount_percentage': discount,
+                    'is_available': availability
+                })
+
+                yield insights_item
+
 
             reviews_link = extract_data(sel, '//a[@data-hook="see-all-reviews-link-foot"]/@href')
             if reviews_link:
