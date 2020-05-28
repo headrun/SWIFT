@@ -48,10 +48,11 @@ class AmazonBrowseV2(EcommSpider):
                 if '₹' in sub_category or '%' in sub_category or sub_category not in sub_categories:
                     continue
 
-                if link and 'http' not in link:
-                    link = urljoin(self.domain_url, link)
-                meta = {'category': category, 'sub_category': sub_category}
-                yield Request(link, callback=self.parse_sub_categories, headers=self.headers, meta=meta)
+                if link:
+                    if 'http' not in link:
+                        link = urljoin(self.domain_url, link)
+                    meta = {'category': category, 'sub_category': sub_category}
+                    yield Request(link, callback=self.parse_sub_categories, headers=self.headers, meta=meta)
 
     def parse_sub_categories(self, response):
         sel = Selector(response)
@@ -76,14 +77,16 @@ class AmazonBrowseV2(EcommSpider):
                 if '₹' in sub_category or '%' in sub_category:
                     continue
 
-                if link and 'http' not in link:
-                    link = urljoin(self.domain_url, link)
+                if link:
+                    if 'http' not in link:
+                        link = urljoin(self.domain_url, link)
 
-                meta_data.update({'sub_category': sub_category})
-                yield Request(link, callback=self.parse_sub_categories, headers=self.headers, meta=meta_data)
+                    meta_data.update({'sub_category': sub_category})
+                    yield Request(link, callback=self.parse_sub_categories, headers=self.headers, meta=meta_data)
 
             next_page = extract_data(sel, '//a[@title="Next Page"]/@href') or\
                 extract_data(sel, '//li[@class="a-last"]/a[contains(text(), "Next")]/@href')
-            if next_page and 'http' not in next_page:
-                next_page = urljoin(self.domain_url, next_page)
-            yield Request(next_page, callback=self.parse_sub_categories, headers=self.headers, meta=meta_data)
+            if next_page:
+                if 'http' not in next_page:
+                    next_page = urljoin(self.domain_url, next_page)
+                yield Request(next_page, callback=self.parse_sub_categories, headers=self.headers, meta=meta_data)
