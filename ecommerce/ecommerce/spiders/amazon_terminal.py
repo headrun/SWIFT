@@ -78,6 +78,8 @@ class AmazonFashionTerminal(EcommSpider):
 
                 yield insights_item
 
+                self.got_page(_id, got_pageval=1)
+
             if not size_nodes:
                 size = ''
                 hd_id = encode_md5('%s%s%s' % (self.source, sku, ''))
@@ -98,6 +100,8 @@ class AmazonFashionTerminal(EcommSpider):
                 })
 
                 yield insights_item
+
+                self.got_page(_id, got_pageval=1)
 
 
             reviews_link = extract_data(sel, '//a[@data-hook="see-all-reviews-link-foot"]/@href')
