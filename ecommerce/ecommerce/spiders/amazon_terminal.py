@@ -82,7 +82,7 @@ class AmazonFashionTerminal(EcommSpider):
 
             if not size_nodes:
                 size = ''
-                hd_id = encode_md5('%s%s%s' % (self.source, sku, ''))
+                hd_id = encode_md5('%s%s%s' % (self.source, _id, size))
                 meta_item = MetaItem()
                 meta_item.update({
                     'hd_id': hd_id, 'source': self.source, 'sku': sku, 'web_id': _id, 'size': size,
@@ -102,7 +102,6 @@ class AmazonFashionTerminal(EcommSpider):
                 yield insights_item
 
                 self.got_page(_id, got_pageval=1)
-
 
             reviews_link = extract_data(sel, '//a[@data-hook="see-all-reviews-link-foot"]/@href')
             if reviews_link:
