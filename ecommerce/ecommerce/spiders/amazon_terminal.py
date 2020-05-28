@@ -49,15 +49,16 @@ class AmazonFashionTerminal(EcommSpider):
             image_url = [item for item in eval(images).keys()][0] if images else ''
             discount = ''.join(findall(r'\\((.*)\\)', discount)).strip('%') if discount else 0
             specs = '. '.join([item.strip() for item in specs if item.strip()])
-            mrp = extract_data(sel, '//span[@class="priceBlockStrikePriceString a-text-strike"]/text()').split('\xa0')[(-1)]
+            mrp = extract_data(sel, '//span[@class="priceBlockStrikePriceString a-text-strike"]/text()').split('\xa0')[(-1)].replace(',', '')
             price = extract_data(sel, '//tr[@id="priceblock_saleprice_row"]//span[@id="priceblock_saleprice"]/text()') or\
                 extract_data(sel, '//tr[@id="priceblock_ourprice_row"]//span[@id="priceblock_ourprice"]/text()')
-            price = price.split('\xa0')[(-1)]
+            price = price.replace(',', '').split('\xa0')[(-1)]
             availability = 1 if price else 0
-            size_nodes = get_nodes(sel, '//select[@name="dropdown_selected_size_name"]/option[not(contains(@value, "-1"))]')
+            size_nodes = get_nodes(sel, '//select[@name="dropdown_selected_size_name"]/option[not(contains(@value, "-1"))]') or\
+                get_nodes(sel, '//div[@id="variation_size_name"]//span[@class="selection"]')
             for size_node in size_nodes:
                 size = extract_data(size_node, './text()')
-                sku = extract_data(size_node, './@value').split(',')[(-1)]
+                sku = extract_data(size_node, './@value').split(',')[(-1)] or _id
                 hd_id = encode_md5('%s%s%s' % (self.source, sku, size))
                 meta_item = MetaItem()
                 meta_item.update({
