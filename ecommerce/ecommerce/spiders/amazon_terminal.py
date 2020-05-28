@@ -85,7 +85,7 @@ class AmazonFashionTerminal(EcommSpider):
                 hd_id = encode_md5('%s%s%s' % (self.source, _id, size))
                 meta_item = MetaItem()
                 meta_item.update({
-                    'hd_id': hd_id, 'source': self.source, 'sku': sku, 'web_id': _id, 'size': size,
+                    'hd_id': hd_id, 'source': self.source, 'sku': _id, 'web_id': _id, 'size': size,
                     'title': title, 'descripion': description, 'specs': specs, 'image_url': image_url,
                     'reference_url': response.url
                 })
@@ -93,7 +93,7 @@ class AmazonFashionTerminal(EcommSpider):
 
                 insights_item = InsightItem()
                 insights_item.update({
-                    'hd_id': hd_id, 'source': self.source, 'sku': sku, 'size': size, 'category': category,
+                    'hd_id': hd_id, 'source': self.source, 'sku': _id, 'size': size, 'category': category,
                     'sub_category': sub_category, 'brand': brand, 'ratings_count': rating_count,
                     'reviews_count': 0, 'mrp': mrp, 'selling_price': price, 'discount_percentage': discount,
                     'is_available': availability
