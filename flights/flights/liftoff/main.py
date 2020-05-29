@@ -109,6 +109,7 @@ def report_format(params):
                         df1['arrival3'] = conn_3['arrival']['airport']
                         df1['arrival_time3'] = conn_3['arrival']['when']
                         df1['aircraft_model3'] = conn_3['aircraft']['manufacturer'] + '(' +conn_3['aircraft']['model']+')'
+                    df1 = {k:str(v) for k,v in df1.items() }
                     li.append(df1)
         # print(li)
         return li
