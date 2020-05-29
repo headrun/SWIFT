@@ -34,6 +34,7 @@ class MetaItem(Item):
     category = Field()
     sub_category = Field()
     brand = Field()
+    rating = Field()
     ratings_count = Field()
     reviews_count = Field()
     mrp = Field()
