@@ -13,7 +13,7 @@ from airport_codes import *
 app = Flask(__name__)
 LOCAL_DB_URI = "mysql+mysqldb://root:root@localhost/Searching_mca"
 
-@app.route('/dashboard', methods=['GET','POST'])
+@app.route('/', methods=['GET','POST'])
 def dashboard():
     drop_list = dropdown_list()
     params = {}
@@ -37,15 +37,17 @@ def report_format(params):
         departures = params['from']
         arrivals = params['to']
         depart_date = params['depart_date']
-        airline_list = ["AA","VS","DL","UA","AF"]
+        airline_list = ["AA","VS","DL","UA","AF","AC"]
         li = []
         for air in airline_list:
-            payload = { "airlines": [air], "arrivals": [arrivals], "cabins": [ "ECONOMY", "FIRST_CLASS" ], "departure_date": { "flexibility": 0, "when": depart_date }, "departures": [departures], "currencies": [ "USD" ], "max_stops": 3, "passengers": 1 }
+            payload = { "airlines": [air], "arrivals": [arrivals], "cabins": [ "ECONOMY", "FIRST_CLASS" ], "departure_date": { "flexibility": 0, "when": depart_date }, "departures": [departures], "currencies": [ "USD" ], "max_stops": 10, "passengers": 1 }
             headers = {'content-type': 'application/json'}
             print(payload)
             response = requests.post('http://95.217.60.158/api/miles', headers = headers, data=json.dumps(payload))
-            result = response.json()
+            try: result = response.json()
+            except: pass
             if 'routes' in result.keys():
+                print(len(result['routes']))
                 for i in range(len(result['routes'])):
                     df1 = {}
                     df1['miles'] = result['routes'][i]['redemptions'][0]['miles']
@@ -109,7 +111,7 @@ def report_format(params):
                         df1['arrival3'] = conn_3['arrival']['airport']
                         df1['arrival_time3'] = conn_3['arrival']['when']
                         df1['aircraft_model3'] = conn_3['aircraft']['manufacturer'] + '(' +conn_3['aircraft']['model']+')'
-                    df1 = {k:str(v) for k,v in df1.items() }
+                    df1 = {k:str(v) for k,v in df1.items()}
                     li.append(df1)
-        # print(li)
+        print(len(li))
         return li

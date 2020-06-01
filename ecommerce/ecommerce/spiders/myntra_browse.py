@@ -48,12 +48,11 @@ class MyntraSpider(EcommSpider):
             reference_url = urljoin(self.domain_url, product.get('landingPageUrl', ''))
             discount_percentage = ''.join(findall('\(([^\)]+)\)', product.get('discountDisplayLabel', '')))
             aux_info = {'product_id': product_id, 'json_page': response.url}
-
             availabilities_info = product.get('inventoryInfo', [])
             for availability_info in availabilities_info:
                 sku = availability_info.get('skuId', '')
                 size = availability_info.get('label', '')
-                availability = 1 if availability_info.get('available', '') else 0
+                availability = availability_info.get('inventory',0)
                 hd_id = encode_md5('%s%s%s' % (source, str(sku), size))
                 discount_percentage = discount_percentage.lower().replace('off', '').replace('%', '').strip()
 
@@ -69,8 +68,11 @@ class MyntraSpider(EcommSpider):
                 meta_item = MetaItem()
                 meta_item.update({
                     'hd_id': hd_id, 'source': source, 'sku': sku, 'web_id': product_id, 'size': size, 'title': name,
-                    'descripion': '', 'specs': '', 'image_url': image_url, 
-                    'reference_url': reference_url, 'aux_info': json.dumps(aux_info)
+                    'category':category,'sub_category':sub_category,'brand':brand,'rating':rating,'ratings_count':rating_count,
+                    'reviews_count':'','mrp':mrp,'selling_price':price,'discount_percentage':discount_percentage,
+                    'is_available':availability,'descripion': '', 'specs': '', 'image_url': image_url, 
+                    'reference_url': reference_url, 'aux_info': json.dumps(aux_info),
+                    'rating':rating
                 })
                 yield meta_item
 
