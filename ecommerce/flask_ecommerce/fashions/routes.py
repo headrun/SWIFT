@@ -24,6 +24,7 @@ def data():
     source = request.args.get('source')
     sort_by = request.args.get('sortBy')
     page_num = request.args.get('page_num', 1)
+    category = request.args.get('category')
     limit = 20
     offset = 0
     totalCount = 0
@@ -35,41 +36,87 @@ def data():
     cur = mysql.connection.cursor()
     if page_num == 1:
         if source == "all":
-            cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s",[start_date, end_date])
+            if category == "all":
+                cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s",[start_date, end_date])
+            else:
+                cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s",[start_date, end_date, category])
         else:
-            cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s",[start_date, end_date, source])
+            if category == "all":
+                cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s",[start_date, end_date, source])
+            else:
+                cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s",[start_date, end_date, source, category])
+
         total_count = cur.fetchall()
         totalCount = math.ceil(total_count[0][0]/20)
     if sort_by == "popularity":
         if source == "all":
-            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date,category, limit, offset])
         else:
-            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, source,category,limit, offset])
+
     elif sort_by == "discount":
         if source == "all":
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, category, limit, offset])
         else:
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
+
     elif sort_by == "hightolow":
         if source == "all":
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, category, limit, offset])
         else:
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
     elif sort_by == "lowtohigh":
         if source == "all":
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY mrp ASC limit %s offset %s;",[start_date, end_date, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY mrp ASC limit %s offset %s;",[start_date, end_date, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s ORDER BY mrp ASC limit %s offset %s;",[start_date, end_date, category, limit, offset])
         else:
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp ASC DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp ASC DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s ORDER BY mrp ASC DESC limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
     elif sort_by == "whatsNew":
         if source == "all":
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, category, limit, offset])
         else:
-            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            if category == "all":   
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
+
     else:
         if source == "all":
-            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s limit %s offset %s;",[start_date, end_date, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s limit %s offset %s;",[start_date, end_date, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s limit %s offset %s;",[start_date, end_date, category, limit, offset])
         else:
-            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            if category == "all":
+                cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s limit %s offset %s;",[start_date, end_date, source, limit, offset])
+            else:
+                cur.execute("select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
 
     row_headers = [x[0] for x in cur.description if x]
     results = cur.fetchall()
