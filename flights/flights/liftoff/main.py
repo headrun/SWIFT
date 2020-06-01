@@ -29,8 +29,10 @@ def dashboard():
     return render_template('airmiles.html', code=drop_list)
 
 def dropdown_list():
-    data = [{airport : airport_list[airport]} for airport in airport_list.keys()]
-    return data
+    with open('airport_codes.txt', 'r') as _file:
+        airport_list = json.loads(_file.read())
+        data = [{airport : airport_list[airport]} for airport in airport_list.keys()]
+        return data 
 
 def report_format(params):
     if params:
