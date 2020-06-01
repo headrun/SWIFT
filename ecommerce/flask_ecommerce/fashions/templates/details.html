@@ -21,6 +21,7 @@ var from_date;
 var to_date;
 var sort_element;
 var source;
+var total_pages=1;
 var image_dict  = {
     "myntra":"/static/images/myntra.png",
     "nnnow":"/static/images/nnnow.png",
@@ -30,7 +31,7 @@ var image_dict  = {
 
 // var page_number=1;
 $('#pagination-here, #pagination_here_down').bootpag({
-      total: 100,
+      total: total_pages,
       page: 1,
       leaps: true,
       firstLastUse: true,
@@ -50,8 +51,9 @@ $('#pagination-here').on("page", function (event, num) {
 
   var url = "/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element, page_num: num })
   $.get(url, function (response) {
-    var res = JSON.parse(response)
+    var respo = JSON.parse(JSON.stringify(response))
     var items = ''
+    var res = JSON.parse(respo["products"])
     for(var i=0;i<res.length;i++){
                 items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
@@ -86,20 +88,24 @@ $('#picker').daterangepicker({
         var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
         $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
         $.get(url,function(response) {
-            var res = JSON.parse(response)
+            var respo = JSON.parse(JSON.stringify(response))
             var items = ''
+            var res = JSON.parse(respo["products"])
+            $('#pagination-here, #pagination_here_down').bootpag({
+              total: JSON.parse(respo["totalCount"]),
+            })
             for(var i=0;i<res.length;i++){
-                items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
-                items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                //items = items + "<img class='float-right' style='margin:0 10px' src="+image_dict[res[i]['source']]+"width='30px' height='30px'>"
-            var valid_url = res[i]['reference_url'].includes('http')
-            var reference_url = res[i]['reference_url']
-            if(!valid_url){
-                reference_url = 'https://www.myntra.com/'+res[i]['reference_url']
-            }
-            items = items + '<a href="'+reference_url+'" target="_blank" class="highlightit"><img class="float-right" style="margin:0 10px" src="' + image_dict[res[i]['source']] + '" height="30px" width="30px"></a>'
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
-            }
+                    items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
+                    items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+                    //items = items + "<img class='float-right' style='margin:0 10px' src="+image_dict[res[i]['source']]+"width='30px' height='30px'>"
+                var valid_url = res[i]['reference_url'].includes('http')
+                var reference_url = res[i]['reference_url']
+                if(!valid_url){
+                    reference_url = 'https://www.myntra.com/'+res[i]['reference_url']
+                }
+                items = items + '<a href="'+reference_url+'" target="_blank" class="highlightit"><img class="float-right" style="margin:0 10px" src="' + image_dict[res[i]['source']] + '" height="30px" width="30px"></a>'
+                    items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
+                }
             $('#add_element').html(items);
             $('ul.bootpag>li').not('.prev').first().trigger('click');
             console.log(res[1])
@@ -116,9 +122,12 @@ $('#picker').daterangepicker({
   console.log(source)
   var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
   $.get(url,function(response) {
-        var res = JSON.parse(response)
+        var respo = JSON.parse(JSON.stringify(response))
         var items = ''
-        var items = ''
+        var res = JSON.parse(respo["products"])
+        $('#pagination-here, #pagination_here_down').bootpag({
+          total: JSON.parse(respo["totalCount"]),
+        })
         for(var i=0;i<res.length;i++){
                 items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
@@ -132,15 +141,18 @@ $('#picker').daterangepicker({
                 items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
             }
         $('#add_element').html(items);
-        console.log(res[1])
   });
 
   $('body').on('change', '#sorted_names', function(){
     sort_element = $("#sorted_names option:selected").val();
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
     $.get(url,function(response) {
-        var res = JSON.parse(response)
+        var respo = JSON.parse(JSON.stringify(response))
         var items = ''
+        var res = JSON.parse(respo["products"])
+        $('#pagination-here, #pagination_here_down').bootpag({
+          total: JSON.parse(respo["totalCount"]),
+        })
         for(var i=0;i<res.length;i++){
                 items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
@@ -155,15 +167,18 @@ $('#picker').daterangepicker({
             }
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
-        console.log(res[1])
    });
   });
   $('body').on('change', '#sources', function(){
     source = $("#sources option:selected").val();
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element})
     $.get(url,function(response) {
-        var res = JSON.parse(response)
+        var respo = JSON.parse(JSON.stringify(response))
         var items = ''
+        var res = JSON.parse(respo["products"])
+        $('#pagination-here, #pagination_here_down').bootpag({
+          total: JSON.parse(respo["totalCount"]),
+        })
         for(var i=0;i<res.length;i++){
                 items = items + "<div class='col-md-3 d-flex';><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img src="+res[i]['image_url']+"></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
@@ -177,7 +192,6 @@ $('#picker').daterangepicker({
                 items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></div>"
             }
         $('#add_element').html(items);
-        console.log(res[1])
         $('ul.bootpag>li').not('.prev').first().trigger('click');
   });
   });

@@ -52,7 +52,9 @@ class MyntraSpider(EcommSpider):
             for availability_info in availabilities_info:
                 sku = availability_info.get('skuId', '')
                 size = availability_info.get('label', '')
-                availability = availability_info.get('inventory',0)
+                availability = 0
+                if availability_info.get('available',False):
+                    availability = 1
                 hd_id = encode_md5('%s%s%s' % (source, str(sku), size))
                 discount_percentage = discount_percentage.lower().replace('off', '').replace('%', '').strip()
 

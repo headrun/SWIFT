@@ -139,9 +139,7 @@ class ProxyMiddleware(object):
             with open(user_agent_path, 'r') as user_agent_file:
                 user_agent_list = user_agent_file.readlines()
 
-            proxy, port = choice(proxy_list).strip().split(':')
+            proxy, port, user_ip, password = choice(proxy_list).strip().split(':')
             request.meta['proxy'] = 'https://%s:%s' % (proxy, port)
-            print(request.meta['proxy'])
-            #request.headers['Proxy-Authorization'] = basic_auth_header('hr@headrun.com','hdrn^123!')
-            request.headers['Proxy-Authorization'] = basic_auth_header('lum-customer-headrunmain-zone-static-country-in', 'v4iey84gn7b7')
+            request.headers['Proxy-Authorization'] = basic_auth_header(user_ip, password)
             request.headers['User-Agent'] = choice(user_agent_list)

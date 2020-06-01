@@ -7,9 +7,8 @@ from datetime import datetime, timedelta
 import numpy as np
 import os,sys
 import json
-import re
+import re, ast
 import requests
-from airport_codes import *
 app = Flask(__name__)
 LOCAL_DB_URI = "mysql+mysqldb://root:root@localhost/Searching_mca"
 
@@ -29,8 +28,10 @@ def dashboard():
     return render_template('airmiles.html', code=drop_list)
 
 def dropdown_list():
-    data = [{airport : airport_list[airport]} for airport in airport_list.keys()]
-    return data
+    with open('airport_codes.txt', 'r') as _file:
+        airport_list = json.loads(_file.read())
+        data = [{airport : airport_list[airport]} for airport in airport_list.keys()]
+        return data 
 
 def report_format(params):
     if params:
@@ -39,6 +40,7 @@ def report_format(params):
         depart_date = params['depart_date']
         airline_list = ["AA","VS","DL","UA","AF","AC"]
         li = []
+        final_data = []
         for air in airline_list:
             payload = { "airlines": [air], "arrivals": [arrivals], "cabins": [ "ECONOMY", "FIRST_CLASS" ], "departure_date": { "flexibility": 0, "when": depart_date }, "departures": [departures], "currencies": [ "USD" ], "max_stops": 10, "passengers": 1 }
             headers = {'content-type': 'application/json'}
@@ -47,71 +49,29 @@ def report_format(params):
             try: result = response.json()
             except: pass
             if 'routes' in result.keys():
-                print(len(result['routes']))
                 for i in range(len(result['routes'])):
                     df1 = {}
                     df1['miles'] = result['routes'][i]['redemptions'][0]['miles']
                     df1['program'] = result['routes'][i]['redemptions'][0]['program']
                     df1['num_stops'] = result['routes'][i]['num_stops']
                     df1['taxes'] = result['routes'][i]['payments'][0]['taxes']
-                    if df1['num_stops'] == 0:
-                        conn = result['routes'][i]['connections'][0]
-                        df1['airline'] = conn['airline']
-                        df1['flight'] = conn['flight'][0]
-                        df1['cabin'] = conn['cabin']
-                        df1['departure'] = conn['departure']['airport']
-                        df1['departure_time'] = conn['departure']['when']
-                        df1['arrival'] = conn['arrival']['airport']
-                        df1['arrival_time'] = conn['arrival']['when']
-                        df1['aircraft_model'] = conn['aircraft']['manufacturer'] + '(' +conn['aircraft']['model']+')'
-                    elif df1['num_stops'] == 1:
-                        conn = result['routes'][i]['connections'][0]
-                        df1['airline'] = conn['airline']
-                        df1['flight'] = conn['flight'][0]
-                        df1['cabin'] = conn['cabin']
-                        df1['departure'] = conn['departure']['airport']
-                        df1['departure_time'] = conn['departure']['when']
-                        df1['arrival'] = conn['arrival']['airport']
-                        df1['arrival_time'] = conn['arrival']['when']
-                        df1['aircraft_model'] = conn['aircraft']['manufacturer'] + '(' +conn['aircraft']['model']+')'
-                        conn_2 = result['routes'][i]['connections'][1]
-                        df1['airline2'] = conn_2['airline']
-                        df1['flight2'] = conn_2['flight'][0]
-                        df1['cabin2'] = conn_2['cabin']
-                        df1['departure2'] = conn_2['departure']['airport']
-                        df1['departure_time2'] = conn_2['departure']['when']
-                        df1['arrival2'] = conn_2['arrival']['airport']
-                        df1['arrival_time2'] = conn_2['arrival']['when']
-                        df1['aircraft_model2'] = conn_2['aircraft']['manufacturer'] + '(' +conn_2['aircraft']['model']+')'
-                    elif df1['num_stops'] == 2:
-                        conn = result['routes'][i]['connections'][0]
-                        df1['airline'] = conn['airline']
-                        df1['flight'] = conn['flight'][0]
-                        df1['cabin'] = conn['cabin']
-                        df1['departure'] = conn['departure']['airport']
-                        df1['departure_time'] = conn['departure']['when']
-                        df1['arrival'] = conn['arrival']['airport']
-                        df1['arrival_time'] = conn['arrival']['when']
-                        df1['aircraft_model'] = conn['aircraft']['manufacturer'] + '(' +conn['aircraft']['model']+')'
-                        conn_2 = result['routes'][i]['connections'][1]
-                        df1['airline2'] = conn_2['airline']
-                        df1['flight2'] = conn_2['flight'][0]
-                        df1['cabin2'] = conn_2['cabin']
-                        df1['departure2'] = conn_2['departure']['airport']
-                        df1['departure_time2'] = conn_2['departure']['when']
-                        df1['arrival2'] = conn_2['arrival']['airport']
-                        df1['arrival_time2'] = conn_2['arrival']['when']
-                        df1['aircraft_model2'] = conn_2['aircraft']['manufacturer'] + '(' +conn_2['aircraft']['model']+')'
-                        conn_3 = result['routes'][i]['connections'][1]
-                        df1['airline3'] = conn_3['airline']
-                        df1['flight3'] = conn_3['flight'][0]
-                        df1['cabin3'] = conn_3['cabin']
-                        df1['departure3'] = conn_3['departure']['airport']
-                        df1['departure_time3'] = conn_3['departure']['when']
-                        df1['arrival3'] = conn_3['arrival']['airport']
-                        df1['arrival_time3'] = conn_3['arrival']['when']
-                        df1['aircraft_model3'] = conn_3['aircraft']['manufacturer'] + '(' +conn_3['aircraft']['model']+')'
-                    df1 = {k:str(v) for k,v in df1.items()}
-                    li.append(df1)
+                    for j in range(df1['num_stops']+1):
+                        conn = result['routes'][i]['connections'][j]
+                        df1['airline_'+'{0}'.format(j)] =  conn['airline']
+                        df1['flight_'+'{0}'.format(j)] = conn['flight'][0]
+                        df1['cabin_'+'{0}'.format(j)] = conn['cabin']
+                        df1['departure_'+'{0}'.format(j)] = conn['departure']['airport']
+                        departure_time = conn['departure']['when']
+                        dept = datetime.strptime(departure_time[:16], "%Y-%m-%dT%H:%M")
+                        df1['departure_time_'+'{0}'.format(j)] = dept.strftime("%H:%M, %d %B, %Y")
+                        df1['arrival_'+'{0}'.format(j)] = conn['arrival']['airport']
+                        arrival_time = conn['arrival']['when']
+                        arr = datetime.strptime(arrival_time[:16], "%Y-%m-%dT%H:%M")
+                        df1['arrival_time_'+'{0}'.format(j)] = arr.strftime("%H:%M, %d %B, %Y")
+                        df1['aircraft_model_'+'{0}'.format(j)] = conn['aircraft']['manufacturer'] + '(' +conn['aircraft']['model']+')'
+                        df1 = {k:str(v) for k,v in df1.items() }
+                        li.append(df1)
         print(len(li))
-        return li
+        final_data = [ast.literal_eval(el1) for el1 in set([str(el2) for el2 in li])]
+        print(len(final_data))
+        return final_data

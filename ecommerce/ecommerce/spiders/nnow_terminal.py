@@ -22,7 +22,9 @@ class NowSpider(EcommSpider):
                 status = style.get('status','')
                 url = style.get('url','')
                 category = style.get('gender','')
-                availability = style.get('inStock','')
+                availability = 0
+                if style.get('inStock',False):
+                    availability = 1
                 title = style.get('finerDetails',{}).get('compositionAndCare',{}).get('title','')
                 details = ','.join(style.get('finerDetails',{}).get('compositionAndCare',{}).get('list',''))
                 description = title+', '+details

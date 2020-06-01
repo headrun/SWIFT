@@ -1,7 +1,8 @@
 import json
 from flask import Flask, render_template, request
 from flask_mysqldb import MySQL
-
+from datetime import date, datetime
+import math
 app = Flask(__name__, static_url_path="/static", static_folder="static")
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -25,12 +26,20 @@ def data():
     page_num = request.args.get('page_num', 1)
     limit = 20
     offset = 0
+    totalCount = 0
     print("page_num, limit", page_num, limit)
     if page_num in (0, 1):
         offset = 0
     else:
         offset = (int(page_num)-1)*limit
     cur = mysql.connection.cursor()
+    if page_num == 1:
+        if source == "all":
+            cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s",[start_date, end_date])
+        else:
+            cur.execute("select count(*) from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s",[start_date, end_date, source])
+        total_count = cur.fetchall()
+        totalCount = math.ceil(total_count[0][0]/20)
     if sort_by == "popularity":
         if source == "all":
             cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, limit, offset])
@@ -67,9 +76,17 @@ def data():
     json_data = []
     for result in results:
         json_data.append(dict(zip(row_headers, result)))
-    products = json.dumps(json_data)
+    products = json.dumps(json_data,default=json_serial)
     cur.close()
-    return products
+    if totalCount != 0:
+        return {"totalCount":totalCount,"products":products}
+    else:
+        return {"products":products}
+
+def json_serial(obj):
+    if isinstance(obj, (datetime, date)): 
+        return obj.isoformat() 
+    raise TypeError ("Type %s not serializable" % type(obj))
 
 if __name__ == "__main__":
     app.run()
