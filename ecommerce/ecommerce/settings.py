@@ -17,7 +17,7 @@ CONCURRENT_REQUESTS = 16
 LOG_LEVEL = 'INFO'
 
 DOWNLOAD_DELAY = 1
-DOWNLOAD_TIMEOUT = 360
+DOWNLOAD_TIMEOUT = 600
 CONCURRENT_REQUESTS_PER_DOMAIN = 16
 CONCURRENT_REQUESTS_PER_IP = 16
 
@@ -28,9 +28,10 @@ SPIDER_MIDDLEWARES = {
 DOWNLOADER_MIDDLEWARES = {
     'ecommerce.middlewares.EcommerceDownloaderMiddleware': 543,
     'ecommerce.middlewares.ProxyMiddleware': 100,
+    #'scrapy_crawlera.CrawleraMiddleware': 610
 }
 
-PROXY_ENABLED_SOURCES = ['amazon']
+PROXY_ENABLED_SOURCES = ['myntra']
 DB_HOST = 'localhost'
 DB_USERNAME = 'root'
 DB_PASSWORD = 'Ecomm@34^$'
@@ -43,9 +44,18 @@ LOGS_DIR = '%s/logs/' % PROJECT_DIR
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
+
 ITEM_PIPELINES = {
    'ecommerce.pipelines.EcommercePipeline': 300,
 }
+
+
+
+#CRAWLERA_PASS = 'Hdrn^2019'
+#CRAWLERA_USER = 'ankit@headrun.com'
+#CRAWLERA_APIKEY = '3de68923fdb64919a7c7805264d2ca6d'
+#CRAWLERA_ENABLED = True
+#CRAWLERA_PRESERVE_DELAY = True
 
 #AUTOTHROTTLE_ENABLED = True
 #AUTOTHROTTLE_START_DELAY = 5
