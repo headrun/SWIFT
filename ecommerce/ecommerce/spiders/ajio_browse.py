@@ -74,7 +74,7 @@ class AjioSpider(EcommSpider):
             product_url = urljoin(self.domain_url, product.get('url', ''))
             sizes = product.get('productSizeData', {}).get('sizeVariants', '')
             hd_id = encode_md5('%s%s%s' % (source, str(code), sizes))
-            aux_info = {'product_id': code_, 'json_page': product_url}
+            aux_info = {'product_id': code_, 'json_page': response.url}
             insight_item = InsightItem() 
             insight_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'size': sizes, 'category':category, 'sub_category': sub_category, 'brand': brandname, 'ratings_count': '', 'reviews_count': '', 'mrp':mrp, 'selling_price': selling_price, 'discount_percentage': discount, 'is_available': ''})
             yield insight_item
