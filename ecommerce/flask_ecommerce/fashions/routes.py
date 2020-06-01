@@ -33,47 +33,34 @@ def data():
     cur = mysql.connection.cursor()
     if sort_by == "popularity":
         if source == "all":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') ORDER BY t2.ratings_count DESC limit %s offset %s;",
-                [start_date, end_date, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, limit, offset])
         else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s ORDER BY t2.ratings_count DESC limit %s offset %s;",
-                        [start_date, end_date, source, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY ratings_count DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
     elif sort_by == "discount":
         if source == "all":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.discount_percentage,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') ORDER BY t2.discount_percentage DESC limit %s offset %s;",
-                        [start_date, end_date, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, limit, offset])
         else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.discount_percentage,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s ORDER BY t2.discount_percentage DESC limit %s offset %s;",
-                        [start_date, end_date, source, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY discount_percentage DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
     elif sort_by == "hightolow":
         if source == "all":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') ORDER BY t2.mrp DESC limit %s offset %s;",
-                        [start_date, end_date, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, limit, offset])
         else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s ORDER BY t2.mrp DESC limit %s offset %s;",
-                        [start_date, end_date, source, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
     elif sort_by == "lowtohigh":
         if source == "all":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') ORDER BY t2.mrp ASC limit %s offset %s;",
-                        [start_date, end_date, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY mrp ASC limit %s offset %s;",[start_date, end_date, limit, offset])
         else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s ORDER BY t2.mrp ASC limit %s offset %s;",
-                        [start_date, end_date, source, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp ASC DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
     elif sort_by == "whatsNew":
         if source == "all":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') ORDER BY t2.created_at DESC limit %s offset %s;",
-                        [start_date, end_date, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, limit, offset])
         else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s ORDER BY t2.created_at DESC limit %s offset %s;",
-                        [start_date, end_date, source, limit, offset])
-
+            cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY created_at DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
     else:
         if source == "all":
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') limit %s offset %s;",
-                        [start_date, end_date, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s limit %s offset %s;",[start_date, end_date, limit, offset])
         else:
-            cur.execute("select DISTINCT t1.hd_id,t2.brand,t1.reference_url,t2.ratings_count,t2.source,t2.selling_price,t2.mrp,t1.image_url,t1.title from products_insights t2,products_info t1 where t1.hd_id = t2.hd_id and t1.created_at >= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.created_at <= STR_TO_DATE(%s,'%%Y-%%m-%%d') and t1.source=%s limit %s offset %s;",
-                        [start_date, end_date, source, limit, offset])
+            cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s limit %s offset %s;",[start_date, end_date, source, limit, offset])
 
     row_headers = [x[0] for x in cur.description if x]
     results = cur.fetchall()
