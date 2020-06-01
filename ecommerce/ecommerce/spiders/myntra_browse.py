@@ -48,7 +48,6 @@ class MyntraSpider(EcommSpider):
             reference_url = urljoin(self.domain_url, product.get('landingPageUrl', ''))
             discount_percentage = ''.join(findall('\(([^\)]+)\)', product.get('discountDisplayLabel', '')))
             aux_info = {'product_id': product_id, 'json_page': response.url}
-            import pdb;pdb.set_trace()
             availabilities_info = product.get('inventoryInfo', [])
             for availability_info in availabilities_info:
                 sku = availability_info.get('skuId', '')
