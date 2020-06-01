@@ -9,7 +9,6 @@ import os,sys
 import json
 import re, ast
 import requests
-from airport_codes import *
 app = Flask(__name__)
 LOCAL_DB_URI = "mysql+mysqldb://root:root@localhost/Searching_mca"
 
