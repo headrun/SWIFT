@@ -79,7 +79,14 @@ class AjioSpider(EcommSpider):
             insight_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'size': sizes, 'category':category, 'sub_category': sub_category, 'brand': brandname, 'ratings_count': '', 'reviews_count': '', 'mrp':mrp, 'selling_price': selling_price, 'discount_percentage': discount, 'is_available': ''})
             yield insight_item
             meta_item = MetaItem()
-            meta_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'web_id':code_, 'size': sizes, 'title': product_name, 'descripion': '', 'specs':'', 'image_url':outfiturl, 'reference_url': product_url, 'aux_info': json.dumps(aux_info)})
+            meta_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 
+                'web_id':code_, 'size': sizes, 'title': product_name, 
+                'category':category,'sub_category':sub_category,'brand':brandname,
+                'rating':'','ratings_count':'','reviews_count':'','mrp':mrp,
+                'selling_price':selling_price,'discount_percentage':discount,'is_available':'',
+                'descripion': '', 'specs':'', 'image_url':outfiturl, 
+                'reference_url': product_url, 'aux_info': json.dumps(aux_info)
+                })
             yield meta_item
 
         if products:
