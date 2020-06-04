@@ -6,11 +6,14 @@ import json
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlparse
 import pandas as pd
 import requests
+from scrapy.utils.project import get_project_settings
+from sqlalchemy import create_engine
 
 class Bse(scrapy.Spider):
-    name = 'bse'
+    name = 'bse_corp_announcement'
 
     def start_requests(self):
 
@@ -27,56 +30,40 @@ class Bse(scrapy.Spider):
             'referer': 'https://www.bseindia.com/stock-share-price/reliance-industries-ltd/reliance/500325/corp-announements/',
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
-
-        params = (
-            ('strCat', '-1'),
-            ('strPrevDate', '20100101'),
-            ('strScrip', '500325'),
-            ('strSearch', 'A'),
-            ('strToDate', '20200525'),
-            ('strType', 'C'),
-        )
-        url = 'https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?'+urlencode(params)
-        #response = requests.get('https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w', headers=headers, params=params)
-        yield Request(url, callback = self.parse, headers=headers)
+        scrip_code = ['500325']
+        for code in scrip_code:    
+            params = (
+                ('strCat', '-1'),
+                ('strPrevDate', '20100101'),
+                ('strScrip', code),
+                ('strSearch', 'A'),
+                ('strToDate', '20200603'),
+                ('strType', 'C'),
+            )
+            url = 'https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?'+urlencode(params)
+            yield Request(url, callback = self.parse, headers=headers)
 
     def parse(self, response):
-        # import pdb;pdb.set_trace()
         res = json.loads(response.text)
-        req = ["NEWSID",
-        "SCRIP_CD",
-        "XML_NAME"
-        "NEWSSUB",
-        "MORE",
-        "AGENDA_ID",       
-        "ATTACHMENTNAME",
-        "CATEGORYNAME"
-        ,"NEWSSUB"
-        ,"SLONGNAME"
-        ,"SCRIP_CD"
-        ,"NEWS_DT"
-        ,"TimeDiff"
-        ,"DissemDT"]
         announcement = pd.DataFrame()
         for i in range(len(res['Table'])):
             x = res['Table'][i].keys()
             r={}
             for key in x:
-                if key in req:
-                    if key == 'ATTACHMENTNAME':
-                        if res['Table'][i][key] != '':
-                            r[key] = 'https://www.bseindia.com/xml-data/corpfiling/AttachHis/'+res['Table'][i][key]
-                            self.download_pdf(r[key])
-                        else:
-                            r[key] = res['Table'][i][key]
-                        
+                if key == 'ATTACHMENTNAME':
+                    if res['Table'][i][key] != '':
+                        r[key] = 'https://www.bseindia.com/xml-data/corpfiling/AttachHis/'+res['Table'][i][key]
+                        self.download_pdf(r[key])
                     else:
                         r[key] = res['Table'][i][key]
+                    
+                else:
+                    r[key] = res['Table'][i][key]
                 
-            # announcement[i]=r
             announcement = announcement.append(r, ignore_index=True)
         print(announcement)
-        announcement.to_csv('bes.csv')
+        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
+        announcement.to_sql('corp_announcement', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
 
     def download_pdf(self, url):
         get_response = requests.get(url,stream=True)
@@ -84,5 +71,5 @@ class Bse(scrapy.Spider):
         file_path = '/home/headrun/anandhu/projects/BSE_Corp_Announcement/' + file_name
         with open(file_path, 'wb') as f:
             for chunk in get_response.iter_content(chunk_size=1024):
-                if chunk: # filter out keep-alive new chunks
+                if chunk: 
                     f.write(chunk)
