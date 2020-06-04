@@ -51,7 +51,9 @@ $('#pagination-here, #pagination_here_down').bootpag({
 $('#pagination-here').on("page", function (event, num) {
 
   var url = "/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element,category:category_name, page_num: num })
+  $('.loader').removeClass('hide');
   $.get(url, function (response) {
+    $('.loader').addClass('hide');
     var respo = JSON.parse(JSON.stringify(response))
     var items = ''
     var res = JSON.parse(respo["products"])
@@ -86,7 +88,9 @@ $('#picker').daterangepicker({
         to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
         var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
         $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
+        $('.loader').removeClass('hide');
         $.get(url,function(response) {
+            $('.loader').addClass('hide');
             var respo = JSON.parse(JSON.stringify(response))
             var items = ''
             var res = JSON.parse(respo["products"])
@@ -120,7 +124,9 @@ $('#picker').daterangepicker({
   console.log(source)
   console.log(category_name)
   var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+  $('.loader').removeClass('hide');
   $.get(url,function(response) {
+        $('.loader').addClass('hide');
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
@@ -140,11 +146,31 @@ $('#picker').daterangepicker({
             }
         $('#add_element').html(items);
   });
+  brandUrl = "/brands"
+  $.get(brandUrl,function(response) {
+        var res = JSON.parse(response)
+        var items = ''
+        for(var i=0;i<res.length;i++){
+                items = items + '<option value="'+res[i]['brand']+'">'
+            }
+        $('#brands').html(items);
+  });
+  sourceUrl = "/sources"
+  $.get(sourceUrl,function(response) {
+        var res = JSON.parse(response)
+        var items = '<option selected value="all">All</option>'
+        for(var i=0;i<res.length;i++){
+                items = items + '<option value="'+res[i]['source']+'">'+res[i]['source']+'</option>'
+            }
+        $('#sourcename').html(items);
+  });
 
   $('body').on('change', '#sorted_names', function(){
     sort_element = $("#sorted_names option:selected").val();
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    $('.loader').removeClass('hide');
     $.get(url,function(response) {
+        $('.loader').addClass('hide');
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
@@ -168,7 +194,9 @@ $('#picker').daterangepicker({
   $('body').on('change', '#sources', function(){
     source = $("#sources option:selected").val();
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    $('.loader').removeClass('hide');
     $.get(url,function(response) {
+        $('.loader').addClass('hide');
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
@@ -193,7 +221,9 @@ $('#picker').daterangepicker({
     category_name = $("#category option:selected").val();
     console.log(category_name)
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    $('.loader').removeClass('hide');
     $.get(url,function(response) {
+        $('.loader').addClass('hide');
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
@@ -214,8 +244,21 @@ $('#picker').daterangepicker({
         $('ul.bootpag>li').not('.prev').first().trigger('click');
    });
   });
+  document.getElementsByName("brand")[0].onchange = function (event) {
+     var evt = event || window.event;
+     var parElem = evt.srcElement || evt.target;
+     for (var i=0; i<document.getElementById('brands').options.length; i++)
+     {
+         if (document.getElementById('brands').options[i].value ==  document.getElementsByName("brand")[0].value)
+         {
+           alert(document.getElementById('brands').options[i].value);
+           break;
+         }
+    }
+ }
 
 });
+
 </script>
 
 <div class="container">
@@ -235,12 +278,7 @@ $('#picker').daterangepicker({
         </select>
     </div>
     <div id="sources" class="col-md-2 nav-item nav-align dropdown-header">
-        <select class="browser-default custom-select header-styles">
-          <option selected value="all">All</option>
-          <option value="myntra">Myntra</option>
-          <option value="nnnow">Nnnow</option>
-          <option value="amazon">Amazon</option>
-          <option value="ajio">Ajio</option>
+        <select class="browser-default custom-select header-styles" id="sourcename">
         </select>
     </div>
     <div id="category" class="col-md-2 nav-item nav-align dropdown-header">
@@ -251,14 +289,24 @@ $('#picker').daterangepicker({
         </select>
     </div>
     <div class="nav-item nav-align col-md-2">
-      <input type="text" id="brandSearch" placeholder="Search Brand" name="search" class="header-styles search">
-      <button type="submit" class="button-icon"><i class="fa fa-search"></i></button>
+      <!-- <input type="text" id="brandSearch" list="json-datalist" placeholder="Search Brand" name="search" class="header-styles search">
+        <datalist id="json-datalist">
+          <select id="brandName">
+          </select>
+        </datalist>
+      <button type="submit" class="button-icon"><i class="fa fa-search"></i></button> -->
+      <datalist id="brand">
+        <select id="brands">
+        </select>
+      </datalist>
+      <input type="text" list="brand" placeholder="Search Brand" name="brand" class="header-styles search">
+      <!-- <input type="text" name="brand" list="brand"/> -->
     </div>
 
 </nav>
 <div class="row" id="add_element">
 
-</div> 
+</div>
 <div class="wrapper">
     <div class="container">
       <div class="row">
@@ -268,9 +316,135 @@ $('#picker').daterangepicker({
       </div>
     </div>
 </div>
+<div class="loader text-center loader_eccomerce hide" style="background: rgba(0, 0, 0, 0.5) url(/static/images/ajax-loader-circle.gif) 50% 50% no-repeat;">
+    <div class="loader-inner">
+        <div class="lds-roller mb-3">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+        </div>
+        <h4 class="text-uppercase font-weight-bold">Loading</h4>
+    </div>
+</div>
 <br><br><br>
 
 <style>
+  .loader_eccomerce{
+    background: rgba(0, 0, 0, 0.5) url(/static/images/ajax-loader-circle.gif) 50% 50% no-repeat;
+    color: white;
+  }
+  .loader {
+    width: 100vw;
+    height: 100vh;
+    background: #fff;
+    position: fixed;
+    top: 0;
+    left: 0;
+  }
+
+.loader-inner {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+
+/* Spinner */
+.lds-roller {
+    display: inline-block;
+    position: relative;
+    width: 64px;
+    height: 64px;
+}
+.lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 32px 32px;
+}
+.lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: white;
+    margin: -3px 0 0 -3px;
+}
+.lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+}
+.lds-roller div:nth-child(1):after {
+    top: 50px;
+    left: 50px;
+}
+.lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+}
+.lds-roller div:nth-child(2):after {
+    top: 54px;
+    left: 45px;
+}
+.lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+}
+.lds-roller div:nth-child(3):after {
+    top: 57px;
+    left: 39px;
+}
+.lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+}
+.lds-roller div:nth-child(4):after {
+    top: 58px;
+    left: 32px;
+}
+.lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+}
+.lds-roller div:nth-child(5):after {
+    top: 57px;
+    left: 25px;
+}
+.lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+}
+.lds-roller div:nth-child(6):after {
+    top: 54px;
+    left: 19px;
+}
+.lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+}
+.lds-roller div:nth-child(7):after {
+    top: 50px;
+    left: 14px;
+}
+.lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+}
+.lds-roller div:nth-child(8):after {
+    top: 45px;
+    left: 10px;
+}
+@keyframes lds-roller {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+
+
+
+
     .highlightit:hover figure{
         border: 3px solid block;
     }

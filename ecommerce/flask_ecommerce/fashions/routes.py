@@ -16,15 +16,40 @@ mysql = MySQL(app)
 def home():
     return render_template('details.html')
 
-
+@app.route('/brands')
+def brand():
+    brandCur = mysql.connection.cursor()
+    brandCur.execute("select brand from products_info group by brand;")
+    row_headers = [x[0] for x in brandCur.description if x]
+    results = brandCur.fetchall()
+    json_data = []
+    for result in results:
+        json_data.append(dict(zip(row_headers, result)))
+    brands = json.dumps(json_data,default=json_serial)
+    brandCur.close()
+    return brands
+@app.route('/sources')
+def source():
+    sourceCur = mysql.connection.cursor()
+    sourceCur.execute("select source from products_info group by source;")
+    row_headers = [x[0] for x in sourceCur.description if x]
+    results = sourceCur.fetchall()
+    json_data = []
+    for result in results:
+        json_data.append(dict(zip(row_headers, result)))
+    sources = json.dumps(json_data,default=json_serial)
+    sourceCur.close()
+    return sources
 @app.route('/search')
 def data():
     start_date = request.args.get('startdate')
     end_date = request.args.get('enddate')
-    source = request.args.get('source')
+    source = request.args.get('source','all')
     sort_by = request.args.get('sortBy')
     page_num = request.args.get('page_num', 1)
     category = request.args.get('category')
+    if source == '':
+        source = 'all'
     limit = 20
     offset = 0
     totalCount = 0
@@ -91,9 +116,9 @@ def data():
                 cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and category=%s ORDER BY mrp ASC limit %s offset %s;",[start_date, end_date, category, limit, offset])
         else:
             if category == "all":
-                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp ASC DESC limit %s offset %s;",[start_date, end_date, source, limit, offset])
+                cur.execute("select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s ORDER BY mrp ASC limit %s offset %s;",[start_date, end_date, source, limit, offset])
             else:
-                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s ORDER BY mrp ASC DESC limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
+                cur.execute("select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s ORDER BY mrp ASC limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
     elif sort_by == "whatsNew":
         if source == "all":
             if category == "all":
@@ -117,7 +142,6 @@ def data():
                 cur.execute("select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s limit %s offset %s;",[start_date, end_date, source, limit, offset])
             else:
                 cur.execute("select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>=%s and DATE(created_at)<= %s and source=%s and category=%s limit %s offset %s;",[start_date, end_date, source, category, limit, offset])
-
     row_headers = [x[0] for x in cur.description if x]
     results = cur.fetchall()
     json_data = []
