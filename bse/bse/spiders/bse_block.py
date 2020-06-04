@@ -49,7 +49,7 @@ class Bse(scrapy.Spider):
             for key in x:
                 r[key] = res['Table'][i][key]
             resp = resp.append(r, ignore_index=True)
-        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
+        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="", db="bse"))
         resp.to_sql('block_deals', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
 
 
