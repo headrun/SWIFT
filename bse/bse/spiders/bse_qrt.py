@@ -6,8 +6,10 @@ import json
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlparse
 import pandas as pd
 import requests
+from sqlalchemy import create_engine
 
 class Bse(scrapy.Spider):
     name = 'bse_qrt'
@@ -27,33 +29,35 @@ class Bse(scrapy.Spider):
             'referer': 'https://www.bseindia.com/stock-share-price/reliance-industries-ltd/reliance/500325/financials-results/',
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
+        scrip_code = ['500325']
+        for code in scrip_code:
+            params = (
+                ('scripcode', code),
+            )
 
-        params = (
-            ('scripcode', '500325'),
-        )
-
-        url = 'https://api.bseindia.com/BseIndiaAPI/api/GetReportNewFor_Result/w?'+urlencode(params)
-        #response = requests.get('https://api.bseindia.com/BseIndiaAPI/api/GetReportNewFor_Result/w', headers=headers, params=params)
-        yield Request(url, callback = self.parse, headers=headers)
+            url = 'https://api.bseindia.com/BseIndiaAPI/api/GetReportNewFor_Result/w?'+urlencode(params)
+            yield Request(url, callback = self.parse, headers=headers)
 
     def parse(self, response):
-        # res = json.loads(response.text)
+        res_url = str(response.url)
+        scrip_code = parse_qs(urlparse(res_url).query)['scripcode'][0]
         body = json.loads(response.body)
         sel = Selector(text=body.get('QtlyinCr', ''))
         sub_heading = sel.xpath('//tbody//tr//td[@align="left"]//text()').extract()
         main_heading = sel.xpath('//body//thead//tr//td[@class="tableheading"]//text()').extract()
         col_values = sel.xpath('//tbody//tr//td[@align="right"]//text()').extract()
         data = pd.DataFrame()
-        # temp = [col_values[:i] for i in range(len(main_heading), len(col_values), len(main_heading)-1)]
         temp = []
         start = 0
         for i in range(len(main_heading)-1, len(col_values)+1, len(main_heading)-1):
             temp.append(col_values[start:i])
             start = i
         data = pd.DataFrame([temp[i] for i in range(len(temp))], columns=main_heading[1:]) 
-        data[sub_heading[0]] = sub_heading[1:]            
-        data.to_json('qtr.json')
-        data.to_csv('quarter.csv', index=False)
+        data[sub_heading[0]] = sub_heading[1:]
+        data['scrip_code'] = scrip_code
+        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
+        data.to_sql('results_qrt', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
+
 
         body = json.loads(response.body)
         sel = Selector(text=body.get('AnninCr', ''))
@@ -67,6 +71,7 @@ class Bse(scrapy.Spider):
             temp.append(col_values[start:i])
             start = i
         data = pd.DataFrame([temp[i] for i in range(len(temp))], columns=main_heading[1:]) 
-        data[sub_heading[0]] = sub_heading[1:]            
-        data.to_json('ann.json')        
-        data.to_csv('ann.csv', index=False)
+        data[sub_heading[0]] = sub_heading[1:]   
+        data['scrip_code'] = scrip_code         
+        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
+        data.to_sql('results_annual', con = engine, if_exists = 'replace', chunksize = 1000, index=False)

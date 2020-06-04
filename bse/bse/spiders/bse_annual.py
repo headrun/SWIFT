@@ -6,8 +6,10 @@ import json
 import re
 import urllib.parse as urlparse
 from urllib.parse import parse_qs
+from urllib.parse import parse_qs, urlparse
 import pandas as pd
 import requests
+from sqlalchemy import create_engine
 
 class Bse(scrapy.Spider):
 	name = 'bse_annual'
@@ -27,37 +29,36 @@ class Bse(scrapy.Spider):
 		    'referer': 'https://www.bseindia.com/stock-share-price/reliance-industries-ltd/reliance/500325/financials-annual-reports/',
 		    'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
 		}
+		scrip_code = ['500325']
+		for code in scrip_code:
+			params = (
+			    ('scripcode', code),
+			)
 
-		params = (
-		    ('scripcode', '500325'),
-		)
-
-		url = 'https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?'+urlencode(params)
-		# response = requests.get('https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w', headers=headers, params=params)
-		yield Request(url, callback = self.parse, headers=headers)
+			url = 'https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?'+urlencode(params)
+			yield Request(url, callback = self.parse, headers=headers)
 
 	def parse(self, response):
-        # import pdb;pdb.set_trace()
+		res_url = str(response.url)
+		scrip_code = parse_qs(urlparse(res_url).query)['scripcode'][0]
 		res = json.loads(response.text)
-		req = ["year", "file_name", "dt_tm"]
-		announcement = pd.DataFrame()
+		data = pd.DataFrame()
 		for i in range(len(res['Table'])):
 			x = res['Table'][i].keys()
 			r={}
 			for key in x:
-				if key in req:
-					if key == 'file_name':
-						if res['Table'][i][key] != '':
-							r[key] = 'https://www.bseindia.com/bseplus/AnnualReport/500325/'+res['Table'][i][key]
-
-						else:
-							r[key] = res['Table'][i][key]
-						self.download_pdf(r[key])
+				if key == 'file_name':
+					if res['Table'][i][key] != '':
+						r[key] = 'https://www.bseindia.com/bseplus/AnnualReport/500325/'+res['Table'][i][key]
 					else:
 						r[key] = res['Table'][i][key]
-			announcement = announcement.append(r, ignore_index=True)
-		print(announcement)
-		announcement.to_json('bse_report.json')
+						self.download_pdf(r[key])
+				else:
+					r[key] = res['Table'][i][key]
+			data = data.append(r, ignore_index=True)
+		data['scrip_code'] = scrip_code
+		engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
+		data.to_sql('annual_report', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
 
 	def download_pdf(self, url):
 		get_response = requests.get(url,stream=True)
