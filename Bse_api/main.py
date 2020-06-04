@@ -1,8 +1,15 @@
 import pymysql
-from app import app
-from config import mysql
-from flask import jsonify, request
+from flask import Flask, jsonify, request
+from flaskext.mysql import MySQL
 import requests
+
+app = Flask(__name__)
+mysql = MySQL()
+app.config['MYSQL_DATABASE_USER'] = 'mca'
+app.config['MYSQL_DATABASE_PASSWORD'] = 'H3@drunMcaMy07'
+app.config['MYSQL_DATABASE_DB'] = 'bse'
+app.config['MYSQL_DATABASE_HOST'] = 'localhost'
+mysql.init_app(app)
 
 @app.route('/api/v1', methods=["GET"])
 def corp_announcement():
@@ -24,9 +31,9 @@ def corp_announcement():
 			query = "SELECT * FROM {0} WHERE ScripCode = {1} ".format(params['category'],params['id'])
 		elif params['category'] in ('peer'):
 			query = "SELECT * FROM {0} WHERE scrip_cd = {1} ".format(params['category'],params['id'])
-		elif params['category'] in ('notice','corp_annexure_1','corp_action','slb','annual_report','debt'):
+		elif params['category'] in ('notice','corp_annexure_1','corp_action','slb','annual_report','debt', 'corp_info', 'results_annual', 'results_qrt', 'shareholding_pattern'):
 			query = "SELECT * FROM {0} WHERE scrip_code = {1} ".format(params['category'],params['id'])
-			
+
 		cursor.execute(query)
 		res = cursor.fetchall()
 		response = jsonify(res)
