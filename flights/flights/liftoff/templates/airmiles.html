@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>LiftOff</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/waitme@1.19.0/waitMe.min.css"/>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css" />
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css" />
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.min.js"></script> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/js/select2.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.3/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/styles/metro/notify-metro.css" rel="stylesheet"/>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.1/semantic.min.css" rel="stylesheet" />
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.semanticui.min.css" rel="stylesheet" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/waitme@1.19.0/waitMe.min.js"></script>
+    <!------ Include the above in your HEAD tag ---------->
+    <style>
+      body {
+      background-color: rgba(0, 130, 185, .8);
+      }
+      .contact {
+      margin-top: 50px;
+      padding: 4%;
+      /*height: 500px;*/
+      }
+      .col-md-3 {
+      background: #00c4ff;
+      padding: 4%;
+      border-top-left-radius: 0.5rem;
+      border-bottom-left-radius: 0.5rem;
+      }
+      .contact-info {
+      margin-top: 10%;
+      }
+      .contact-info img {
+      margin-bottom: 15%;
+      }
+      .contact-info h2 {
+      margin-bottom: 10%;
+      }
+      .col-md-9 {
+      background: #fff;
+      padding: 3%;
+      border-top-right-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+      }
+      .contact-form label {
+      font-weight: 600;
+      }
+      .contact-form #btnSuccess {
+      background: #17a2b8;
+      color: #fff;
+      font-weight: 600;
+      width: 50%;
+      }
+      .contact-form #btnSuccess:focus {
+      box-shadow: none;
+      }
+      .contact-form .select2-container--default .select2-selection--single .select2-selection__arrow {
+      height: 26px;
+      position: absolute;
+      top: 6px;
+      right: 7px;
+      width: 20px;
+      }
+      .contact-form .select2-container--default .select2-selection--single .select2-selection__rendered {
+      color: #495057;
+      }
+      .contact-form .select2-container--default .select2-selection--single {
+      padding: .375rem .75rem;
+      font-size: 1rem;
+      line-height: 1.5;
+      color: #495057;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #ced4da;
+      border-radius: .25rem;
+      height: 38px;
+      }
+      .container {
+      max-width: 1160px;
+      border: 1px solid darkgrey;
+      background-color: ghostwhite;
+      }
+      .row {
+      height: 145%;
+      }
+      .form-group {
+      margin-bottom: 2.5rem;
+      }
+      .themeBtn {
+   
+      background: #17a2b8;
+      color: #fff;
+      font-weight: 500;
+      width: 100%;
+      padding: 0;
+      border-radius: 5px;
+      }
+      .themeBtn:hover {
+      background: rgba(0, 130, 185);
+      color: #ffffff;
+      box-shadow: 0 10px 25px -2px rgba(0, 130, 185, .6);
+      }
+      tbody > tr {
+    cursor: pointer;
+}
+.col-md-3 {
+    background: white;
+    padding: 0;
+    font-weight: 1000;
+   /* border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;*/
+}
+@media (min-width: 992px)
+.col-md-3 {
+     width: 0%; 
+}
+.result{
+    margin-top:20px;
+}
+.text-muted {
+    color: #999;
+    font-weight: 900;
+}
+.ui.dimmer {
+  text-align: left;
+}
+
+    </style>
+    <form  id="my-form" method="POST" role="form">
+      <div class="container contact">
+        <div class="row">
+          <div class="col col-md-12 col-lg-12">
+            <div class="contact-form">
+              <div class="form-group">
+                <div class="row">
+                  <div class="col-sm-3">
+                    <label class="control-label col-sm-6" for="lname">FROM</label>
+                    <div class="col-sm-12">
+                      <select name="cmp_list" id="cmp_list" class="selectpicker custom-select form-control">
+                        <option></option>
+                        {% for i in code %}
+                        {% for k,v in i.items()%}
+                        <option value="{{ k }}">{{ v['city'] }} - {{v['name']}} ({{k}})</option>
+                        {% endfor %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <label class="control-label col-sm-8" for="email">TO</label>
+                    <div class="col-sm-12">
+                      <select name="code_list" id="code_list"
+                        class="selectpicker custom-select form-control">
+                        <option></option>
+                        {% for i in code %}
+                        {% for k,v in i.items()%}
+                        <option value="{{ k }}">{{ v['city'] }} - {{v['name']}} ({{k}}) </option>
+                        {% endfor %}
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-sm-3">
+                    <label class="control-label col-sm-6" for="fname">DEPART</label>
+                    <div class="col-sm-12">
+                      <input type="text" required aria-required="true" class="form-control" name="date" id="datePicker" val='' placeholder="Enter Departure Date" />
+                      
+                    </div>
+                  </div>
+                  <div class="col-sm-3 text-center">
+                    <!-- <div class="row"> -->
+                    <div class="d-table h-100 w-100">
+                      <div class="d-table-cell h-100 align-bottom">
+                        <div class="col-sm-offset-2 col-sm-12">
+                          <!-- <input id="btnSuccess" type="button" class="btn btn-defaulti save h-100" value="Submit"></input> -->
+                          <button type="submit" id='btnSuccess' style= "color:white" class="btn btn-defaulti save h-100">Submit</button>
+                        </div>
+                      </div>
+                    </div>
+                    <!-- </div> -->
+                  </div>
+                </div>
+              </div>
+          
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <div class="container fortable">
+      <h1> <i class="fa fa-shopping-cart"></i> Review your booking
+      </h1>
+           
+        <hr>
+            
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>AIRLINE</th>
+            <th>FLIGHT</th>
+            <th>FROM</th>
+            <th>TO</th>
+            <th>DEPARTURE TIME</th>
+            <th>ARRIVAL TIME</th>
+            <th>NO OF STOPS</th>
+            <th>CABIN</th>
+            <th>INTERMILES</th>
+            <th  style="display: none";>ARRIVAL2</th>
+            <th style="display: none";>TOTAL INFO</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for col in data %}
+          <tr>
+            <td>{{col['airline_0']}}</td>
+            <td>{{col['flight_0']}}</td>
+            <td>{{col['departure_0']}}</td>
+            <td>{{col['arrival_0']}}</td>
+            <td>{{col['departure_time_0']}}</td>
+            <td>{{col['arrival_time_0']}}</td>
+            <td>{{col['num_stops']}}</td>
+            <td>{{col['cabin_0']}}</td>
+            <td>{{col['miles']}}</td>
+            <td style="display: none";>{{col['arrival_2']}}</td>
+            <td style="display: none";>{{col}}</td>
+          </tr>
+          {% endfor %}
+          {% if error %}
+          <tr><td colspan="31">{{ error.data }}</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    <!-- Modal -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true"><i class="text-danger fa fa-times"></i></button>
+            <h4 class="modal-title" id="myModalLabel"><strong>02051</strong></h4>
+          </div>
+          <div class="modal-body">
+            <table class="pull-left col-md-8 " >
+              <tbody id="records_table">
+              </tbody>
+            </table>
+            <div class="col-md-4"> 
+              <img src="https://d14aey5zg44n7g.cloudfront.net/stash_card_icons/90x90/AAL_90x90@2x.png" alt="airline" class="img-thumbnail">  
+            </div>
+            <div class="clearfix"></div>
+            <p class="open_info hide">Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+          </div>
+          <div class="modal-footer">
+            <div class="text-right pull-right col-md-3">
+              InterMiles Redeemed: <br/> 
+              <span class="h3 text-muted miles"><strong> R$50,00 </strong></span></span> 
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- fim Modal-->    
+    </body>
+    <script type="text/javascript">
+      $(function () {
+       $('#datePicker')
+            .datepicker({
+                format: 'yyyy-mm-dd'
+            })
+            .on('changeDate', function(e) {
+                // Revalidate the date field
+                $('#eventForm').formValidation('revalidateField', 'date');
+            });
+      });
+        var successOptions = {
+            autoHideDelay: 5000,
+            showAnimation: "fadeIn",
+            hideAnimation: "fadeOut",
+            hideDuration: 700,
+            arrowShow: false,
+            className: "success",
+            };
+      
+      $("#btnSuccess").on("click", function () {
+      //$.notify("Fetching Data! Please Wait!", successOptions);
+        $('.fortable').waitMe({
+          effect : 'facebook',
+          text : 'Please Wait!...',
+          bg : 'rgba(255,255,255,0.7)',
+          color : '#000',
+          maxSize : '',
+          waitTime : -1,
+          textPos : 'vertical',
+          fontSize : '',
+          source : '',
+          onClose : function() {}
+        });
+        var data = $("#my-form").serialize();
+        // if($("#cmp_list").val() !== undefined && $("#cmp_list").val() !== null )
+          // data = data + "&cmp_list=" + escape($("#cmp_list").val());
+        $.ajax({
+          url : "/",
+          method : "POST",
+          data : data,
+          success: function(data){
+            $('.container').waitMe("hide");
+            // alert('done');
+          }
+
+        });
+      });
+          
+      options = [];
+      
+      // create an array of select options for a lookup
+      $('.custom-select option').each(function (idx) {
+        options.push({ id: $(this).val(), text: $(this).text() });
+      });
+      
+      function createTag (params) {
+          var term = $.trim(params.term);
+      
+          if (term === '') {
+            return null;
+          }
+      
+          // check whether the term matches an id
+          var search = $.grep(options, function (n, i) {
+            return (n.id === term || n.text === term); // check against id and text
+          });
+      
+          // if a match is found replace the term with the options' text
+          if (search.length)
+            term = search[0].text;
+          else
+            return null; // didn't match id or text value so don't add it to selection
+      
+          return {
+            id: term,
+            text: term,
+            value: true // add additional parameters
+          }
+        }
+      
+      $("#cmp_list").select2({
+        tags: "true",
+        placeholder: "Enter City or Airport",
+        allowClear: true,
+        width: '100%',
+        createTag: createTag
+      });
+      $("#code_list").select2({
+        tags: "true",
+        placeholder: "Enter City or Airport",
+        allowClear: true,
+        width: '100%',
+        createTag: createTag
+      });
+      
+      $('select').on('select2:select', function (evt) {
+        
+        $('#btnSuccess').removeAttr('disabled');
+      });
+      
+      
+      $(function () {
+        if (window.location == window.parent.location) {
+            $('#back-to-bootsnipp').removeClass('hide');
+            $('.alert').addClass('hide');
+        } 
+        
+        $('#fullscreen').on('click', function(event) {
+            event.preventDefault();
+            $("#myModal").empty();
+            window.parent.location = "http://bootsnipp.com/iframe/Q60Oj";
+        });
+        
+        $('tbody > tr').on('click', function(event) {
+            event.preventDefault();
+
+            var $row = $(this).closest("tr"),       // Finds the closest row <tr> 
+                $tds = $row.find("td");
+
+            let arr = []
+            $.each($tds, function() {               // Visits every single <td> element
+                arr.push($(this).text());       // Prints out the text within the <td>
+            });
+
+            $('.modal-title').html(arr[0] + ' (' + arr[2] + ' - ' + arr[9] + ')')
+            $('.miles').html(arr[8])
+            var tbody = $("#records_table");
+            if (tbody.children().length !== 0) {
+              $('#records_table').empty();
+            }
+
+            var last_element = arr[arr.length - 1];
+
+            var final_dict = JSON.parse(last_element.replace(/'/g,"\""));
+            // Converting to Levels
+            
+            // final_dict = {'final_info':[{'tyson':{'aadsfasdf':'basdfas', 'cadsfas':'dadfas'}}, 
+            //       {'tyson1':{'aasdfasd':'basdfsad', 'cadsfsad':'dasdfasd'}}]}
+
+            // for (i = 0; i < da['final_info'].length; i++) {
+
+            // for (i = 0; i < da.length; i++) {
+
+            //   for (var k in da[i]) {
+
+            //     $('<h5>').html(k).appendTo('#records_table');
+
+            //     for (var k1 in da[i][k]) {
+            //       $('<tr>').html("<td class='h6'><strong>" + k1 + "</td><td>" + "</td><td class='h5 flight'>" + da[i][k][k1] + "</td>").appendTo('#records_table');
+            //     }
+            //   } 
+            // }
+            for (var key in final_dict) {
+              $('<tr>').html("<td class='h6'><strong>" + key + "</td><td>" + "</td><td class='h5 flight'>" + final_dict[key] + "</td>").appendTo('#records_table');
+            }
+
+            $('#myModal').modal('show');
+            // last_element = '';
+            // final_dict = {};
+        })
+        
+        $('.btn-mais-info').on('click', function(event) {
+            $( '.open_info' ).toggleClass( "hide" );
+        })
+      });
+    </script>        
+</html>

@@ -1,12 +1,14 @@
 import json
-from ecommerce.common_utils import *
 import re
+from ecommerce.common_utils import *
 from ecommerce.items import InsightItem, MetaItem
 
 class NowSpider(EcommSpider):
     name = "nnnow_fashion_terminal"
 
     def parse(self,response):
+        product_category = response.meta['data']['category']
+        product_sub_category = response.meta['data']['sub_category']
         datas = response.xpath('//script[contains(text(),"window.DATA")]/text()').extract()
         for data in datas:
             total_data = re.findall('window.DATA= (.*)',data)
@@ -20,7 +22,9 @@ class NowSpider(EcommSpider):
                 status = style.get('status','')
                 url = style.get('url','')
                 category = style.get('gender','')
-                availability = style.get('inStock','')
+                availability = 0
+                if style.get('inStock',False):
+                    availability = 1
                 title = style.get('finerDetails',{}).get('compositionAndCare',{}).get('title','')
                 details = ','.join(style.get('finerDetails',{}).get('compositionAndCare',{}).get('list',''))
                 description = title+', '+details
@@ -46,8 +50,8 @@ class NowSpider(EcommSpider):
                     insight_item = InsightItem()
                     hd_id = encode_md5('%s%s%s' % (source, str(skuid), size))
                     insight_item.update({
-                        'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'category':category,
-                        'sub_category': '', 'brand': brandname, 'ratings_count': '',
+                        'hd_id': hd_id, 'source': source, 'sku': skuid, 'size': size, 'category':product_category,
+                        'sub_category': product_sub_category, 'brand': brandname, 'ratings_count': '',
                         'reviews_count': '', 'mrp': mrp, 'selling_price': price,
                         'discount_percentage': discount,'is_available': availability
                     })
@@ -55,7 +59,10 @@ class NowSpider(EcommSpider):
                     
                     meta_item = MetaItem()
                     meta_item.update({
-                        'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'title': name,
+                        'hd_id': hd_id, 'source': source, 'sku': skuid, 'web_id':product_id, 'size': size, 'title': name,
+                        'category':product_category, 'sub_category':product_sub_category,'brand':brandname,'rating':'',
+                        'ratings_count':'','reviews_count':'','mrp':mrp,'selling_price':price,
+                        'discount_percentage':discount,'is_available':availability,
                         'descripion': description, 'specs':specs, 'image_url': large_image, 
                         'reference_url': response.url, 'aux_info': json.dumps(aux_info)
                     })

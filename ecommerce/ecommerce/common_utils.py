@@ -239,7 +239,7 @@ class EcommSpider(Spider):
             ' SET crawl_status=%s, modified_at=NOW() WHERE crawl_status=9 AND'
         update_query += ' content_type="%s" AND sk="%s";'
 
-        for k, vals in self._sks.iteritems():
+        for k, vals in self._sks.items():
             self.log.info("Source: %s - Content Type: %s - Status: %s - Sks Length: %s",
                           source, content_type, k, len(vals))
             sks = ", ".join(['"%s"' % val for val in vals])

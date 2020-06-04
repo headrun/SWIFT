@@ -16,20 +16,34 @@ CREATE TABLE `#CRAWL-TABLE#` (
 """
 
 PRODUCTS_INFO_TABLE_CREATE_QUERY="""
-CREATE TABLE `products_info` (
-  `hd_id` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `source` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `sku` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `size` varchar(30) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `title` varchar(512) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `descripion` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `specs` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `image_url` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `reference_url` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
-  `aux_info` text CHARACTER SET utf8 COLLATE utf8_unicode_ci,
+Create Table: CREATE TABLE `products_info` (
+  `hd_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `source` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `sku` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `web_id` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `size` varchar(30) COLLATE utf8_unicode_ci NOT NULL,
+  `title` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `category` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `sub_category` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `brand` varchar(512) COLLATE utf8_unicode_ci NOT NULL,
+  `rating` float DEFAULT '0',
+  `ratings_count` int(11) DEFAULT '0',
+  `reviews_count` int(11) DEFAULT '0',
+  `mrp` float DEFAULT '0',
+  `selling_price` float DEFAULT '0',
+  `discount_percentage` float DEFAULT '0',
+  `is_available` int(11) DEFAULT '0',
+  `descripion` text COLLATE utf8_unicode_ci,
+  `specs` text COLLATE utf8_unicode_ci,
+  `image_url` text COLLATE utf8_unicode_ci,
+  `reference_url` text COLLATE utf8_unicode_ci,
+  `aux_info` text COLLATE utf8_unicode_ci,
   `created_at` datetime NOT NULL,
-  PRIMARY KEY (`hd_id`,`created_at`),
-  UNIQUE KEY `source` (`source`,`sku`,`size`,`created_at`)
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`hd_id`),
+  UNIQUE KEY `source` (`source`,`sku`,`size`),
+  KEY `created_at` (`created_at`),
+  KEY `source_name` (`source`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 """
 
