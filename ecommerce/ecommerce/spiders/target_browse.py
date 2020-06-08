@@ -145,4 +145,3 @@ class Target(EcommSpider):
                          'aux_info': json.dumps(aux_info), 'rating': rating
                          })
         yield meta_item
-        print(meta_item)
