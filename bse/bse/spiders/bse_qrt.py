@@ -10,6 +10,7 @@ from urllib.parse import parse_qs, urlparse
 import pandas as pd
 import requests
 from sqlalchemy import create_engine
+import MySQLdb
 
 class Bse(scrapy.Spider):
     name = 'bse_qrt'
@@ -41,6 +42,8 @@ class Bse(scrapy.Spider):
     def parse(self, response):
         res_url = str(response.url)
         scrip_code = parse_qs(urlparse(res_url).query)['scripcode'][0]
+        conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
+        cur = conn.cursor()
         body = json.loads(response.body)
         sel = Selector(text=body.get('QtlyinCr', ''))
         sub_heading = sel.xpath('//tbody//tr//td[@align="left"]//text()').extract()
@@ -55,11 +58,19 @@ class Bse(scrapy.Spider):
         data = pd.DataFrame([temp[i] for i in range(len(temp))], columns=main_heading[1:]) 
         data[sub_heading[0]] = sub_heading[1:]
         data['scrip_code'] = scrip_code
-        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
-        data.to_sql('results_qrt', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
-
+        column_names = data.rename(columns={'Mar-20':'`Mar-20`', 'Dec-19':'`Dec-19`', 'Sep-19':'`Sep-19`','Jun-19':'`Jun-19`', 'Mar-19':'`Mar-19`', 'FY 19-20': '`FY 19-20`', 'Income Statement': '`Income Statement`'},inplace=True )
+        column_names = data.columns.to_list()
+        cur.execute("truncate results_qrt")
+        for i in range(len(data)):
+            column_values = tuple(data.iloc[i].values)
+            values_ = ['%s']* len(column_names)
+            query  = "insert ignore into results_qrt  ({0}) values ({1})".format(','.join(column_names), (('%s,')*len(column_names)).strip(','))
+            cur.execute(query, column_values)
+            conn.commit()
 
         body = json.loads(response.body)
+        conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
+        cur = conn.cursor()
         sel = Selector(text=body.get('AnninCr', ''))
         sub_heading = sel.xpath('//tbody//tr//td[@align="left"]//text()').extract()
         main_heading = sel.xpath('//body//thead//tr//td[@class="tableheading"]//text()').extract()
@@ -72,6 +83,15 @@ class Bse(scrapy.Spider):
             start = i
         data = pd.DataFrame([temp[i] for i in range(len(temp))], columns=main_heading[1:]) 
         data[sub_heading[0]] = sub_heading[1:]   
-        data['scrip_code'] = scrip_code         
-        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
-        data.to_sql('results_annual', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
+        data['scrip_code'] = scrip_code    
+        column_names = data.rename(columns={'2020':'`2020`', '2019':'`2019`', '2018':'`2018`','2017':'`2017`', '2016':'`2016`', 'Income Statement': '`Income Statement`'},inplace=True )
+        column_names = data.columns.to_list()
+        cur.execute("truncate results_annual")
+        for i in range(len(data)):
+            column_values = tuple(data.iloc[i].values)
+            values_ = ['%s']* len(column_names)
+            query  = "insert ignore into  results_annual ({0}) values ({1})".format(','.join(column_names), (('%s,')*len(column_names)).strip(','))
+            cur.execute(query, column_values)
+            conn.commit()
+        cur.close()
+        conn.close()

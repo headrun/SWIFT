@@ -9,8 +9,8 @@ from urllib.parse import parse_qs
 from urllib.parse import parse_qs, urlparse
 import pandas as pd
 import requests
-from scrapy.utils.project import get_project_settings
 from sqlalchemy import create_engine
+import MySQLdb
 
 class Bse(scrapy.Spider):
     name = 'bse_corp_announcement'
@@ -45,7 +45,7 @@ class Bse(scrapy.Spider):
 
     def parse(self, response):
         res = json.loads(response.text)
-        announcement = pd.DataFrame()
+        data1 = pd.DataFrame()
         for i in range(len(res['Table'])):
             x = res['Table'][i].keys()
             r={}
@@ -53,17 +53,25 @@ class Bse(scrapy.Spider):
                 if key == 'ATTACHMENTNAME':
                     if res['Table'][i][key] != '':
                         r[key] = 'https://www.bseindia.com/xml-data/corpfiling/AttachHis/'+res['Table'][i][key]
-                        self.download_pdf(r[key])
+                        # self.download_pdf(r[key])
                     else:
                         r[key] = res['Table'][i][key]
                     
                 else:
                     r[key] = res['Table'][i][key]
                 
-            announcement = announcement.append(r, ignore_index=True)
-        print(announcement)
-        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
-        announcement.to_sql('corp_announcement', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
+            data1 = data1.append(r, ignore_index=True)
+        conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
+        cur = conn.cursor()
+        column_names = data1.columns.to_list()
+        for i in range(len(data1)):
+            column_values = tuple(data1.iloc[i].values)
+            values_ = ['%s']* len(column_names)
+            query  = "insert ignore into corp_announcement  ({0}) values ({1})".format(','.join(column_names), (('%s,')*len(column_names)).strip(','))
+            cur.execute(query, column_values)
+            conn.commit()
+        cur.close()
+        conn.close()
 
     def download_pdf(self, url):
         get_response = requests.get(url,stream=True)

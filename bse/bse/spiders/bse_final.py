@@ -66,7 +66,7 @@ class Bse(scrapy.Spider):
         res_url = str(response.url)
         scrip_code = parse_qs(urlparse(res_url).query)['scripcode'][0]
         res = json.loads(response.text)
-        conn = MySQLdb.connect(db ='bse', host='localhost', user='root', passwd='', charset="utf8", use_unicode=True)
+        conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         cur = conn.cursor()
         cur.execute("truncate {0}".format(tbl_name))
         i=0
@@ -87,9 +87,10 @@ class Bse(scrapy.Spider):
                 column_names = column_names + ['scrip_code']
                 column_values = tuple(list(column_values) + [scrip_code])
             values_ = ['%s']* len(column_names)
-            #query  = "insert ignore into  {0} ({1}) values {2}".format(tbl_name,','.join(column_names), tuple(values_))
             query  = "insert ignore into  {0} ({1}) values ({2})".format(tbl_name,','.join(column_names), (('%s,')*len(column_names)).strip(','))
             cur.execute(query, column_values)
             conn.commit()
         cur.close()
         conn.close()
+
+

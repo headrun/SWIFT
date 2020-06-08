@@ -8,6 +8,7 @@ from urllib.parse import parse_qs
 import pandas as pd
 import requests
 from sqlalchemy import create_engine
+import MySQLdb
 
 class Bse(scrapy.Spider):
     name = 'bse_block'
@@ -43,13 +44,14 @@ class Bse(scrapy.Spider):
     def parse(self, response):
         res = json.loads(response.text)
         resp = pd.DataFrame()
-        for i in range(len(res['Table'])):
-            x = res['Table'][i].keys()
-            r={}
-            for key in x:
-                r[key] = res['Table'][i][key]
-            resp = resp.append(r, ignore_index=True)
-        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="", db="bse"))
-        resp.to_sql('block_deals', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
-
-
+        conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
+        cur = conn.cursor()
+        for row in res['Table']:
+            column_names = [i for i in row.keys()]
+            column_values = tuple([row[i] for i in column_names])
+            values_ = ['%s']* len(column_names)
+            query  = "insert ignore into  block_deals ({0}) values {1}".format(','.join(column_names), tuple(values_))
+            cur.execute(query % column_values)
+            conn.commit()
+        cur.close()
+        conn.close()

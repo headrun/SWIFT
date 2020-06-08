@@ -8,6 +8,7 @@ from urllib.parse import parse_qs, urlparse
 import pandas as pd
 import requests
 from sqlalchemy import create_engine
+import MySQLdb
 
 class Bse(scrapy.Spider):
     name = 'bse_share'
@@ -35,7 +36,6 @@ class Bse(scrapy.Spider):
                 ('scripcode', code),
             )
 
-            # response = requests.get('https://api.bseindia.com/BseIndiaAPI/api/shpSecSummery_New/w', headers=headers, params=params)
             url = 'https://api.bseindia.com/BseIndiaAPI/api/shpSecSummery_New/w?'+urlencode(params)
             yield Request(url, callback=self.parse, headers=headers)
 
@@ -56,9 +56,20 @@ class Bse(scrapy.Spider):
                 values.append(inner_value)
             if values:
                 fin_values.append(values)
-        # print(fin_values)
         for val in fin_values:
             data[val[0]] = val[1:]
         data['scrip_code'] = scrip_code
-        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root", pw="[newpassword]", db="bse"))
-        data.to_sql('shareholding_pattern', con = engine, if_exists = 'replace', chunksize = 1000, index=False)
+        conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
+        cur = conn.cursor()
+        column_names = data.rename(columns={'Category of shareholder':'`Category of shareholder`', '(A) Promoter & Promoter Group':'`(A) Promoter & Promoter Group`', '(B) Public':'`(B) Public`','(C1) Shares underlying DRs':'`(C1) Shares underlying DRs`', '(C2) Shares held by Employee Trust':'`(C2) Shares held by Employee Trust`', '(C) Non Promoter-Non Public': '`(C) Non Promoter-Non Public`', 'Grand Total': '`Grand Total`'},inplace=True )
+        column_names = data.columns.to_list()
+        cur.execute("truncate shareholding_pattern")
+        for i in range(len(data)):
+            column_values = tuple(data.iloc[i].values)
+            values_ = ['%s']* len(column_names)
+            query  = "insert ignore into  shareholding_pattern ({0}) values ({1})".format(','.join(column_names), (('%s,')*len(column_names)).strip(','))
+            cur.execute(query, column_values)
+            conn.commit()
+        cur.close()
+        conn.close()
+        
