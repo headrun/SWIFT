@@ -7,10 +7,10 @@ import urllib.parse as urlparse
 from urllib.parse import parse_qs,urlparse
 import pandas as pd
 import requests
-from sqlalchemy import create_engine
+import MySQLdb
 
 class Bse(scrapy.Spider):
-    name = 'bse_final'
+    name = 'rem'
 
     def start_requests(self):
 
@@ -47,7 +47,6 @@ class Bse(scrapy.Spider):
                 'https://api.bseindia.com/BseIndiaAPI/api/ShareHolderMeeting/w?',
                 'https://api.bseindia.com/BseIndiaAPI/api/VotingResults/w?',
                 'https://api.bseindia.com/BseIndiaAPI/api/CorporateAction/w?',
-                'https://api.bseindia.com/BseIndiaAPI/api/InsiderTrade15/w?',
                 'https://api.bseindia.com/BseIndiaAPI/api/InsiderTrade92/w?',
                 'https://api.bseindia.com/BseIndiaAPI/api/SAST/w?',
                 'https://api.bseindia.com/BseIndiaAPI/api/SastAnnual/w?',
@@ -56,7 +55,7 @@ class Bse(scrapy.Spider):
                 'https://api.bseindia.com/BseIndiaAPI/api/PeerGpCom/w?',
                 'https://api.bseindia.com/BseIndiaAPI/api/AnnualReport/w?',                
                 ]
-        self.tbl = {self.urls[0]:'debt', self.urls[1]:'slb',self.urls[2]:'board_meeting', self.urls[3]:'share_holder_meeting', self.urls[4]: 'voting', self.urls[5]: 'corp_action', self.urls[6]:'insider_2015',self.urls[7]:'insider_1992',self.urls[8]:'insider_sast',self.urls[9]:'sast_annual',self.urls[10]:'consolidated_pledge',self.urls[11]:'corp_info',self.urls[12]:'peer',self.urls[13]:'annual_report'}
+        self.tbl = {self.urls[0]:'debt', self.urls[1]:'slb',self.urls[2]:'board_meeting', self.urls[3]:'share_holder_meeting', self.urls[4]: 'voting', self.urls[5]: 'corp_action', self.urls[6]:'insider_1992',self.urls[7]:'insider_sast',self.urls[8]:'sast_annual',self.urls[9]:'consolidated_pledge',self.urls[10]:'corp_info',self.urls[11]:'peer',self.urls[12]:'annual_report'}
         for ur in self.urls:
             url = ur+urlencode(params)      
             yield Request(url, callback=self.parse, headers=headers)
@@ -67,13 +66,30 @@ class Bse(scrapy.Spider):
         res_url = str(response.url)
         scrip_code = parse_qs(urlparse(res_url).query)['scripcode'][0]
         res = json.loads(response.text)
-        resp = pd.DataFrame()
-        for i in range(len(res['Table'])):
-            x = res['Table'][i].keys()
-            r={}
-            for key in x:
-                r[key] = res['Table'][i][key]
-            resp = resp.append(r, ignore_index=True)
-            resp['scrip_code'] = scrip_code
-        engine = create_engine("mysql+pymysql://{user}:{pw}@localhost/{db}?charset=utf8".format(user="root",pw='' ,db="bse"))
-        resp.to_sql(tbl_name, con = engine, if_exists = 'replace', chunksize = 1000, index=False)
+        conn = MySQLdb.connect(db ='bse', host='localhost', user='root', passwd='', charset="utf8", use_unicode=True)
+        cur = conn.cursor()
+        cur.execute("truncate {0}".format(tbl_name))
+        i=0
+        for row in res['Table']:
+            column_names = [i for i in row.keys()]
+            column_values = tuple([row[i] for i in column_names])
+            try:
+                col_change = column_names.index('Change')
+                column_names[col_change] = 'Change_'
+            except:
+                pass
+            try:
+                col_change = column_names.index('Foreign')
+                column_names[col_change] = 'Foreign_'
+            except:
+                pass
+            if 'scrip_code' not in column_names:
+                column_names = column_names + ['scrip_code']
+                column_values = tuple(list(column_values) + [scrip_code])
+            values_ = ['%s']* len(column_names)
+            #query  = "insert ignore into  {0} ({1}) values {2}".format(tbl_name,','.join(column_names), tuple(values_))
+            query  = "insert ignore into  {0} ({1}) values ({2})".format(tbl_name,','.join(column_names), (('%s,')*len(column_names)).strip(','))
+            cur.execute(query, column_values)
+            conn.commit()
+        cur.close()
+        conn.close()
