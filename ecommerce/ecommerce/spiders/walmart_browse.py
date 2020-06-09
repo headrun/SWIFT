@@ -14,9 +14,7 @@ class WalmartSpider(EcommSpider):
 
     def __init__(self, *args, **kwargs):
         super(WalmartSpider, self).__init__(*args, **kwargs)
-        self.category_array = ['5438_133197_4237948_3187021',
-        ,'5438_133197_4237948_1085040','5438_133197_4237948_7617810','5438_133197_4237948_5178426',
-        '5438_133197_1224676_2301886','5438_133197_1224676_5337017','5438_133197_1224676_1224684','5438_133197_1224676_2906643']
+        self.category_array = ['5438_133197_4237948_3187021','5438_133197_4237948_1085040','5438_133197_4237948_7617810','5438_133197_4237948_5178426','5438_133197_1224676_2301886','5438_133197_1224676_5337017','5438_133197_1224676_1224684','5438_133197_1224676_2906643']
         self.headers = headers = {
            'authority': 'www.walmart.com',
             'pragma': 'no-cache',
@@ -53,7 +51,8 @@ class WalmartSpider(EcommSpider):
             rating = product.get('customerRating', '')
             rating_count = product.get('numReviews', '')
             image_url = product.get('imageUrl', '')
-            category = product.get('seeAllName', '')
+            category_det = product.get('seeAllName', '')
+
             price_det = product.get('primaryOffer', '')
             if price_det: 
                 price = price_det.get('minPrice','')
