@@ -52,8 +52,8 @@ class Bse(scrapy.Spider):
             column_names = [i for i in row.keys()]
             column_values = tuple([row[i] for i in column_names])
             values_ = ['%s']* len(column_names)
-            query  = "insert ignore into  block_deals ({0}) values {1}".format(','.join(column_names), tuple(values_))
-            cur.execute(query % column_values)
+            query  = "insert ignore into  {0} ({1}) values ({2})".format(tbl_name,','.join(column_names), (('%s,')*len(column_names)).strip(','))
+            cur.execute(query, column_values)
             conn.commit()
         cur.close()
         conn.close()
