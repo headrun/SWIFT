@@ -61,6 +61,7 @@ CREATE TABLE `products_insights` (
   `reviews_count` int DEFAULT '0',
   `mrp` float DEFAULT '0',
   `selling_price` float DEFAULT '0',
+  `currency` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `discount_percentage` float DEFAULT '0',
   `is_available` int DEFAULT '0',
   `created_at` datetime NOT NULL,
