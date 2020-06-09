@@ -1,5 +1,6 @@
 import json
 from ecommerce.common_utils import *
+from scrapy.selector import Selector
 from ecommerce.items import InsightItem, MetaItem
 
 class CostcoSpider(EcommSpider):
@@ -26,28 +27,30 @@ class CostcoSpider(EcommSpider):
             yield Request(url, callback=self.parse, headers=self.headers)
 
     def parse(self, response):
-        urls = response.xpath('//p[@class="description"]//a//@href').extract()
-        reviews = response.xpath('//meta[@itemprop="reviewCount"]/@content').extract()
-        ratings = response.xpath('//meta[@itemprop="ratingValue"]//@content').extract()
-        availabilities = response.xpath('//input[@id="in_Stock"]//@value').extract()
+        sel = Selector(response)
+        urls = extract_list_data(sel, '//p[@class="description"]//a//@href')
+        reviews = extract_list_data(sel, '//meta[@itemprop="reviewCount"]/@content')
+        ratings = extract_list_data(sel, '//meta[@itemprop="ratingValue"]//@content')
+        availabilities = extract_list_data(sel, '//input[@id="in_Stock"]//@value')
         for url, review, rating, availability in zip(urls, reviews, ratings, availabilities):
             meta = {'category':response.url, 'review':review, 'rating':rating, 'availability':availability}
             yield Request(url, callback=self.parse_data, headers=self.headers, meta=meta)
 
     def parse_data(self, response):
         source = 'costco'
+        sel = Selector(response)
         reviews = response.meta['review']
         rating = response.meta['rating']
         category = response.meta['category']
         availability = 0
         if response.meta['availability']:
             availability = 1
-        item = ''.join(response.xpath('//p[@class="member-only"]//text()').extract())
-        brandname = ''.join(response.xpath('//div[@itemprop="brand"]//text()').extract())
-        product_name = ''.join(response.xpath('//h1[@itemprop="name"]//text()').extract()).replace('\t', '')
-        description = ','.join(response.xpath('//ul[@class="pdp-features"]//li//text()').extract()).replace('\n', '')
-        currency_ = ''.join(response.xpath('//meta[@property="product:price:currency"]//@content').extract())
-        mrp = ''.join(response.xpath('//meta[@property="product:price:amount"]//@content').extract())
+        item = extract_data(sel, '//p[@class="member-only"]//text()')
+        brandname = extract_data(sel, '//div[@itemprop="brand"]//text()')
+        product_name = extract_data(sel, '//h1[@itemprop="name"]//text()')
+        description = extract(sel, '//ul[@class="pdp-features"]//li//text()')
+        currency_ = extract_data(sel, '//meta[@property="product:price:currency"]//@content')
+        mrp = extract_data(sel, '//meta[@property="product:price:amount"]//@content')
         try:
             category_ = category.split('/')[-1].split('-')[0].replace('s','')
             sub_category = category.split('/')[-1].split('-')[1].replace('.html', '')
@@ -56,9 +59,9 @@ class CostcoSpider(EcommSpider):
             sub_category = category.split('/')[-1].split('-')[0].replace('.html', '')
         product_id = response.url.split('.')[-2]
         aux_info = {'product_id': product_id, 'json_page': response.url}
-        image_url = ''.join(response.xpath('//img[@class="img-responsive"]//@src').extract())
-        sizes = response.xpath('//select[@class="varis form-control"]//option[contains(@data-attr-name, "Size")]//text()').extract()
-        skus = response.xpath('//select[@class="varis form-control"]//option[contains(@data-attr-name, "Size")]//@value').extract()
+        image_url = extract_data(sel, '//img[@class="img-responsive"]//@src')
+        sizes = extract_list_data(sel, '//select[@class="varis form-control"]//option[contains(@data-attr-name, "Size")]//text()')
+        skus = extract_list_data(sel, '//select[@class="varis form-control"]//option[contains(@data-attr-name, "Size")]//@value')
         for size, sku in zip(sizes, skus):
             size = size
             sku_id = sku
