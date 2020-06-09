@@ -71,7 +71,6 @@ class Bse(scrapy.Spider):
         conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         cur = conn.cursor()
         cur.execute("truncate {0}".format(tbl_name))
-        i=0
         for row in res['Table']:
             column_names = [i for i in row.keys()]
             column_values = tuple([row[i] for i in column_names])
