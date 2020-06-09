@@ -67,20 +67,29 @@ class AjioSpider(EcommSpider):
             code = product.get('code', '')
             brandname = product.get('fnlColorVariantData', {}).get('brandName', '')
             outfiturl = product.get('fnlColorVariantData', {}).get('outfitPictureURL', '')
-            discount = product.get('discountPercent', '')
-            mrp = product.get('price', {}).get('displayformattedValue', '')
-            selling_price = product.get('wasPriceData', {}).get('displayformattedValue', '')
+            discount = product.get('discountPercent', 0)
+            selling_price = product.get('price', {}).get('value', 0)
+            mrp = product.get('wasPriceData', {}).get('value', 0)
             product_name = product.get('name', '')
             product_url = urljoin(self.domain_url, product.get('url', ''))
             sizes = product.get('productSizeData', {}).get('sizeVariants', '')
-            hd_id = encode_md5('%s%s%s' % (source, str(code), sizes))
-            aux_info = {'product_id': code_, 'json_page': response.url}
-            insight_item = InsightItem() 
-            insight_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'size': sizes, 'category':category, 'sub_category': sub_category, 'brand': brandname, 'ratings_count': '', 'reviews_count': '', 'mrp':mrp, 'selling_price': selling_price, 'discount_percentage': discount, 'is_available': ''})
-            yield insight_item
-            meta_item = MetaItem()
-            meta_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'web_id':code_, 'size': sizes, 'title': product_name, 'descripion': '', 'specs':'', 'image_url':outfiturl, 'reference_url': product_url, 'aux_info': json.dumps(aux_info)})
-            yield meta_item
+            for size in sizes:
+                size = size
+                hd_id = encode_md5('%s%s%s' % (source, str(code), size))
+                aux_info = {'product_id': code_, 'json_page': response.url}
+                insight_item = InsightItem() 
+                insight_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'size': size, 'category':category, 'sub_category': sub_category, 'brand': brandname, 'ratings_count': '', 'reviews_count': '', 'mrp':mrp, 'selling_price': selling_price, 'discount_percentage': discount, 'is_available': ''})
+                yield insight_item
+                meta_item = MetaItem()
+                meta_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 
+                    'web_id':code_, 'size': size, 'title': product_name, 
+                    'category':category,'sub_category':sub_category,'brand':brandname,
+                    'rating':'','ratings_count':'','reviews_count':'','mrp':mrp,
+                    'selling_price':selling_price,'discount_percentage':discount,'is_available':'',
+                    'descripion': '', 'specs':'', 'image_url':outfiturl, 
+                    'reference_url': product_url, 'aux_info': json.dumps(aux_info)
+                })
+                yield meta_item
 
         if products:
             page += 1
