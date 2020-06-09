@@ -39,7 +39,9 @@ class CostcoSpider(EcommSpider):
         reviews = response.meta['review']
         rating = response.meta['rating']
         category = response.meta['category']
-        availability = response.meta['availability']
+        availability = 0
+        if response.meta['availability']:
+            availability = 1
         item = ''.join(response.xpath('//p[@class="member-only"]//text()').extract())
         brandname = ''.join(response.xpath('//div[@itemprop="brand"]//text()').extract())
         product_name = ''.join(response.xpath('//h1[@itemprop="name"]//text()').extract()).replace('\t', '')
@@ -47,11 +49,11 @@ class CostcoSpider(EcommSpider):
         currency_ = ''.join(response.xpath('//meta[@property="product:price:currency"]//@content').extract())
         mrp = ''.join(response.xpath('//meta[@property="product:price:amount"]//@content').extract())
         try:
-            category_ = category.split('/')[-1].split('-')[0]
-            sub_category = category.split('/')[-1].split('-')[1]
+            category_ = category.split('/')[-1].split('-')[0].replace('s','')
+            sub_category = category.split('/')[-1].split('-')[1].replace('.html', '')
         except:
-            category_ = 'mens'
-            sub_category = category_ 
+            category_ = 'men'
+            sub_category = category.split('/')[-1].split('-')[0].replace('.html', '')
         product_id = response.url.split('.')[-2]
         aux_info = {'product_id': product_id, 'json_page': response.url}
         image_url = ''.join(response.xpath('//img[@class="img-responsive"]//@src').extract())
@@ -62,9 +64,8 @@ class CostcoSpider(EcommSpider):
             sku_id = sku
             hd_id = encode_md5('%s%s%s' % (source, str(sku_id), size))
             insight_item = InsightItem()
-            insight_item.update({'hd_id': hd_id, 'source': source, 'sku': sku_id, 'size': size, 'category':category_, 'sub_category': sub_category, 'brand': brandname, 'ratings_count':'', 'reviews_count': reviews, 'mrp':mrp, 'currency':currency_, 'selling_price':'', 'discount_percentage':'', 'is_available': availability})
+            insight_item.update({'hd_id': hd_id, 'source': source, 'sku': sku_id, 'size': size, 'category':category_, 'sub_category': sub_category, 'brand': brandname, 'ratings_count':0, 'reviews_count': reviews, 'mrp':mrp, 'currency':currency_, 'selling_price':0, 'discount_percentage':0, 'is_available': availability})
             yield insight_item
-
             meta_item = MetaItem()
-            meta_item.update({'hd_id': hd_id, 'source': source, 'sku': sku_id, 'web_id':product_id, 'size': size, 'title': product_name, 'category':category_, 'sub_category':sub_category, 'brand':brandname, 'rating':rating, 'ratings_count':'', 'reviews_count':reviews, 'mrp':mrp, 'currency':currency_, 'selling_price':'', 'discount_percentage':'', 'is_available': availability, 'descripion': description, 'specs':'', 'image_url':image_url, 'reference_url': response.url, 'aux_info': json.dumps(aux_info)})            
+            meta_item.update({'hd_id': hd_id, 'source': source, 'sku': sku_id, 'web_id':product_id, 'size': size, 'title': product_name, 'category':category_, 'sub_category':sub_category, 'brand':brandname, 'rating':rating, 'ratings_count':0, 'reviews_count':reviews, 'mrp':mrp, 'currency':currency_, 'selling_price':0, 'discount_percentage':0, 'is_available': availability, 'descripion': description, 'specs':'', 'image_url':image_url, 'reference_url': response.url, 'aux_info': json.dumps(aux_info)})            
             yield meta_item
