@@ -64,6 +64,7 @@ class Bse(scrapy.Spider):
             data1 = data1.append(r, ignore_index=True)
         conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         cur = conn.cursor()
+        cur.execute('truncate corp_announcement')
         column_names = data1.columns.to_list()
         for i in range(len(data1)):
             column_values = tuple(data1.iloc[i].values)

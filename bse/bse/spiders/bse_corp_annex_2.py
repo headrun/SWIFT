@@ -43,6 +43,7 @@ class Bse(scrapy.Spider):
         resp = pd.DataFrame()
         conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         cur = conn.cursor()
+        cur.execute('truncate corp_annexure_2')
         for row in res:
             column_names = [i for i in row.keys()]
             column_values = tuple([row[i] for i in column_names])
