@@ -2,5 +2,9 @@
 *.pyc
 *.log
 *.queries
+*.pid
 */__pycache__
 */OUTPUT
+*/dbs
+*/logs
+*/eggs
