@@ -56,9 +56,10 @@ SPIDER_MIDDLEWARES = {
 DOWNLOADER_MIDDLEWARES = {
     'impendi.middlewares.ImpendiDownloaderMiddleware': 543,
 }
+
 DB_HOST = 'localhost'
 DB_USERNAME = 'root'
-DB_PASSWORD = 'root'
+DB_PASSWORD = 'P@tN3R#74#$'
 URLQ_DATABASE_NAME = 'urlqueue'
 
 # Enable or disable extensions

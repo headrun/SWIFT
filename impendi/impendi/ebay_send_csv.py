@@ -20,7 +20,7 @@ class CsvPre():
         q_cursor.execute(q_query)
         crawl_count = q_cursor.fetchone()[0]
         if not crawl_count:
-            db = MySQLdb.connect(host="localhost", user="root", passwd="root", db="EBAYDB", charset="utf8")
+            db = MySQLdb.connect(host="localhost", user="root", passwd="P@tN3R#74#$", db="EBAYDB", charset="utf8")
             query = "select * from ebay_sold_items"
             df = pd.read_sql(query, db)
             del df['created_at']
