@@ -84,6 +84,7 @@ class WalmartSpider(EcommSpider):
             sub_category = response.meta['sub_category']
             price = response.meta['price']
             items = response.xpath("//script[contains(@id, 'item')]/text()")
+            dict1 = {}
             if isinstance(items, list) and len(items) > 0:
                 items = response.xpath("//script[contains(@id, 'item')]/text()")[0]
                 txt = items.extract()
