@@ -67,6 +67,22 @@ CREATE TABLE `board_meeting` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `bse_crawl`
+--
+
+DROP TABLE IF EXISTS `bse_crawl`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bse_crawl` (
+  `security_code` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `crawl_status` int(11) NOT NULL DEFAULT '0',
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`security_code`,`crawl_status`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `bulk_deals`
 --
 
@@ -661,4 +677,4 @@ CREATE TABLE `voting` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 11:01:58
+-- Dump completed on 2020-06-10 16:46:39
