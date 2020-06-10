@@ -11,7 +11,7 @@ from common_utils import get_urlq_cursor
 headers_dict = {'sk': 'SKU ID', 'search_key': 'Search Keyword', 'item_id': 'Item Id', 'top_rated': 'Top RatedListing', 'title': 'Title', 'location': 'Location', 'postal_code': 'Postalcode', 'returns_accepted': 'Return Accepted', 'is_multi': 'is MultiVariation Listing', 'category_id': 'Category ID', 'category': 'Category', 'expedited_shipping': 'Expedited Shipping', 'ship_to_locations': 'Ship To Locations', 'shipping_type': 'Shipping Type', 'shipping_service_cost': 'Shipping Service Cost_value', 'shipping_service_currency': 'ShippingServiceCost_currency', 'current_price': 'CurrentPrice_value', 'current_price_currency': 'CurrentPrice_currency', 'converted_current_price': 'ConvertedCurrentPrice_value', 'converted_current_price_currency': 'ConvertedCurrentPrice_currency', 'selling_state': ' State', 'condition': 'Condition', 'listing_type': 'ListingType', 'best_offer_enabled': 'BestOfferEnabled', 'buy_it_now_available': 'BuyItNowAvailable', 'start_time': 'Start Time', 'end_time': 'End Time', 'image_url': 'Image', 'reference_url': 'ItemListingURL', 'timestamp': 'Timestamp'}
 
 class CsvPre():
-    def __ini__(self):
+    def __init__(self):
         self.file_name = 'ebay_sold_items_%s.csv' % datetime.now().strftime('%Y_%m_%d')
 
     def main(self):
