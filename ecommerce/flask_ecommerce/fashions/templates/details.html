@@ -88,6 +88,7 @@ $('#picker').daterangepicker({
         from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
         to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
         brand_name = 'all';
+        document.getElementById('brandInput').value = "";
         var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
         $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
         $('.loader').removeClass('hide');
@@ -179,6 +180,7 @@ $('#picker').daterangepicker({
   $('body').on('change', '#sorted_names', function(){
     sort_element = $("#sorted_names option:selected").val();
     brand_name='all';
+    document.getElementById('brandInput').value = "";
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
@@ -206,6 +208,7 @@ $('#picker').daterangepicker({
   $('body').on('change', '#sources', function(){
     source = $("#sources option:selected").val();
     brand_name='all'
+    document.getElementById('brandInput').value = "";
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
@@ -243,6 +246,7 @@ $('#picker').daterangepicker({
     category_name = $("#category option:selected").val();
     console.log(category_name)
     brand_name = 'all';
+    document.getElementById('brandInput').value = "";
     var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
@@ -338,8 +342,12 @@ $('#picker').daterangepicker({
     <div id="category" class="col-md-2 nav-item nav-align dropdown-header">
         <select class="browser-default custom-select header-styles">
           <option selected value="all">All</option>
-          <option value="men">Men's</option>
-          <option value="women">Women's</option>
+          <option value="men">Men</option>
+          <option value="women">Women</option>
+          <option value="boys">Boys</option>
+          <option value="girls">Girls</option>
+          <option value="Unisex">Unisex</option>
+          <option value="Unisex Kids">Unisex Kids</option>
         </select>
     </div>
     <div class="nav-item nav-align col-md-2">
@@ -353,7 +361,7 @@ $('#picker').daterangepicker({
         <select id="brands">
         </select>
       </datalist>
-      <input type="text" list="brand" placeholder="Search Brand" name="brand" class="header-styles search">
+      <input type="text" list="brand" placeholder="Search Brand" name="brand" class="header-styles search" id="brandInput">
       <!-- <input type="text" name="brand" list="brand"/> -->
     </div>
 
