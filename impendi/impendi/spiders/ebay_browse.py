@@ -1,8 +1,9 @@
 from ast import literal_eval
 from datetime import datetime
-from scrapy.http import Request
+from dateutil.parser import parse
 from pydispatch import dispatcher
 from scrapy import signals
+from scrapy.http import Request
 from scrapy.selector import Selector
 from scrapy.spiders import XMLFeedSpider
 from impendi.items import EbayItem
@@ -36,12 +37,12 @@ class EbayBrowse(XMLFeedSpider):
 
     def start_requests(self):
         for crawl_list in self.crawl_list:
-            source_key, search_key, search_token = crawl_list
+            source_key, search_key, end_time, search_token = crawl_list
             search_key = search_key.replace('&', ' and ')
             update_urlqueue_with_resp_status(self.source, 9, source_key)
             url = self.url % (search_token, search_key, 1)
             meta = {
-                'crawl_check': 1, 'source_key':source_key,
+                'crawl_check': 1, 'source_key':source_key, 'end_time': end_time,
                 'search_key': search_key, 'search_token': search_token
             }
             yield Request(url, callback=self.parse, meta=meta)
@@ -50,6 +51,7 @@ class EbayBrowse(XMLFeedSpider):
         source_key = response.meta['source_key']
         search_key = response.meta['search_key']
         search_token = response.meta['search_token']
+        end_time = response.meta['end_time']
         crawl_check = response.meta['crawl_check']
         sel = Selector(response)
         sel.remove_namespaces()
@@ -88,6 +90,13 @@ class EbayBrowse(XMLFeedSpider):
                 'condition': extract_data(node, './/condition/conditionDisplayName/text()'),
                 'timestamp': datetime.now().strftime("%H:%M.%S")
             })
+
+            if '0000' not in end_time and '0000' not in ebay_item['end_time']:
+                search_end_time = parse(end_time)
+                item_end_time = parse(ebay_item['end_time'])
+
+                if item_end_time < search_end_time:
+                    continue
 
             if ebay_item['location'] and 'china' not in ebay_item['location'].lower():
                 yield ebay_item

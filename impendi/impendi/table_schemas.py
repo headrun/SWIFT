@@ -1,4 +1,17 @@
+CRAWL_TABLE="""
+CREATE TABLE `ebay_crawl` (
+  `sk` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `search_key` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `end_time` text CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `crawl_status` int NOT NULL DEFAULT '0',
+  `created_at` datetime NOT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`sk`,`crawl_status`),
+  KEY `sk` (`sk`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 """
+
+META_TABLE = """
 CREATE TABLE `ebay_sold_items` (
   `sk` varchar(100) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
   `search_key` varchar(300) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
@@ -33,7 +46,7 @@ CREATE TABLE `ebay_sold_items` (
   `created_at` datetime NOT NULL,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sk`, `item_id`),
-  UNIQUE KEY `source` (`item_id`,`title`(500)),
+  UNIQUE KEY `source` (`sk`,`item_id`,`title`(500)),
   KEY `created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
 """
