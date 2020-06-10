@@ -30,7 +30,7 @@ class LoadFiles():
         os.system(q_mv)
 
     def dump_file_into_db(self, query_file, table):
-        source = query_file.split('_')[0]
+        source = query_file.split('/')[-1].split('_')[0]
         if source in self.indian_sources:
             database = self.indian_db
 
