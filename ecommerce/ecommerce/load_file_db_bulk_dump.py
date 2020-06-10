@@ -12,9 +12,9 @@ class LoadFiles():
         self.path = os.path.join(os.getcwd(), "spiders/OUTPUT/processing")
         self.processed = os.path.join(os.getcwd(), "spiders/OUTPUT/processed")
         self.indian_sources = literal_eval(CFG.get('IND', 'sources'))
-        self.indian_db = literal_eval(CFG.get('IND', 'db'))
+        self.indian_db = CFG.get('IND', 'db')
         self.us_sources = literal_eval(CFG.get('US', 'sources'))
-        self.us_db = literal_eval(CFG.get('US', 'sources'))
+        self.us_db = CFG.get('US', 'sources')
         self.main()
 
     def ensure_files_exists(self):
