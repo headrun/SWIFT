@@ -27,10 +27,10 @@ class CsvPre():
             del df['modified_at']
             df.rename(columns=headers_dict, inplace=True)
             df.to_csv(self.file_name, index=False)
-            attachment = open(self.file_name, "rb")
-            self.send_email(attachment)
+            #attachment = open(self.file_name, "rb")
+            #self.send_email(attachment)
 
-            attachment.close()
+            #attachment.close()
             db.close()
 
         else:
