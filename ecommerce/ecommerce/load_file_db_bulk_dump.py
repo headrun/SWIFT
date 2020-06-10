@@ -14,7 +14,7 @@ class LoadFiles():
         self.indian_sources = literal_eval(CFG.get('IND', 'sources'))
         self.indian_db = CFG.get('IND', 'db')
         self.us_sources = literal_eval(CFG.get('US', 'sources'))
-        self.us_db = CFG.get('US', 'sources')
+        self.us_db = CFG.get('US', 'db')
         self.main()
 
     def ensure_files_exists(self):
