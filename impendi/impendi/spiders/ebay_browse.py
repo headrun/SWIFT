@@ -37,6 +37,7 @@ class EbayBrowse(XMLFeedSpider):
     def start_requests(self):
         for crawl_list in self.crawl_list:
             source_key, search_key, search_token = crawl_list
+            search_key = search_key.replace('&', ' and ')
             update_urlqueue_with_resp_status(self.source, 9, source_key)
             url = self.url % (search_token, search_key, 1)
             meta = {

@@ -62,17 +62,18 @@ class MyntraSpider(EcommSpider):
                 insight_item.update({
                     'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'category':category,
                     'sub_category': sub_category, 'brand': brand, 'ratings_count': rating_count,
-                    'reviews_count': '', 'mrp': mrp, 'selling_price': price,
+                    'reviews_count': '', 'mrp': mrp, 'selling_price': price, 'currency': 'INR',
                     'discount_percentage': discount_percentage,'is_available': availability
                 })
                 yield insight_item
 
                 meta_item = MetaItem()
                 meta_item.update({
-                    'hd_id': hd_id, 'source': source, 'sku': sku, 'web_id': product_id, 'size': size, 'title': name,
-                    'category':category,'sub_category':sub_category,'brand':brand,'rating':rating,'ratings_count':rating_count,
-                    'reviews_count':'','mrp':mrp,'selling_price':price,'discount_percentage':discount_percentage,
-                    'is_available':availability,'descripion': '', 'specs': '', 'image_url': image_url, 
+                    'hd_id': hd_id, 'source': source, 'sku': sku, 'web_id': product_id, 'size': size,
+                    'title': name, 'category':category, 'sub_category':sub_category, 'brand':brand,
+                    'rating':rating, 'ratings_count':rating_count, 'reviews_count':'', 'mrp':mrp,
+                    'selling_price':price, 'currency': 'INR', 'discount_percentage':discount_percentage,
+                    'is_available':availability, 'descripion': '', 'specs': '', 'image_url': image_url, 
                     'reference_url': reference_url, 'aux_info': json.dumps(aux_info),
                     'rating':rating
                 })

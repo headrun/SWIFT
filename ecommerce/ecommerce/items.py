@@ -20,6 +20,7 @@ class InsightItem(Item):
     reviews_count = Field()
     mrp = Field()
     selling_price = Field()
+    currency = Field()
     discount_percentage = Field()
     is_available = Field()
 
@@ -39,6 +40,7 @@ class MetaItem(Item):
     reviews_count = Field()
     mrp = Field()
     selling_price = Field()
+    currency = Field()
     discount_percentage = Field()
     is_available = Field()
     descripion = Field()
