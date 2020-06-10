@@ -52,7 +52,7 @@ class NowSpider(EcommSpider):
                     insight_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': skuid, 'size': size, 'category':product_category,
                         'sub_category': product_sub_category, 'brand': brandname, 'ratings_count': '',
-                        'reviews_count': '', 'mrp': mrp, 'selling_price': price,
+                        'reviews_count': '', 'mrp': mrp, 'selling_price': price, 'currency': 'INR',
                         'discount_percentage': discount,'is_available': availability
                     })
                     yield insight_item    
@@ -61,7 +61,7 @@ class NowSpider(EcommSpider):
                     meta_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': skuid, 'web_id':product_id, 'size': size, 'title': name,
                         'category':product_category, 'sub_category':product_sub_category,'brand':brandname,'rating':'',
-                        'ratings_count':'','reviews_count':'','mrp':mrp,'selling_price':price,
+                        'ratings_count':'','reviews_count':'','mrp':mrp,'selling_price':price, 'currency': 'INR',
                         'discount_percentage':discount,'is_available':availability,
                         'descripion': description, 'specs':specs, 'image_url': large_image, 
                         'reference_url': response.url, 'aux_info': json.dumps(aux_info)

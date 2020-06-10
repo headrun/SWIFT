@@ -23,6 +23,7 @@ var sort_element;
 var source;
 var total_pages=1;
 var category_name;
+var brand_name='all';
 var image_dict  = {
     "myntra":"/static/images/myntra.png",
     "nnnow":"/static/images/nnnow.png",
@@ -50,7 +51,7 @@ $('#pagination-here, #pagination_here_down').bootpag({
     })
 $('#pagination-here').on("page", function (event, num) {
 
-  var url = "/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element,category:category_name, page_num: num })
+  var url = "/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element,category:category_name, page_num: num ,brandName:brand_name})
   $('.loader').removeClass('hide');
   $.get(url, function (response) {
     $('.loader').addClass('hide');
@@ -86,7 +87,8 @@ $('#picker').daterangepicker({
     }, function(start, end){
         from_date   = $('#picker').data('daterangepicker').startDate.format('YYYY-MM-DD');
         to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
-        var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+        brand_name = 'all';
+        var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
         $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
         $('.loader').removeClass('hide');
         $.get(url,function(response) {
@@ -110,6 +112,15 @@ $('#picker').daterangepicker({
             $('#add_element').html(items);
             $('ul.bootpag>li').not('.prev').first().trigger('click');
             console.log(res[1])
+        });
+        brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+        $.get(brandUrl,function(response) {
+              var res = JSON.parse(response)
+              var items = ''
+              for(var i=0;i<res.length;i++){
+                      items = items + '<option value="'+res[i]['brand']+'">'
+                  }
+              $('#brands').html(items);
         });
     });
 
@@ -167,7 +178,8 @@ $('#picker').daterangepicker({
 
   $('body').on('change', '#sorted_names', function(){
     sort_element = $("#sorted_names option:selected").val();
-    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    brand_name='all';
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
         $('.loader').addClass('hide');
@@ -193,7 +205,8 @@ $('#picker').daterangepicker({
   });
   $('body').on('change', '#sources', function(){
     source = $("#sources option:selected").val();
-    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    brand_name='all'
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
         $('.loader').addClass('hide');
@@ -216,11 +229,21 @@ $('#picker').daterangepicker({
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
   });
+    brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    $.get(brandUrl,function(response) {
+          var res = JSON.parse(response)
+          var items = ''
+          for(var i=0;i<res.length;i++){
+                  items = items + '<option value="'+res[i]['brand']+'">'
+              }
+          $('#brands').html(items);
+    });
   });
   $('body').on('change', '#category', function(){
     category_name = $("#category option:selected").val();
     console.log(category_name)
-    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    brand_name = 'all';
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
         $('.loader').addClass('hide');
@@ -243,6 +266,15 @@ $('#picker').daterangepicker({
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
    });
+    brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    $.get(brandUrl,function(response) {
+          var res = JSON.parse(response)
+          var items = ''
+          for(var i=0;i<res.length;i++){
+                  items = items + '<option value="'+res[i]['brand']+'">'
+              }
+          $('#brands').html(items);
+    });
   });
   document.getElementsByName("brand")[0].onchange = function (event) {
      var evt = event || window.event;
@@ -251,8 +283,30 @@ $('#picker').daterangepicker({
      {
          if (document.getElementById('brands').options[i].value ==  document.getElementsByName("brand")[0].value)
          {
-           alert(document.getElementById('brands').options[i].value);
-           break;
+            brand_name = document.getElementById('brands').options[i].value
+            var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+            $.get(url,function(response) {
+              $('.loader').addClass('hide');
+              var respo = JSON.parse(JSON.stringify(response))
+              var items = ''
+              var res = JSON.parse(respo["products"])
+              $('#pagination-here, #pagination_here_down').bootpag({
+                total: JSON.parse(respo["totalCount"]),
+              })
+              for(var i=0;i<res.length;i++){
+                      var valid_url = res[i]['reference_url'].includes('http')
+                      var reference_url = res[i]['reference_url']
+                      if(!valid_url){
+                          reference_url = 'https://www.myntra.com/'+res[i]['reference_url']
+                      }
+                      items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
+                      items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+                      items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                  }
+              $('#add_element').html(items);
+              $('ul.bootpag>li').not('.prev').first().trigger('click');
+             });
+             break;
          }
     }
  }

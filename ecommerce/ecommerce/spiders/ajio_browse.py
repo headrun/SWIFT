@@ -78,16 +78,25 @@ class AjioSpider(EcommSpider):
                 hd_id = encode_md5('%s%s%s' % (source, str(code), size))
                 aux_info = {'product_id': code_, 'json_page': response.url}
                 insight_item = InsightItem() 
-                insight_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 'size': size, 'category':category, 'sub_category': sub_category, 'brand': brandname, 'ratings_count': '', 'reviews_count': '', 'mrp':mrp, 'selling_price': selling_price, 'discount_percentage': discount, 'is_available': ''})
+                insight_item.update({
+                    'hd_id': hd_id, 'source': source, 'sku': code, 'size': size,
+                    'category':category, 'sub_category': sub_category,
+                    'brand': brandname, 'ratings_count': '', 'reviews_count': '',
+                    'mrp':mrp, 'selling_price': selling_price, 'currency': 'INR',
+                    'discount_percentage': discount, 'is_available': ''
+                })
                 yield insight_item
+
                 meta_item = MetaItem()
-                meta_item.update({'hd_id': hd_id, 'source': source, 'sku': code, 
-                    'web_id':code_, 'size': size, 'title': product_name, 
-                    'category':category,'sub_category':sub_category,'brand':brandname,
-                    'rating':'','ratings_count':'','reviews_count':'','mrp':mrp,
-                    'selling_price':selling_price,'discount_percentage':discount,'is_available':'',
-                    'descripion': '', 'specs':'', 'image_url':outfiturl, 
-                    'reference_url': product_url, 'aux_info': json.dumps(aux_info)
+                meta_item.update({
+                    'hd_id': hd_id, 'source': source, 'sku': code, 'web_id':code_,
+                    'size': size, 'title': product_name, 'category': category,
+                    'sub_category': sub_category,'brand': brandname, 'rating':'',
+                    'ratings_count': '', 'reviews_count':'', 'mrp': mrp, 
+                    'selling_price': selling_price, 'currency': 'INR', 
+                    'discount_percentage': discount,'is_available': '', 'descripion': '',
+                    'specs':'', 'image_url':outfiturl, 'reference_url': product_url,
+                    'aux_info': json.dumps(aux_info)
                 })
                 yield meta_item
 
