@@ -16,7 +16,7 @@ class CsvPre():
 
     def main(self):
         q_conn, q_cursor = get_urlq_cursor()
-        q_query = 'select count(*) from ebay_crawl where crawl_status in (0, 9)'
+        q_query = 'select count(*) from ebay_crawl where crawl_status in (0)'
         q_cursor.execute(q_query)
         crawl_count = q_cursor.fetchone()[0]
         if not crawl_count:
