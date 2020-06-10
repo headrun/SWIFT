@@ -38,7 +38,7 @@ class LoadFiles():
             database = self.us_db
 
         cmd = 'mysql -uroot -pEcomm@34^$ -hlocalhost -A %s --local-infile=1 -e "%s"'
-        query = "LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE %s CHARACTER SET latin FIELDS TERMINATED BY '#<>#'" % (query_file, table)
+        query = "LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE %s CHARACTER SET utf8 FIELDS TERMINATED BY '#<>#'" % (query_file, table)
         if 'info' in table:
             query += "SET created_at=NOW(), modified_at=NOW();"
         else:
