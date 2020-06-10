@@ -283,7 +283,7 @@ DROP TABLE IF EXISTS `corp_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `corp_info` (
-  `sDesignation` varchar(20) DEFAULT NULL,
+  `sDesignation` varchar(200) DEFAULT NULL,
   `sFirstname` varchar(200) DEFAULT NULL,
   `sLastname` varchar(200) DEFAULT NULL,
   `sMiddlename` varchar(200) DEFAULT NULL,
