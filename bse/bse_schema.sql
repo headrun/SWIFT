@@ -26,7 +26,8 @@ CREATE TABLE `annual_report` (
   `year` varchar(10) DEFAULT NULL,
   `file_name` varchar(100) DEFAULT NULL,
   `dt_tm` varchar(25) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) DEFAULT NULL,
+  UNIQUE KEY `file_name` (`file_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -110,7 +111,8 @@ CREATE TABLE `consolidated_pledge` (
   `TotalNoofShares` varchar(50) DEFAULT NULL,
   `dDateEnd` varchar(25) DEFAULT NULL,
   `sQtrName` varchar(100) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) DEFAULT NULL,
+  UNIQUE KEY `scrip_code` (`scrip_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -178,7 +180,9 @@ CREATE TABLE `corp_annexure_1` (
   `Fld_Scripcode` varchar(100) DEFAULT NULL,
   `Fld_Sequence` varchar(100) DEFAULT NULL,
   `Fld_Tenure` varchar(100) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) DEFAULT NULL,
+  UNIQUE KEY `Fld_BODCompId` (`Fld_BODCompId`),
+  UNIQUE KEY `Fld_QuarterID` (`Fld_QuarterID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -230,7 +234,8 @@ CREATE TABLE `corp_annexure_2` (
   `Fld_Salutation` varchar(100) DEFAULT NULL,
   `Fld_Scripcode` varchar(100) DEFAULT NULL,
   `Fld_Sequence` varchar(100) DEFAULT NULL,
-  `Fld_Tenure` varchar(100) DEFAULT NULL
+  `Fld_Tenure` varchar(100) DEFAULT NULL,
+  UNIQUE KEY `Fld_BODCompId` (`Fld_BODCompId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -265,7 +270,8 @@ CREATE TABLE `corp_announcement` (
   `SLONGNAME` varchar(200) DEFAULT NULL,
   `TimeDiff` varchar(50) DEFAULT NULL,
   `TotalPageCnt` varchar(100) DEFAULT NULL,
-  `XML_NAME` varchar(300) DEFAULT NULL
+  `XML_NAME` varchar(300) DEFAULT NULL,
+  UNIQUE KEY `NEWSID` (`NEWSID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -308,7 +314,8 @@ CREATE TABLE `debt` (
   `YTM` varchar(100) DEFAULT NULL,
   `change_percent` varchar(125) DEFAULT NULL,
   `scrip_cd` varchar(50) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) DEFAULT NULL,
+  UNIQUE KEY `scrip_cd` (`scrip_cd`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -439,7 +446,8 @@ CREATE TABLE `notice` (
   `segmentname` varchar(125) DEFAULT NULL,
   `categoryname` varchar(125) DEFAULT NULL,
   `departmentname` varchar(125) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) DEFAULT NULL,
+  UNIQUE KEY `notice_no` (`notice_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -483,7 +491,8 @@ CREATE TABLE `peer` (
   `w52hidt` varchar(100) DEFAULT NULL,
   `w52lo` varchar(100) DEFAULT NULL,
   `w52lodt` varchar(200) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) DEFAULT NULL,
+  UNIQUE KEY `scrip_cd` (`scrip_cd`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -616,7 +625,8 @@ CREATE TABLE `slb` (
   `expirationdate` varchar(200) DEFAULT NULL,
   `scrip_Cd` varchar(300) DEFAULT NULL,
   `scripname` varchar(300) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) DEFAULT NULL,
+  UNIQUE KEY `scrip_Cd` (`scrip_Cd`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -651,4 +661,4 @@ CREATE TABLE `voting` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-08  7:51:26
+-- Dump completed on 2020-06-10 11:01:58
