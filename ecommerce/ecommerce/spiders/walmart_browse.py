@@ -57,12 +57,10 @@ class WalmartSpider(EcommSpider):
             if price_det: 
                 price = price_det.get('minPrice', '')
                 if not price: price = price_det.get('offerPrice', '')
-            try: currency = product['fulfillment']['thresholdCurrencyCode']
-            except: currency = 'USD'
             reference_url = urljoin(self.domain_url, product.get('productPageUrl', ''))
             meta = {'image_url': image_url, 'reference_url': reference_url, 'rating': rating, 
             'rating_count':rating_count, 'category_id': category_id, 'page_len':page_len, 
-            'currency': currency, 'product_id': product_id,'name':name, 'sub_category':sub_category, 'price':price}
+            'product_id': product_id,'name':name, 'sub_category':sub_category, 'price':price}
             yield Request(reference_url, callback=self.parse_data, headers=self.headers, meta=meta)
         if canonical_next:
             page_len += 1
@@ -71,13 +69,13 @@ class WalmartSpider(EcommSpider):
             yield Request(url, callback=self.parse, headers=self.headers, meta=meta)
 
     def parse_data(self, response):
+            sel = Selector(response)
             source = self.name.split('_')[0]
             category_id = response.meta['category_id']
             page_len = response.meta['page_len']
             reference_url = response.meta['reference_url']
             image_url = response.meta['image_url']
             rating = response.meta['rating']
-            currency = response.meta['currency']
             rating_count = response.meta['rating_count']
             product_id = response.meta['product_id']
             name = response.meta['name']
@@ -91,8 +89,13 @@ class WalmartSpider(EcommSpider):
                 dict1 = json.loads(txt)
             if dict1:
                 brand = dict1['item']['product']['midasContext']['brand']
+                currency = extract_data(sel, "//span[contains(@itemprop, 'priceCurrency')]/@content")
                 aux_info = {'product_id': product_id, 'json_page': response.url}
-                description = dict1['item']['product']['buyBox']['products'][0]['idmlSections']['idmlShortDescription']
+                description = dict1['item']['product']['buyBox']['products'][0]['idmlSections']['idmlLongDescription']
+                if description:
+                    description = re.compile(r'<[^>]+>').sub('', description).strip(':').strip()
+                else:
+                    description = ''
                 main_category = dict1['item']['product']['buyBox']['products'][0]['idmlSections']['specifications']
                 if main_category:
                     cat_dict = next(i for i in main_category if i['name']=='Gender')
@@ -113,7 +116,7 @@ class WalmartSpider(EcommSpider):
                     insight_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'category':category,
                         'sub_category': sub_category, 'brand': brand, 'ratings_count': rating_count,
-                        'reviews_count': 0, 'mrp': price, 'currency':currency, 'selling_price': 0,
+                        'reviews_count': 0, 'mrp': price, 'currency':currency, 'selling_price': price,
                         'discount_percentage': 0,'is_available': availability
                     })
                     yield insight_item
@@ -121,7 +124,7 @@ class WalmartSpider(EcommSpider):
                     meta_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': sku, 'web_id': product_id, 'size': size, 'title': name,
                         'category':category, 'sub_category': sub_category, 'brand':brand, 'rating':rating,'ratings_count': rating_count,
-                        'reviews_count': 0, 'mrp':price, 'currency':currency, 'selling_price': 0,'discount_percentage':0,
+                        'reviews_count': 0, 'mrp':price, 'currency':currency, 'selling_price': price,'discount_percentage':0,
                         'is_available': availability, 'descripion': description, 'specs': '', 'image_url': image_url, 
                         'reference_url': reference_url, 'aux_info': json.dumps(aux_info)
                     })
