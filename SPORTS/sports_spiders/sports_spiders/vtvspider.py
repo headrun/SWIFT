@@ -19,7 +19,7 @@ from sports_spiders.vtv_utils import vtv_send_html_mail_2
 
 
 def mysql_connection():
-    conn = MySQLdb.connect(host="localhost", user="root", passwd="$p0rTs@34#$", db="SPORTSDB", charset='utf8mb4', use_unicode=True)
+    conn = MySQLdb.connect(host="localhost", user="root", passwd="root", db="SPORTSDB", charset='utf8mb4', use_unicode=True)
     cursor = conn.cursor()
     return conn, cursor
 
@@ -402,10 +402,6 @@ def get_md5(data):
 class VTVSpider(Spider):
     def __init__(self, *args, **kwargs):
         self.spider_type = kwargs.get('spider_type', '')
-        for url in self.start_urls:
-            crawl_status, robotsurl = get_crawl_access(url)
-            if not crawl_status:
-                self.start_urls.remove(url)
         from scrapy.crawler import Crawler
         self.crawler = Crawler(Spider)
         print(self.crawler.stats.get_stats())

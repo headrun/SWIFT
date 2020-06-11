@@ -56,7 +56,7 @@ events_dict = {'PRE': [5, 'NFL Preseason'], 'REG': [17, 'NFL Regular Season'],
                'POST': [5, 'NFL Postseason'], 'HOF': [1, 'Pro Football Hall of Fame Game'],
                'PRO': [1, 'Pro Bowl'], 'SB': [1, 'Super Bowl']}
 
-events_dict = {'POST':[5,'NFL Postseason'],'PRO': [1, 'Pro Bowl'], 'SB': [1, 'Super Bowl']}
+#events_dict = {'POST':[5,'NFL Postseason'],'PRO': [1, 'Pro Bowl'], 'SB': [1, 'Super Bowl']}
 
 def get_conference_name(participants):
     try:
@@ -104,7 +104,7 @@ def get_key():
 
 class NFLAPISpider(VTVSpider):
     name = 'nfl_api_spider'
-    start_urls = []
+    start_urls = ['http://www.nfl.com/schedules']
 
     def __init__(self, *args, **kwargs):
         super(NFLAPISpider, self).__init__(*args, **kwargs)
@@ -119,10 +119,10 @@ class NFLAPISpider(VTVSpider):
         self.headers.update({'Authorization':key})
 
     def start_requests(self):
-        for key, value in list(events_dict.items()):
+        for key, value in events_dict.items():
             weeks, event = value
             for week in range(1, weeks+1):
-                season = 2019
+                season = 2020
                 url = 'https://api.nfl.com/v1/games?s={"$query":{"week.season":%s,"week.seasonType":"%s","week.week":%s}}&fs={week{season,seasonType,week,name},id,gameTime,venue{id,name,location},networkChannels,esbId,gsisId,gameStatus,homeTeam{id,abbr,nickName},visitorTeam{id,abbr,nickName},homeTeamScore,visitorTeamScore}'
                 top_url = url % (season, key, week)
                 yield Request(top_url, callback = self.parse, headers=self.headers, meta={'event':event})
