@@ -1,0 +1,68 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<meta charset="utf-8"/>
+<head>
+<title>INTERNETVOD DB Sanity Report</title>
+
+<!-- Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+
+<body>
+    <div>
+        <a name="index"/>
+        <h2 name="index" align="center">INTERNETVOD SANITY REPORT ON {{today_date}}<h2>
+    </div>
+
+    <div class="span12">
+        <TABLE class="table table-bordered table-hover">
+        <ul>
+            <li type = square><a href="#basicsanity">Basic Sanity: {{sanity_count}}</a></li>
+            <li type = square><a href="{{log_file}}" target="_blank">Latest Log File</a></li>
+        </ul>
+
+        </TABLE>
+    </div>
+
+    <div class="row">
+    </div>
+
+    <a name="basicsanity"/>
+
+    <div class="span12">
+        <span class="label label-info" type="button">Basic Sanity</span>
+
+        <TABLE class="table table-bordered table-hover">
+            <tr>
+                <td><b>Index</b></td>
+                <td><b>Table Name</b></td>
+                <td><b>Column Name</b></td>
+                <td><b>Column Type</b></td>
+                <td><b>Expected Name</b></td>
+                <td><b>Expected Type</b></td>
+            </tr>
+
+            {% for value in errors %}
+            <tr>
+                <td align="center">{{loop.index}}</td>
+                <td align="left"> {{value[0]}}</td>
+                <td align="left"> {{value[1]}}</td>
+                <td align="left"> {{value[2]}}</td>
+                <td align="left"> {{value[3]}}</td>
+                <td align="left"> {{value[4]}}</td>
+            </tr>
+            {% endfor %}
+        </TABLE>
+    </div>
+
+    <br/>
+    <div class="row">
+    </div>
+
+    <p align="center"><a href="#index"><b>Top</b></a></p>
+
+    <!script src="/js/jquery.js"></script>
+    <!script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>

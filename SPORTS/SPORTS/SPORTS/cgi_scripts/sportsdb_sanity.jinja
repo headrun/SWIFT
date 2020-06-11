@@ -1,0 +1,451 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<meta charset="utf-8"/>
+<head>
+<title>SPORTSDB Sanity Report</title>
+
+<!-- Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+
+<body>
+<div>
+<a name="index"/>
+<h2 name="index" align="center">SPORTSDB SANITY REPORT ON {{today_date}}<h2>
+</div>
+
+<div class="span12">
+<TABLE class="table table-bordered table-hover">
+    <ul>
+        <li type = square><a href="#basicsanity">All Sanity: {{sanity_str}}</a></li>
+        <li type = square><a href="#partperday">Participants Per Day</a></li>
+        <li type = square><a href="#nullimagelink">Null Image Link</a></li>
+        <li type = square><a href="#notmatchteamtou">Sports Teams and Sports Tournaments not Sync</a></li>
+        <li type = square><a href="#teamgamescount">Teams Games count</a></li>
+        <li type = square><a href="#ongoinggameerror">Ongoing Games Errors</a></li>
+        <li type = square><a href="#todayswinner">Today's Game Winners</a></li>
+        <li type = square><a href="{{log_file}}" target="_blank">Latest Log File</a></li>
+    </ul>
+
+</TABLE>
+</div>
+
+<div class="row">
+</div>
+
+<a name="basicsanity"/>
+
+<div class="span12">
+<span class="label label-info" type="button">Basic Sanity</span>
+
+<TABLE class="table table-bordered table-hover">
+<tr>
+    <td><b>Index</b></td>
+    <td align=center><b>Title</b></td>
+    <td><b>Count</b></td>
+</tr>
+
+{% for value in big_list %}
+<tr class="scheduled-games" style="cursor: pointer"{% if value|length > 2 %} data-toggle="popover" data-title="Games"
+    data-content="{% for game, count in value[2] %}<p>{{ game }}: {{ count }}</p>{% endfor %}" data-html="true" {% endif %}>
+    <td align=center>{{loop.index}}</td>
+    <td align=left> {{value[0]}}</td>
+    <td><span class="badge badge-important">{{value[1]}}</span></td>
+</tr>
+{% endfor %}
+
+</TABLE>
+</div>
+
+<br/>
+
+<div class="row">
+</div>
+
+<a name = "wrongtournamentfinals"/>
+
+{% if finals_dates %}
+
+<div class="span12">
+<span class="label label-info" type="button">Wrong Tournaments Final Dates</span>
+
+<TABLE class="table table-bordered table-hover">
+
+<tr>
+<th colspan = 2>Tournament ID</th>
+<th colspan = 2>Tournament Name</th>
+<th colspan = 2>Season Start</th>
+<th colspan = 2>Season End</th>
+
+</tr>
+
+{% for key, values in finals_dates.iteritems()%}
+
+<tr>
+<td colspan = 2 align = "center">{{values[0]}}</td>
+<td colspan = 2 align = "center">{{values[1].encode("string-escape")}}</td>
+<td colspan = 2 align = "center">{{values[2]}}</td>
+<td colspan = 2 align = "center">{{values[3]}}</td>
+
+</tr>
+
+{%endfor%}
+
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+
+<div class="row">
+</div>
+
+ 
+<a name = "wrongtournamentdates"/>
+
+{% if wrong_tournament_dates %}
+
+<div class="span12">
+<span class="label label-info" type="button">Wrong Tournament Dates</span>
+ 
+<TABLE class="table table-bordered table-hover">
+
+<tr>
+<th colspan = 2>Tournament ID</th>
+<th colspan = 2>Tournament Name</th>
+<th colspan = 2>Season Start</th>
+<th colspan = 2>Season End</th>
+ 
+</tr>
+
+{% for key, values in wrong_tournament_dates.iteritems()%}
+
+<tr>
+<td colspan = 2 align = "center">{{values[0]}}</td>
+<td colspan = 2 align = "center">{{values[1].encode("string-escape")}}</td>
+<td colspan = 2 align = "center">{{values[2]}}</td>
+<td colspan = 2 align = "center">{{values[3]}}</td>
+
+</tr>
+
+{%endfor%}
+
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+
+<div class="row">
+</div>
+
+<a name = "imagedbmissingimages"/>
+
+{% if missing_images_count_imagedb %}
+
+<div class="span12">
+<span class="label label-info" type="button">SPORTSDB - IMAGEDB missing images</span>
+
+<TABLE class="table table-bordered table-hover">
+
+<tr>
+<th colspan = 2>Type</th>
+<th colspan = 2>Needed IMAGEDB Images</th>
+<th colspan = 2>Actual IMAGEDB Images</th>
+<th colspan = 2>Placeholder Images</th>
+
+</tr>
+
+{% for game_type, game_values in missing_images_count_imagedb.iteritems()%}
+
+<tr>
+<td colspan = 2 align>{{game_type}}</td>
+<td colspan = 2 align = "center">{{game_values[0]}}</td>
+<td colspan = 2 align = "center">{{game_values[1]}}</td>
+<td colspan = 2 align = "center">{{game_values[2]}}</td>
+
+</tr>
+
+{%endfor%}
+
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+<a name="nullimagelink"/>
+
+{% if null_tou_image %}
+
+<div class="span6">
+<span class="label label-info" type="button">Count of Tournaments have null image link</span>
+
+<TABLE class="table table-bordered table-hover">
+{% for each_tou, tou_count in null_tou_image.iteritems() | sort%}
+<tr>
+<td colspan = 2>{{each_tou}}</td>
+<td colspan = 2><span class="badge badge-important">{{tou_count}}</span></td>
+</tr>
+{%endfor%}
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+{% if null_team_image %}
+
+<div class="span6">
+<span class="label label-info" type="button">Count of Teams have null image link</span>
+
+<TABLE class="table table-bordered table-hover">
+{% for each_team, team_count in null_team_image.iteritems() | sort%}
+<tr>
+<td colspan = 2>{{each_team}}</td>
+<td colspan = 2><span class="badge badge-important">{{team_count}}</span></td>
+</tr>
+{%endfor%}
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+{% if null_player_image %}
+
+<div class="span6">
+<span class="label label-info" type="button">Count of Players have null image link</span>
+
+<TABLE class="table table-bordered table-hover">
+{% for each_player, player_count in null_player_image.iteritems() | sort%}
+<tr>
+<td colspan = 2>{{each_player}}</td>
+<td colspan = 2><span class="badge badge-important">{{player_count}}</span></td>
+</tr>
+{%endfor%}
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+<a name="partperday"/>
+
+{% if game_list %}
+
+<div class="span6">
+<span class="label label-info" type="button">Count of each participants having more than one game in a day</span>
+
+<TABLE class="table table-bordered table-hover">
+<tr>
+    <th align=left>DATE</th>
+    {% for  each_game in game_list | sort%}
+    <th align="center" width=".5%">{{each_game}}</th>
+    {% endfor %}
+</tr>
+
+{% for key, values in val_list.iteritems() | sort(reverse = True) %}
+<tr>
+    <td align=left>{{key}}</td>
+        {% for each_game in game_list | sort%}
+            <td align="center"><span class="badge badge-important">{{values.get(each_game, '')[0]}}</span></td>
+        {%endfor%}
+</tr>
+{% endfor %}
+
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+<a name = "notmatchteamtou"/>
+
+{% if sports_teams_sports_tou_part_not_match %}
+
+<div class="span12">
+<span class="label label-info" type="button">Tournaments - sportsdb_teams tables and sportsdb_tournaments_participants tables are not in sync</span>
+
+<TABLE class="table table-bordered table-hover">
+<tr>
+<th colspan = 2>Tournament</th>
+<th colspan = 2>Sports_teams</th>
+<th colspan = 2>Sports_tournaments_participants</th>
+</tr>
+{% for each_tou, team_c in sports_teams_sports_tou_part_not_match.iteritems()%}
+<tr>
+<td colspan = 2>{{each_tou}}</td>
+<td colspan = 2 align = "center">{{team_c[0]}}</td>
+<td colspan = 2 align = "center">{{team_c[1]}}</td>
+</tr>
+{%endfor%}
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+<a name = "teamgamescount"/>
+
+{% if sportsdb_games_count_eachteams %}
+
+<div class="span12">
+<span class="label label-info" type="button">Tournaments - Teams games count not matching</span>
+
+<TABLE class="table table-bordered table-hover">
+
+{% for each_tour, team_details in sportsdb_games_count_eachteams.iteritems()%}
+
+<tr>
+<td colspan = 10><b>For {{each_tour}} these are the teams games not Sync</b></td
+</tr>
+
+<tr>
+<th colspan = 2>Team</th>
+<th colspan = 2>Needed Games</th>
+<th colspan = 2>Actual Games</th>
+<th colspan = 2>Sports MC Games</th>
+<th colspan = 2>Redis Games</th>
+
+</tr>
+
+{% for details in  team_details%}
+
+<tr>
+<td colspan = 2 align>{{details[0]}}</td>
+<td colspan = 2 align = "center">{{details[2]}}</td>
+<td colspan = 2 align = "center">{{details[1]}}</td>
+<td colspan = 2 align = "center">{{details[5]}}</td>
+<td colspan = 2 align = "center">{{details[6]}}</td>
+
+</tr>
+
+{%endfor%}
+
+{%endfor%}
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+<a name = "ongoinggameerror"/>
+
+{% if ongoing_season_ends %}
+
+<div class="span12">
+<span class="label label-info" type="button">Completed tournamnets that are present as ongoing game in Sports_games</span>
+
+<TABLE class="table table-bordered table-hover">
+
+<tr>
+<th colspan = 2>Tournament</th>
+<th colspan = 2>TOU_GID</th>
+<th colspan = 2>Season Ends</th>
+<th colspan = 2>Event GID</th>
+<th colspan = 2>Game</th>
+<th colspan = 2>Game Datetime</th>
+</tr>
+
+{% for compl_tou, sports_games_info in ongoing_season_ends.iteritems() | sort%}
+
+<tr>
+<td colspan = 2 align>{{compl_tou}}</td>
+<td colspan = 2 align = "center">{{sports_games_info[0]}}</td>
+<td colspan = 2 align = "center">{{sports_games_info[1]}}</td>
+<td colspan = 2 align = "center">{{sports_games_info[2]}}</td>
+<td colspan = 2 align = "center">{{sports_games_info[3]}}</td>
+<td colspan = 2 align = "center">{{sports_games_info[4]}}</td>
+</tr>
+
+{%endfor%}
+
+</TABLE>
+</div>
+
+{% endif %}
+
+<a name = "todayswinner"/>
+
+{% if todays_winner %}
+
+<div class="span12">
+<span class="label label-info" type="button">Todays Game Winners</span>
+
+<TABLE class="table table-bordered table-hover">
+
+<tr>
+<th colspan = 2>Game ID</th>
+<th colspan = 2>Game</th>
+<th colspan = 2>Tournament</th>
+<th colspan = 2>Teams</th>
+<th colspan = 2>Winner</th>
+<th colspan = 2>Score</th>
+</tr>
+
+{% for game_id, games_info in todays_winner.iteritems() | sort%}
+
+<tr>
+<td colspan = 2 align>{{game_id}}</td>
+<td colspan = 2 align = "center">{{games_info[0]}}</td>
+<td colspan = 2 align = "center">{{games_info[1]}}</td>
+<td colspan = 2 align = "center">{{games_info[2]}}</td>
+<td colspan = 2 align = "center">{{games_info[3]}}</td>
+<td colspan = 2 align = "center">{{games_info[4]}}</td>
+</tr>
+
+{%endfor%}
+
+</TABLE>
+</div>
+
+{% endif %}
+
+<br/>
+<div class="row">
+</div>
+
+<tr>
+        <p align="center"><a href="#index"><b>Top</b></a></p>
+</tr>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+<script>
+    $(document).ready(function(){
+
+        $('.table-hover tr.scheduled-games').hover(function(){
+            $(this).popover("show");
+        }, function(){
+            $(this).popover("hide");
+        });
+    });
+</script>
+
+</body>
+</html>

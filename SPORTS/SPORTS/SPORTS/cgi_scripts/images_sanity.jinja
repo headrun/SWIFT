@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<meta charset="utf-8"/>
+<head>
+<title>IMAGES Sanity Report</title>
+
+</head>
+<!-- Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="/css/demo_table.css"    rel="stylesheet" media="screen">
+<link href="/css/jquery_custom.css" rel="stylesheet" media="screen">
+
+<body>
+
+<div>
+<a name="index"/>
+<h2 name="index" align="center"> IMAGES STATS ON {{today_date}}<h2>
+</div>
+
+<div class="span12">
+<TABLE class="table table-bordered table-hover">
+    <ul>
+        <li type = square><a href="{{log_file}}" target="_blank">Latest Log File</a></li>
+    </ul>
+
+</TABLE>
+</div>
+
+{#<div>
+<h4>Images Stats</h4>
+</div>#}
+
+<div class="span12">
+<table class="table table-bordered table-hover">
+<tr><th colspan="2"> Total Images </th></tr>
+<tr><td colspan="2">{{ total_missing_images }} </td><tr>
+<table>
+</div>
+
+<div class="row">
+</div>
+
+
+<div class="span12">
+<table id="myTable" class="table table-bordered table-hover">
+<thead>
+<tr>
+    <th>No.</th>
+    <th>Suite</th>
+    <th>Title</th>
+    <th>Missing gid_image_map</th>
+</tr>
+</thead>
+<tbody>
+{% for value in new_info %}
+<tr>
+    <td>{{new_info.index(value) + 1}}</td>
+    <td>{{value[0]}}</td>
+    <td>{{value[1]}}</td>
+    <td><span class="badge badge-important">{{value[2]}}</span></td>
+</tr>
+{% endfor %}
+</tbody>
+</TABLE>
+</div>
+
+<script src="/js/jquery.js" type="text/javascript"></script>
+<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+<!--<script src="/js/jquery.dataTables.js" type="text/javascript"></script>-->
+<script type="text/javascript" src="/js/jquery-latest.js"></script>
+<script type="text/javascript" src="/js/__jquery.tablesorter.min.js"></script>
+
+<!--<script type="text/javascript" charset="utf-8">
+    $(document).ready(function() { $('#IMAGESANITY').dataTable({
+        "bJQueryUI"      : true,
+        "iDisplayLength" : 20,
+        "aoColumns"      : [ null, null, null, null, { "sType": 'html' } ],
+       });
+    });
+</script>-->
+
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function()
+    {
+        $('#myTable').tablesorter();
+    }
+);
+</script>
+
+</body>
+</html>

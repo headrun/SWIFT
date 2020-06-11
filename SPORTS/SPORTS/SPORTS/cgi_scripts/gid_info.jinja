@@ -1,0 +1,215 @@
+{% macro get_query_body() -%}
+
+<div class="span12">
+<table class="table table-bordered table-hover">
+
+{% for img, gid, type, title in gid_info%}
+    <tr>
+    <td>{{img}}</td>
+    <td>{{gid}}</td>
+    <td>{{type}}</td>
+    <td>{{title}}</td>
+    </tr>
+{% endfor %}
+
+</table>
+</div>
+
+{%- endmacro %}
+
+{% macro get_info_body() -%}
+
+<div class="span12">
+<div class="media">
+  <a class="pull-left" href="#">
+    <img class="media-object" src="{{gid_header.get('Image', 'No Image')}}">
+  </a>
+  <div class="media-body">
+    <h3 class="media-heading">{{gid_header.get('Title', 'No Title')}}</h3>
+    <h4>{{gid_header.get('Type', 'No Type')}}</h4>
+    {{gid_header.get('Info', '')}}
+    <h4>Time Taken: {{gid_header.get('Time', 'No Time')}} seconds</h4>
+    </div>
+  </div>
+</div>
+</div>
+
+<br/>
+<div class="span12">
+<hr class="divider"/>
+</div>
+<br/>
+
+<div class="span12">
+<span class="label label-important" type="button"><h3>Info</h3></span>
+</div>
+
+<div class="span12">
+<table class="table table-bordered table-hover">
+
+{% for key, name, value in gid_info %}
+    <tr>
+    <td><span class="badge badge-inverse" type="button">{{key}}</span></td>
+    <td><span class="badge badge-info" type="button">{{name}}</span></td>
+    <td>{{value}}</td>
+    </tr>
+{% endfor %}
+
+</table>
+</div>
+
+{%- endmacro %}
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<meta charset="utf-8"/>
+<head>
+<title>GID INFO</title>
+</head>
+
+<!-- Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+
+<body>
+
+<div class="row-fluid">
+<div class="span12">
+<div class="navbar navbar-inverse navbar-static-top">
+<div class="navbar-inner">
+
+    <div class="row">
+
+    <div class="span4">
+        <a class="brand" href="#">Gid Info: {{gid_header.get('Gid', '')}}</a>
+    </div>
+
+    <div class="span4">
+          <a href="#GIDINFO" role="button" class="btn btn-large btn-success" data-toggle="modal">Get Gid Info</a>
+    </div>
+
+    <div class="span4">
+        <form class="navbar-search pull-right" action="{{gid_header.get('Url', '')}}">
+            <div class="control-group">
+              <div class="controls">
+                <div class="input-append">
+                   <input type="text" class="input-small" placeholder="{{gid_header['Server']}}" name="server" value="{{gid_header['Server']}}"/>
+                   <input type="text" class="search-query" placeholder="" name="query"/>
+                   <input class="btn" type="submit" value="Search"/>
+                </div>
+              </div>
+            </div>
+        </form>
+    </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div id="GIDINFO" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="gidModal" aria-hidden="true">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="gidModal">Gid Info</h3>
+      </div>
+
+      <div class="modal-body">
+            <form class="form-horizontal" action="{{gid_header.get('Url', '')}}">
+                <div class="control-group">
+            
+                  <div class="row-fluid">
+                  <input name="gid" size="30" type="text" placeholder="Gid"/>
+            
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="concepts"> Concepts
+                  </label>
+                  </div>
+            
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="seed"> Seed
+                  </label>
+                  </div>
+            
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="phrase"> Phrase
+                  </label>
+                  </div>
+              
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="phrase_incr"> Phrase Incr
+                  </label>
+                  </div>
+              
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="wiki"> Wiki
+                  </label>
+                  </div>
+                
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="tvdata"> TVdata
+                  </label>
+                  </div>
+                
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="instant"> Instant
+                  </label>
+                  </div>
+            
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="instant1"> Instant1
+                  </label>
+                  </div>
+            
+                  <div class="row-fluid">
+                  <label class="checkbox inline">
+                      <input type="checkbox" name="instant2"> Instant2
+                  </label>
+                  </div>
+    
+                </div>
+    
+                <input class="btn btn- btn-info pull-right" name="commit" type="submit" value="Get Gid Info" />
+            </form>
+      </div>
+
+    <div class="row">
+      <div class="modal-footer">
+          <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+      </div>
+    </div>
+
+    </div>
+
+</div>
+</div>
+</div>
+</div>
+
+<br/>
+<div class="row-fluid">
+<div class="span12">
+</div>
+</div>
+<br/>
+
+<div class="container">
+
+{% if gid_header['Cmd'] == 'info' %}
+    {{ get_info_body() }}
+{% else %}
+    {{ get_query_body() }}
+{% endif %}
+
+</div>
+
+<script src="/js/jquery.js"></script>
+<script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>
