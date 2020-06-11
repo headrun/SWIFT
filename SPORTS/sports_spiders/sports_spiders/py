@@ -1,0 +1,10 @@
+game_utils.py:    def get_redis_entity(self, source_key='', entity_type='', source='', entity_id=''):
+game_utils.py:            res = [self.get_redis_entity(
+game_utils.py:            res = [self.get_redis_entity(
+game_utils.py:            res = [self.get_redis_entity(
+game_utils.py:            entity_id = self.get_redis_entity(
+redis_utils.py:import redis
+redis_utils.py:redis_con   = redis.StrictRedis(host='localhost', port=6379, db=0)
+redis_utils.py:def get_redis_data(pattern, value_search=None, strict=False):
+redis_utils.py:        data = redis_con.get(pattern)
+redis_utils.py:        data = redis_con.keys(pattern=pattern)

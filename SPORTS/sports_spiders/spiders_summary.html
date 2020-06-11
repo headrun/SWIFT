@@ -1,0 +1,1833 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+<title>Spiders Summary Reports</title>
+<!-- Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="/css/demo_table.css"    rel="stylesheet" media="screen">
+<link href="/css/jquery_custom.css" rel="stylesheet" media="screen">
+
+</head>
+
+<body>
+<div>
+<a name="index"/>
+<h2 align="center">Sports Report: Status and Stats - {{yesterday}}<h2>
+</div>
+<div class="span8">
+<table id="myTable" class="table table-bordered table-hover">
+    <thead>
+    <tr>
+    <th>No.</th>
+    <th>Spiders</th>
+    <th>Status</th>
+    <th>%</th>
+    <th>Time</th>
+    <th>Memory</th>
+    </tr>
+    </thead>
+
+<tbody>
+
+{% for key, status, percentage, peak_time, peak_memory, values in big_list %}
+
+    <tr>
+        <td align=center>{{loop.index}}</td>
+        <td><a href="#{{key}}">{{key.split('ON 1')[0]}}</a></td>
+        <td align="center">{{ status }}</td>
+        <td align="center">{{ percentage }}</td>
+        <td align="center">{{ peak_time }}</td>
+        <td align="center">{{ peak_memory }}</td>
+    </tr>
+
+{% endfor %}
+</tbody>
+</table>
+</div>
+
+<div class="row">
+</div>
+
+{% for key, status, percentage, peak_time, peak_memory, values in big_list %}
+<br/>
+<a name="{{key}}"/>
+<span class="label label-info" type="button">{{key}}</span>
+<br/>
+<div style="height: 335px; overflow: auto;">
+<TABLE class="table table-bordered table-hover">
+{% for row in values %}
+{% if loop.index == 1 %}
+
+
+{% if key.startswith('MLB ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MLB SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MLB SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MLB STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NBA ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NBA SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NBA SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NBA STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NHL ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NHL SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NHL SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NHL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('HOCKEY CHAMP TROPHY ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CHAMP TROPHY STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA HOCKEY SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA HOCKEY SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('KHL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NFL ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NFL SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NFL SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NFL SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ROSTER CHECK ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CRICKET ROSTER CHECK ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AFL SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AFL SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AFL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CFL SPIDER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CFL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CFL ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NFL SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NFL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WNBA ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WNBA SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WNBA SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WNBA STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('TENNIS SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('TENNIS SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WIMBLEDON GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FRENCH OPEN SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FRENCH OPEN DRAWS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FRENCH OPEN QUALIIFYING ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('US OPEN TENNIS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('TENNIS FED CUP ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('IPTL TENNIS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('IPTL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WORLD TOUR TENNIS SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WORLD TOUR TENNIS SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('DAVIS CUP SPIDER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('DAVIS CUP ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FED CUP ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('HOPMAN CUP ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('HOPMAN CUP SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('HOPMAN CUP SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ATP WTA STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('PGA TOUR GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('PGA ONGOING ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('PGA STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('LPGA GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('LPGA ONGOING ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('LPGA STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('EUROPEAN TOUR ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('EUROPEAN ONGOING ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('EUROPEAN STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CHAMPIONS US OPEN SPIDER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CHAMPIONS TOUR ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CHAMPIONS ONGOING ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WEBCOM TOUR GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WEBCOM ONGOING ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SENIOR TOUR ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('GOLF SENIOR TOUR SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('GOLF SENIOR TOUR SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RYDERCUP ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AUSTRALIA OPEN GOLF ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ICC CRICKET ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CRICKET STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('IPL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('IPL CRICKET ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ICC INTCUP STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ICC WORLD CUP STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WCL CRICKET STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('COUNTY CRICKET STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NATWEST CRICKET STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CPL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA MAJOR LEAGUE SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA LEAGUES ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA LEAGUE SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA LEAGUE SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA LEAGUES STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA CUPS SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA CUPS SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA ASSOC LEAGUE SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA ASSOC LEAGUE SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ESPN SOCCER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ESPN GROUP STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ESPN SOCCER STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIFA INTERNATIONAL SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIFA INTERNATIONAL SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIFA TEAM STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIFA GROUP STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIFA WORLD CUP ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA MAJOR LEAGUE ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SOCCERWAY SOCCER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SOCCERWAY SOCCER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SOCCERWAY INTERNATIONAL SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SOCCERWAY INTERNATIONAL SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SOCCERWAY SOCCER STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MLS SOCCER STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIFA CLUB WORLD CUP ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AFC ASIAN CUP ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AFC STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIFA WOMENS STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CONCACAF SOCCER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CCL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CONCACAF U20 ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CONCACAF U20 STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MLS SOCCER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MLS SOCCER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('BALLON AWARDS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CSL SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CSL SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UFC SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UFC SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCF SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCF SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA FOOTBALL SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA FOOTBALL SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCB ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCB STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA NCF STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCF TOU STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY SIXNATIONS STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NRL RUGBY ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY WORLD CUP ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY WORLD CUP STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('EUROPE RUGBY STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY EUROPE SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY EUROPE SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY CHAMPIONS SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY CHAMPIONS SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RUGBY CHAMPIONS STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SUPER RUGBY STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SUPER RUGBY SPIDER SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SUPER RUGBY SPIDER SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ITM CUP RUGBY SPIDER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ITM CUP RUGBY STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('HEARTLAND RUGBY ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SUPER LEAGUE RUGBY SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SUPER LEAGUE RUGBY SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('SUPER LEAGUE STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MOTOGP SPIDER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MOTO STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AUTO RACING STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NASCAR STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('F1 STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('F1 WINNER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MARATHON STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WAC STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UCI CYCLING WORLD TOUR ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CYCLING STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('LETOUR GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('LETOUR STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('LETOUR GROUPSTANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UCI WOMENS STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UCI WOMENS WORLDCUP SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UCI WOMENS WORLDCUP SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UCI WOMENS TOUR ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CHESS RAPID GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CHESS BLITZ GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('RAPID & BLITZ STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WORLD RAPID & BLITZ STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('WORLD CHESS SPIDER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CHESS FIDE GRAND PRIX ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIELD HOCKEY ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIELD HOCKEY SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIELD HOCKEY SCORES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('COMMONWEALTH GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('COMMONWEALTH STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('COMMONWEALTH TEAM GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('COMMONWEALTH HOCKEY GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('CRICKET ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('FIBA SPIDER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('COLLEGE WORLD SERIES SCHEDULES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCF ROSTER ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('INDIAN SUPER LEAGUE ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('NCAA BOWL GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('MLB MVP ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('ISL STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('AUTO RACING GAMES ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('UEFA GROUP STANDINGS ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+{% if key.startswith('EOC WATER POLO ON 10.4.18.34') %}
+<tr>
+<th colspan=8>Program Stats</th>
+<th colspan=3>Sports Stats</th>
+<th colspan=5>Crawl Stats</th>
+</tr>
+{% endif %}
+
+
+<tr>
+<tr>
+{% for item in row %}
+<th style="width: auto">{{ item }}</th>
+{% endfor %}
+</tr>
+{% else %}
+
+<tr>
+{% for item in row %}
+<td align="center">{{ item }}</td>
+{% endfor %}
+</tr>
+
+{% endif %}
+{% endfor %}
+</TABLE>
+</div>
+
+{% if loop.index == 194 %}
+<hr color="blue"></hr>
+{% endif %}
+
+{% endfor %}
+<tr>
+        <p align="center"><a href="#index"><b>Top</b></a></p>
+</tr>
+
+<script src="/js/jquery.js" type="text/javascript"></script>
+<script src="/js/bootstrap.min.js" type="text/javascript"></script>
+<!--<script src="/js/jquery.dataTables.js" type="text/javascript"></script>-->
+<script type="text/javascript" src="/js/jquery-latest.js"></script>
+<script type="text/javascript" src="/js/__jquery.tablesorter.min.js"></script>
+
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function()
+    {
+        $('#myTable').tablesorter();
+    }
+);
+</script>
+
+
+</body>
+</html>

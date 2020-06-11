@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en">
+<head>
+<title>Sports Crawler Summary</title>
+<!-- Bootstrap -->
+<link href="/css/bootstrap.min.css" rel="stylesheet" media="screen">
+</head>
+
+<body>
+<div>
+<a name="index"></a>
+<h2 align="center">Sports Crawler Summary - {{yesterday}}</h2>
+</div>
+<div class="span10">
+<TABLE class="table table-bordered table-hover">
+    <tr>
+    <th>No.</th>
+    <th>Status</th>
+    <th>Datagen</th>
+    <th>%</th>
+    <th>Time</th>
+    <th>Memory</th>
+    </tr>
+
+{% for key, status, percentage, peak_time, peak_memory, values in big_list %}
+#LIST_ITEMS#
+
+    <tr>
+        <td align=center>{{loop.index}}</td>
+        <td align="center">{{status}}</td>
+        <td><a href="#{{key}}">{{key}}</a></td>
+        <td align="center">{{percentage}}%</td>
+        <td align="center">{{peak_time}}</td>
+        <td align="center">{{peak_memory}}</td>
+    </tr>
+
+{% endfor %}
+</TABLE>
+</div>
+
+<div class="row">
+</div>
+
+{% for key, status, percentage, peak_time, peak_memory, values in big_list %}
+<br/>
+<a name="{{key}}"/>
+<span class="label label-info" type="button">{{key}}</span>
+<br/>
+<div style="height: 335px; overflow: auto;">
+<TABLE class="table table-bordered table-hover">
+{% for row in values %}
+{% if loop.index == 1 %}
+
+#TABLE_ITEMS#
+
+<tr>
+<tr>
+{% for item in row %}
+<th style="width: auto">{{ item }}</th>
+{% endfor %}
+</tr>
+{% else %}
+
+<tr>
+{% for item in row %}
+<td align="center">{{ item }}</td>
+{% endfor %}
+</tr>
+
+{% endif %}
+{% endfor %}
+</TABLE>
+</div>
+
+{% if loop.index in (#BLUE_ITEMS#, ) %}
+<hr color="blue"></hr>
+{% endif %}
+
+{% endfor %}
+<tr>
+        <p align="center"><a href="#index"><b>Top</b></a></p>
+</tr>
+
+<!script src="/js/jquery.js"></script>
+<!script src="/js/bootstrap.min.js"></script>
+
+</body>
+</html>
