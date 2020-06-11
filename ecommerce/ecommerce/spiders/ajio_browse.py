@@ -68,8 +68,14 @@ class AjioSpider(EcommSpider):
             brandname = product.get('fnlColorVariantData', {}).get('brandName', '')
             outfiturl = product.get('fnlColorVariantData', {}).get('outfitPictureURL', '')
             discount = product.get('discountPercent', 0)
+            discount_percentage = 0
+            if discount != 0:
+                discount_percentage = float(discount.replace(' ','').replace('%off',''))
             selling_price = product.get('price', {}).get('value', 0)
             mrp = product.get('wasPriceData', {}).get('value', 0)
+            availability = 0
+            if mrp != 0:
+                availability = 1
             product_name = product.get('name', '')
             product_url = urljoin(self.domain_url, product.get('url', ''))
             sizes = product.get('productSizeData', {}).get('sizeVariants', '')
@@ -81,9 +87,9 @@ class AjioSpider(EcommSpider):
                 insight_item.update({
                     'hd_id': hd_id, 'source': source, 'sku': code, 'size': size,
                     'category':category, 'sub_category': sub_category,
-                    'brand': brandname, 'ratings_count': '', 'reviews_count': '',
+                    'brand': brandname, 'ratings_count': 0, 'reviews_count': 0,
                     'mrp':mrp, 'selling_price': selling_price, 'currency': 'INR',
-                    'discount_percentage': discount, 'is_available': ''
+                    'discount_percentage': discount_percentage, 'is_available': availability
                 })
                 yield insight_item
 
@@ -91,10 +97,10 @@ class AjioSpider(EcommSpider):
                 meta_item.update({
                     'hd_id': hd_id, 'source': source, 'sku': code, 'web_id':code_,
                     'size': size, 'title': product_name, 'category': category,
-                    'sub_category': sub_category,'brand': brandname, 'rating':'',
-                    'ratings_count': '', 'reviews_count':'', 'mrp': mrp, 
+                    'sub_category': sub_category,'brand': brandname, 'rating':0,
+                    'ratings_count': 0, 'reviews_count':0, 'mrp': mrp,
                     'selling_price': selling_price, 'currency': 'INR', 
-                    'discount_percentage': discount,'is_available': '', 'descripion': '',
+                    'discount_percentage': discount_percentage, 'is_available': availability, 'descripion': '',
                     'specs':'', 'image_url':outfiturl, 'reference_url': product_url,
                     'aux_info': json.dumps(aux_info)
                 })

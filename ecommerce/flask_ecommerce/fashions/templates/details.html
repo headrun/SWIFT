@@ -158,7 +158,7 @@ $('#picker').daterangepicker({
             }
         $('#add_element').html(items);
   });
-  brandUrl = "/brands"
+  brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date})
   $.get(brandUrl,function(response) {
         var res = JSON.parse(response)
         var items = ''
