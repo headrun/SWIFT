@@ -415,8 +415,7 @@ CREATE TABLE `insider_2015` (
   `Fld_TypeofContract` varchar(100) DEFAULT NULL,
   `Fld_UpdateDate` varchar(50) DEFAULT NULL,
   `Fld_attachment` varchar(300) DEFAULT NULL,
-  `ModeOfAquisation` varchar(300) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `ModeOfAquisation` varchar(300) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -520,13 +519,11 @@ DROP TABLE IF EXISTS `results_annual`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `results_annual` (
-  `2020` varchar(100) DEFAULT NULL,
-  `2019` varchar(100) DEFAULT NULL,
-  `2018` varchar(100) DEFAULT NULL,
-  `2017` varchar(100) DEFAULT NULL,
-  `2016` varchar(100) DEFAULT NULL,
-  `Income Statement` varchar(200) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) NOT NULL,
+  `json_value` text,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`scrip_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -538,14 +535,11 @@ DROP TABLE IF EXISTS `results_qrt`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `results_qrt` (
-  `Mar-20` varchar(200) DEFAULT NULL,
-  `Dec-19` varchar(200) DEFAULT NULL,
-  `Sep-19` varchar(200) DEFAULT NULL,
-  `Jun-19` varchar(200) DEFAULT NULL,
-  `Mar-19` varchar(200) DEFAULT NULL,
-  `FY 19-20` varchar(200) DEFAULT NULL,
-  `Income Statement` varchar(200) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) NOT NULL,
+  `json_value` text,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`scrip_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -607,14 +601,11 @@ DROP TABLE IF EXISTS `shareholding_pattern`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shareholding_pattern` (
-  `Category of shareholder` varchar(200) DEFAULT NULL,
-  `(A) Promoter & Promoter Group` varchar(200) DEFAULT NULL,
-  `(B) Public` varchar(200) DEFAULT NULL,
-  `(C1) Shares underlying DRs` varchar(200) DEFAULT NULL,
-  `(C2) Shares held by Employee Trust` varchar(200) DEFAULT NULL,
-  `(C) Non Promoter-Non Public` varchar(200) DEFAULT NULL,
-  `Grand Total` varchar(200) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) NOT NULL,
+  `json_value` text,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`scrip_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -677,4 +668,4 @@ CREATE TABLE `voting` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 16:46:39
+-- Dump completed on 2020-06-12 16:31:25
