@@ -70,31 +70,32 @@ class TargetSpider(EcommSpider):
         json_data = sel.xpath('//*[@id="viewport"]/div[5]/script//text()').extract()
         try:
             json_data = json_data[0]
-        except:
             json_data = json_data
-        json_data = json.loads(json_data)
-        prod_data = json_data['@graph']
-        prod_data = prod_data[0]
-        name = prod_data.get('name', '')
-        brand = prod_data.get('brand', '')
-        image_url = prod_data.get('image', '')
-        sku = prod_data.get('sku', '')
-        description = prod_data.get('description', '')
-        description = description.replace('<br />', '').replace('\n', '')
-        reference_url = response.url
-        aux_info = {'product_id': sku, 'json_page': response.url}
-        rating_data = prod_data.get('review', '')
-        for rating in rating_data:
-            rating = rating.get('reviewRating', {}).get('ratingValue', '')
-        if not rating_data:
-            rating = ''
-        meta_details = {'sku': sku, 'title': name,\
+            json_data = json.loads(json_data)
+            prod_data = json_data['@graph']
+            prod_data = prod_data[0]
+            name = prod_data.get('name', '')
+            brand = prod_data.get('brand', '')
+            image_url = prod_data.get('image', '')
+            sku = prod_data.get('sku', '')
+            description = prod_data.get('description', '')
+            description = description.replace('<br />', '').replace('\n', '')
+            reference_url = response.url
+            aux_info = {'product_id': sku, 'json_page': response.url}
+            rating_data = prod_data.get('review', '')
+            for rating in rating_data:
+                rating = rating.get('reviewRating', {}).get('ratingValue', '')
+            if not rating_data:
+                rating = ''
+            meta_details = {'sku': sku, 'title': name,\
                 'category': category, 'sub_category': sub_category, 'brand': brand, \
                 'descripion': description, 'image_url': image_url, 'reference_url': reference_url,\
                 'aux_info': json.dumps(aux_info), 'rating': rating, 'tcin': tcin
                        }
-        url = "https://redsky.target.com/redsky_aggregations/v1/web/pdp_client_v1?key=eb2551e4accc14f38cc42d32fbc2b2ea&tcin=%s&store_id=1010&scheduled_delivery_store_id=1010&has_scheduled_delivery_store_id=true" % tcin
-        yield Request(url, headers=headers, meta=meta_details, callback=self.parse_size)
+            url = "https://redsky.target.com/redsky_aggregations/v1/web/pdp_client_v1?key=eb2551e4accc14f38cc42d32fbc2b2ea&tcin=%s&store_id=1010&scheduled_delivery_store_id=1010&has_scheduled_delivery_store_id=true" % tcin
+            yield Request(url, headers=headers, meta=meta_details, callback=self.parse_size)
+        except:
+            return
 
     def parse_size(self, response):
         previous_data = response.meta
