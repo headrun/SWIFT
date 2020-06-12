@@ -93,6 +93,7 @@ class Bse(Spider):
 
         body = json.loads(response.body)
         sel = Selector(text=body.get('AnninCr', ''))
+	category = 'results_annual'
         sub_heading = sel.xpath(
             '//tbody//tr//td[@align="left"]//text()').extract()
         main_heading = sel.xpath(
