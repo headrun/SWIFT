@@ -11,7 +11,7 @@ import requests
 import MySQLdb
 
 class Bse(scrapy.Spider):
-    name = 'final'
+    name = 'bse_final'
 
     def start_requests(self):
 
@@ -91,7 +91,6 @@ class Bse(scrapy.Spider):
                     'https://api.bseindia.com/BseIndiaAPI/api/BulkblockDeal/w?',
                     'https://api.bseindia.com/BseIndiaAPI/api/Annexure1/w?',
                     'https://api.bseindia.com/BseIndiaAPI/api/Annexure2/w?',
-                    'https://api.bseindia.com/BseIndiaAPI/api/SastAnnual/w?',
                     'https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?'
                     ]
 
@@ -113,13 +112,12 @@ class Bse(scrapy.Spider):
         self.urls[15]:{'table_name':'bulk_deals','params':params2},
         self.urls[16]:{'table_name':'corp_annexure_1','params':params3},
         self.urls[17]:{'table_name':'corp_annexure_2','params':params3},
-        self.urls[18]:{'table_name':'sast_annual','params':params4},
-        self.urls[19]:{'table_name':'corp_announcement','params':params5}
+        self.urls[18]:{'table_name':'corp_announcement','params':params5}
 
         }
         conn = MySQLdb.connect(db ='bse', host='localhost', user='mca', passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         cur = conn.cursor()
-        table_name = ['bse_block','bse_bulk','bse_corp_annex1','bse_corp_annex_2','bse_corp_announcement','bse_sast']
+        table_name = ['block_deals', 'bulk_deals', 'insider_sast', 'board_meeting', 'share_holder_meeting', 'voting', 'corp_action', 'insider_1992', 'insider_2015', 'sast_annual', 'corp_info']
         for tbl in table_name:
             cur.execute("truncate {0}".format(tbl))
         for ur in self.urls:
