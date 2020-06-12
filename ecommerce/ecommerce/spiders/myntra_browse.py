@@ -36,7 +36,7 @@ class MyntraSpider(EcommSpider):
         products = _data.get('products', [])
         for product in products:
             product_id = product.get('productId', '')
-            name = product.get('productName', '')
+            name = product.get('productName', '').replace('\n', '').strip()
             rating = product.get('rating', '')
             rating_count = product.get('ratingCount', '')
             brand = product.get('brand', '')
