@@ -1,147 +1,173 @@
-""" Spider to crawl target site data """
+""" Spider to crawl target site data. """
 import json
-from urllib.parse import urlencode
 from scrapy.selector import Selector
 from ecommerce.common_utils import *
 from ecommerce.items import InsightItem, MetaItem
 
 
-class Target(EcommSpider):
+class TargetSpider(EcommSpider):
     name = "target_browse"
-    def __init__(self, *args, **kwargs):
-        super(Target, self).__init__(*args, **kwargs)
-        self.headers = {
-            'Accept': 'application/json',
-            'Referer': 'https://www.target.com/s?sortBy=relevance&Nao=0&category=18y1l&searchTerm=mens+apparel',
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36',
-        }
+    handle_httpstatus_list = [400]
 
+    def __init__(self, *args, **kwargs):
+        super(TargetSpider, self).__init__(*args, **kwargs)
+        self.category_array = ['/c/workout-shirts-activewear-men-s-clothing/-/N-550z2', '/c/workout-shorts-activewear-men-s-clothing/-/N-550z1', '/c/workout-jackets-vests-activewear-men-s-clothing/-/N-550yz', '/c/workout-pants-activewear-men-s-clothing/-/N-550z0', '/c/compression-base-layers-activewear-men-s-clothing/-/N-4sppi', '/c/travelwear-commute-activewear-men-s-clothing/-/N-hyb5i', '/c/graphic-tees-t-shirts-men-s-clothing/-/N-55cxi', '/c/hoodies-sweatshirts-men-s-clothing/-/N-551v0', '/c/jackets-coats-men-s-clothing/-/N-5xu2a', '/c/jeans-men-s-clothing/-/N-5xu2b', '/c/pajama-bottoms-pajamas-robes-men-s-clothing/-/N-5xu25', '/c/pajama-sets-pajamas-robes-men-s-clothing/-/N-5xu23', '/c/robes-pajamas-men-s-clothing/-/N-5xu24', '/c/jogger-lounge-pants-men-s-clothing/-/N-4y5j8', '/c/cargo-pants-men-s-clothing/-/N-4y5j9', '/c/chino-pants-men-s-clothing/-/N-4y5jb', '/c/dress-pants-men-s-clothing/-/N-4y5ja', '/c/casual-button-downs-shirts-men-s-clothing/-/N-55cxe', '/c/polo-shirts-men-s-clothing/-/N-55cxg', '/c/basic-tees-t-shirts-men-s-clothing/-/N-4ujf8', '/c/graphic-tees-t-shirts-men-s-clothing/-/N-55cxi', '/c/henley-tees-t-shirts-men-s-clothing/-/N-xt0j8', '/c/tanks-shirts-men-s-clothing/-/N-4y5j6', '/c/shorts-men-s-clothing/-/N-5xu27', '/c/socks-men-s-clothing/-/N-5xu21', '/c/suits-men-s-clothing/-/N-5xu20', '/c/swimsuits-men-s-clothing/-/N-5xu1y', '/c/travelwear-commute-activewear-men-s-clothing/-/N-hyb5i', '/c/undershirts-men-s-clothing/-/N-4vr7u', '/c/underwear-men-s-clothing/-/N-4vr7v', '/c/big-tall-shirts-clothing-men/-/N-4yda2', '/c/big-tall-jeans-clothing-men/-/N-4yd9w', '/c/big-tall-hoodies-sweatshirts-clothing-men/-/N-4xwcg', '/c/big-tall-outerwear-men-s-clothing/-/N-4vpsy', '/c/big-tall-pajamas-robes-clothing-men/-/N-xpgqv', '/c/big-tall-pants-clothing-men/-/N-4yd9v', '/c/big-tall-shorts-clothing-men/-/N-4yd9u', '/c/big-tall-swimsuits-clothing-men/-/N-5tais', '/c/big-tall-suit-separates-clothing-men/-/N-4yd9x', '/c/big-tall-workwear-clothing-men/-/N-4xwcf', '/c/hoodies-sweatshirts-men-s-clothing/-/N-551v0', '/c/jackets-coats-men-s-clothing/-/N-5xu2a']
+        self.headers = {
+            'authority': 'redsky.target.com',
+            'pragma': 'no-cache',
+            'cache-control': 'no-cache',
+            'accept': 'application/json',
+            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36',
+            'origin': 'https://www.target.com',
+            'sec-fetch-site': 'same-site',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-dest': 'empty',
+            'referer': 'https://www.target.com/c/casual-button-downs-shirts-men-s-clothing/-/N-55cxe',
+            'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8,te;q=0.7',
+        }
     def start_requests(self):
-        params = (
-            ('category', '18y1l'),
-            ('channel', 'web'),
-            ('count', '24'),
-            ('default_purchasability_filter', 'true'),
-            ('facet_recovery', 'false'),
-            ('fulfillment_test_mode', 'grocery_opu_team_member_test'),
-            ('isDLP', 'false'),
-            ('keyword', 'mens apparel'),
-            ('offset', '0'),
-            ('pageId', '/s/mens apparel'),
-            ('pricing_store_id', '1768'),
-            ('sort_by', 'relevance'),
-            ('include_sponsored_search_v2', 'true'),
-            ('ppatok', 'AOxT33a'),
-            ('platform', 'desktop'),
-            ('useragent', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36(KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36'),
-            ('excludes', 'available_to_promise_qualitative,available_to_promise_location_qualitative'),
-            ('key', 'eb2551e4accc14f38cc42d32fbc2b2ea'),
-        )
-        url = 'https://redsky.target.com/v2/plp/search/?' + urlencode(params)
-        meta = {'headers':self.headers, 'params':params, 'offset':0}
-        yield Request(url, headers=self.headers, meta=meta, callback=self.parse)
+        for category in self.category_array:
+            sub_category = category.split('/')[2]
+            category_id = category.split('-')[-1]
+            meta = {'headers': self.headers, 'offset': 0, 'sub_category': sub_category, 'category_id': category_id}
+            url = 'https://redsky.target.com/v2/plp/search/?category=%s&channel=web&count=24&offset=0&default_purchasability_filter=true&facet_recovery=false&pricing_store_id=1010&key=eb2551e4accc14f38cc42d32fbc2b2ea' % category_id
+            yield Request(url, headers=self.headers, meta=meta, callback=self.parse)
 
     def parse(self, response):
-        headers = response.meta.get('headers', '')
-        params = response.meta.get('params', '')
+        domain_url = 'https://www.target.com'
         offset = response.meta.get('offset', 0)
-        tcins = []
-        target_data = response.text
-        target_data = json.loads(target_data)
-        errormsg = target_data.get('error_response', '')
+        category_id = response.meta.get('category_id', 0)
+        sub_category = response.meta.get('sub_category', 0)
+        headers = response.meta.get('headers', 0)
+        data = response.text
+        data = json.loads(data)
+        errormsg = data.get('error_response', '')
         if errormsg:
             return
-        tcins_data = target_data['search_response']['items']['Item']
-        for tcin in tcins_data:
-            tcin_val = tcin['tcin']
-            tcins += [tcin_val]
-        tcins = str(tcins)
-        tcins = tcins.strip('[').strip(']').replace("'", '')
-        meta = {'headers': headers, 'params': params, 'offset': offset}
-        url = "https://redsky.target.com/redsky_aggregations/v1/web/plp_client_v1?key=eb2551e4accc14f38cc42d32fbc2b2ea&tcins=%s&pricing_store_id=1010" % tcins
-        yield Request(url, headers=headers, callback=self.parse_next, meta=meta)
-
-    def parse_next(self, response):
-        headers = response.meta.get('headers', '')
-        params = response.meta.get('params', '')
-        offset = response.meta.get('offset', 0)
-        # Write extraction part here for tcins
-        target_data = response.text
-        target_data = json.loads(target_data)
-        main_data = target_data['data']
-        data = main_data['product_summaries']
-        for details in data:
-            # get product url, size and price values
-            product_url = details['item']['enrichment']['buy_url']
-            price = details['price']['formatted_current_price']
-            size = details['item']['product_description']['title']
-            size = size.split(' ')[-1]
-            meta = {'price': price, 'size': size, 'product_url': product_url}
-            yield Request(product_url, meta=meta, callback=self.parse_data)
-        offset = offset + 24
-        listparams = list(params)
-        listparams[8] = ('offset', str(offset))
-        params = tuple(listparams)
-        meta = {'headers': headers, 'params': params, 'offset': offset}
-        url = 'https://redsky.target.com/v2/plp/search/?' + urlencode(params)
-        yield Request(url, headers=headers, meta=meta, callback=self.parse)
+        url_data = data.get('search_response', {}).get('items', {}).get('Item', '')
+        for url in url_data:
+            prod_url = url.get('url', '')
+            tcin = url.get('tcin', '')
+            product_url = domain_url + prod_url
+            meta_1 = {'product_url': product_url, 'tcin': tcin, 'sub_category': sub_category}
+            yield Request(product_url, headers=self.headers, meta=meta_1, callback=self.parse_data)
+        if url_data:
+            offset = offset + 24
+            url = 'https://redsky.target.com/v2/plp/search/?category=%s&channel=web&count=24&offset=%s&default_purchasability_filter=true&facet_recovery=false&pricing_store_id=1010&key=eb2551e4accc14f38cc42d32fbc2b2ea' % (category_id, offset)
+            product_meta = {'headers': headers, 'offset':offset, 'sub_category':sub_category, 'category_id':category_id}
+            yield Request(url, headers=headers, meta=product_meta, callback=self.parse)
 
     def parse_data(self, response):
-        # getting product details here
+        headers = response.meta.get('headers', 0)
+        tcin = response.meta.get('tcin', 0)
+        sub_category = response.meta.get('sub_category', 0)
         sel = Selector(response)
-        price_review_data = ''.join(response.xpath\
-        ('//script[@type = "application/ld+json"]//text()').extract())
-        price_data = json.loads(price_review_data)
-        price_data = price_data.get('@graph', '')
-        price_data = price_data[0]
-        currency_type = price_data['offers']['priceCurrency']
+        category = sel.xpath('//*[@id="viewport"]/div[5]/div/div[1]/div[1]/span[2]/a/span//text()').extract()
         try:
-            review_count = price_data['aggregateRating']['reviewCount']
+            category = category[0]
         except:
-            review_count = ''
-        source = 'target'
-        category = sel.xpath('//*[@id="specAndDescript"]/div[1]/div[1]/div[1]/div/text()').extract()
-        category = category[0].strip()
-        size = response.meta['size']
-        price = response.meta['price']
+            category = category
         json_data = sel.xpath('//*[@id="viewport"]/div[5]/script//text()').extract()
-        json_data = json_data[0]
+        try:
+            json_data = json_data[0]
+        except:
+            json_data = json_data
         json_data = json.loads(json_data)
         prod_data = json_data['@graph']
         prod_data = prod_data[0]
-        name = prod_data['name']
-        brand = prod_data['brand']
-        image_url = prod_data['image']
-        sku = prod_data['sku']
-        product_id = sku
-        description = prod_data['description']
-        description = description.replace('<br />', '')
-        availability = prod_data['offers']['availability']
+        name = prod_data.get('name', '')
+        brand = prod_data.get('brand', '')
+        image_url = prod_data.get('image', '')
+        sku = prod_data.get('sku', '')
+        description = prod_data.get('description', '')
+        description = description.replace('<br />', '').replace('\n', '')
         reference_url = response.url
-        aux_info = {'product_id': product_id, 'json_page': response.url}
-        rating_data = prod_data['review']
+        aux_info = {'product_id': sku, 'json_page': response.url}
+        rating_data = prod_data.get('review', '')
         for rating in rating_data:
-            rating = rating['reviewRating']['ratingValue']
+            rating = rating.get('reviewRating', {}).get('ratingValue', '')
         if not rating_data:
             rating = ''
-        hd_id = encode_md5('%s%s%s' % (source, str(sku), size))
-        mrp = price
-        insight_item = InsightItem()
-        insight_item.update({'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, \
-                            'category':category, 'sub_category': '', 'brand': brand,\
-                            'ratings_count': '', 'reviews_count': review_count, 'mrp': mrp,\
-                            'selling_price': price, 'discount_percentage': '',\
-                            'is_available': availability
+        meta_details = {'sku': sku, 'title': name,\
+                'category': category, 'sub_category': sub_category, 'brand': brand, \
+                'descripion': description, 'image_url': image_url, 'reference_url': reference_url,\
+                'aux_info': json.dumps(aux_info), 'rating': rating, 'tcin': tcin
+                       }
+        url = "https://redsky.target.com/redsky_aggregations/v1/web/pdp_client_v1?key=eb2551e4accc14f38cc42d32fbc2b2ea&tcin=%s&store_id=1010&scheduled_delivery_store_id=1010&has_scheduled_delivery_store_id=true" % tcin
+        yield Request(url, headers=headers, meta=meta_details, callback=self.parse_size)
+
+    def parse_size(self, response):
+        previous_data = response.meta
+        headers = response.headers
+        tcin = response.meta.get('tcin', '')
+        size_dat = response.text
+        size_data = json.loads(size_dat)
+        size_data = size_data.get('data', {}).get('product', {}).get('variation_hierarchy', '')
+        size_details = []
+        avail_details = []
+        for size in size_data:
+            is_available = size.get('availability', {}).get('is_shipping_available', '')
+            if is_available == True:
+                is_available = 1
+                avail_details.append(is_available)
+            elif is_available == False:
+                is_available = 0
+                avail_details.append(is_available)
+            size = size.get('value', '')
+            size_details.append(size)
+        previous_data.update({'size_details': size_details, 'avail_details': avail_details})
+        url = "https://redsky.target.com/web/pdp_location/v1/tcin/%s?pricing_store_id=1010&key=eb2551e4accc14f38cc42d32fbc2b2ea" % tcin
+        yield Request(url, headers=headers, meta=previous_data, callback=self.parse_price)
+
+    def parse_price(self, response):
+        item_details = response.meta
+        price_details_ = response.text
+        price_details = json.loads(price_details_)
+        mrp_ = price_details.get('price', {}).get('reg_retail_min', '')
+        selling_price = price_details.get('price', {}).get('formatted_current_price', '')
+        selling_price_ = selling_price.replace('$', '').strip()
+        disc_percentage = price_details.get('child_items', {})
+        data = 0
+        for disc_percent in disc_percentage:
+            if data == 0:
+                try:
+                    discount_percentage_ = disc_percent.get('price', {}).get('save_percent', 0)
+                except: discount_percentage_ = 0
+            data += 1
+        source__ = "Target"
+        size_detail_ = item_details.get('size_details', '')
+        avial_detail_ = item_details.get('avail_details', '')
+        sku_ = item_details.get('sku', '')
+        title_ = item_details.get('title', '')
+        category_ = item_details.get('category', '')
+        sub_category_ = item_details.get('sub_category', '')
+        brand_ = item_details.get('brand', '')
+        rating_ = item_details.get('rating', '')
+        descripion_ = item_details.get('descripion', '')
+        image_url_ = item_details.get('image_url', '')
+        reference_url_ = item_details.get('reference_url', '')
+        aux_info_ = item_details.get('aux_info', '')
+        currency_type = "USD"
+        for size_, avail in zip(size_detail_, avial_detail_):
+            hd_id_ = encode_md5('%s%s%s' % (source__, str(sku_), size_))
+            is_avail = avail
+            insight_item = InsightItem()
+            insight_item.update({
+                'hd_id': hd_id_, 'source': source__, 'sku': sku_, 'size': size_,
+                'category':category_, 'sub_category': sub_category_, 'brand': brand_,
+                'ratings_count': '', 'reviews_count': '', 'mrp': mrp_,
+                'selling_price': selling_price_, 'currency': currency_type,
+                'discount_percentage': discount_percentage_, 'is_available': is_avail
+                                })
+            yield insight_item
+            meta_item = MetaItem()
+            meta_item.update({
+                'hd_id': hd_id_, 'source': source__, 'sku': sku_, 'web_id': sku_, 'size': size_,
+                'title': title_, 'category':category_, 'sub_category': sub_category_,
+                'brand': brand_, 'rating':rating_, 'ratings_count': '', 'reviews_count': '',
+                'mrp':mrp_, 'selling_price': selling_price_, 'currency': currency_type,
+                'discount_percentage': discount_percentage_, 'is_available': is_avail,
+                'descripion': descripion_, 'specs': '', 'image_url': image_url_,
+                'reference_url': reference_url_, 'aux_info': aux_info_
                             })
-        yield insight_item
-        meta_item = MetaItem()
-        meta_item.update({'hd_id': hd_id, 'source': source, 'sku': sku, \
-                         'web_id': product_id, 'size': size, 'title': name,\
-                         'category': category, 'sub_category': '', 'brand': brand, \
-                         'ratings_count': '', 'reviews_count': review_count, 'mrp': mrp,\
-                         'selling_price': price, 'discount_percentage': '',\
-            		     'is_available': availability, 'descripion': description,\
-                         'specs': '', 'image_url': image_url, 'reference_url': reference_url,\
-                         'aux_info': json.dumps(aux_info), 'rating': rating
-                         })
-        yield meta_item
+            yield meta_item
