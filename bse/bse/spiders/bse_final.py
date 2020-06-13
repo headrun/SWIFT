@@ -1,4 +1,6 @@
 import json
+import requests
+from ast import literal_eval
 from urllib.parse import parse_qs, urlparse, urlencode
 from MySQLdb import connect
 from pandas import read_sql
@@ -15,11 +17,7 @@ class Bse(Spider):
         self.conn = connect(db='bse', host='localhost', user='mca',
                             passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         self.cursor = self.conn.cursor()
-        table_name = ['block_deals', 'bulk_deals', 'insider_sast', 'board_meeting',
-                      'share_holder_meeting', 'voting', 'corp_action', 'insider_1992',
-                      'insider_2015', 'sast_annual', 'corp_info']
-        for tbl in table_name:
-            self.cursor.execute("truncate {0}".format(tbl))
+        self.crawl_list = literal_eval(kwargs.get('jsons', '[]'))
         dispatcher.connect(self.spider_closed, signals.spider_closed)
 
     def spider_closed(self):
@@ -43,9 +41,8 @@ class Bse(Spider):
                         reliance/500325/disclosures-insider-trading-2015/',
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
-        df = read_sql('select * from bse_crawl', self.conn)
-        scrip_code = df['security_code'].to_list()
-        for code in scrip_code:
+
+        for code in self.crawl_list:
             params = (
                 ('fromdt', ''),
                 ('scripcode', code),
@@ -160,25 +157,29 @@ class Bse(Spider):
                     column_values = column_values + (row[i],)
                 try:
                     col_change = column_names.index('Change')
-                    column_names[col_change] = 'Change_'
+                    column_names[col_change] = 'change_'
                 except:
                     pass
                 try:
                     col_change = column_names.index('Foreign')
-                    column_names[col_change] = 'Foreign_'
+                    column_names[col_change] = 'foreign_'
                 except:
                     pass
+                column_names = column_names + [ 'created_at', 'modified_at']
                 if 'scrip_code' not in column_names and 'SCRIP_CODE' not in column_names and 'Fld_ScripCode' not in column_names and 'SCRIP_CD' not in column_names:
                     column_names = column_names + ['scrip_code']
                     column_values = tuple(list(column_values) + [scrip_code])
-                query = "insert ignore into  {0} ({1}) values ({2})".format(tbl_name, ','.join(column_names), (('%s,')*len(column_names)).strip(','))
+                column_names = [item.lower() for item in column_names if item]
+                query = "insert ignore into  {0} ({1}) values ({2}, now(), now()) on duplicate key update modified_at = now()".format(tbl_name, ','.join(column_names), (('%s,')*(len(column_names)-2)).strip(','))
                 self.cursor.execute(query, column_values)
                 self.conn.commit()
         else:
             for row in res:
                 column_names = [i for i in row.keys()]
+                column_names = column_names + [ 'created_at', 'modified_at']
+                column_names = [item.lower() for item in column_names if item]
                 column_values = tuple([row[i] for i in column_names])
-                query = "insert ignore  into {0} ({1}) values ({2})".format(tbl_name, ','.join(column_names), (('%s,')*len(column_names)).strip(','))
+                query = "insert ignore  into {0} ({1}) values ({2}, now(), now()) on duplicate key update modified_at = now()".format(tbl_name, ','.join(column_names), (('%s,')*(len(column_names)-2)).strip(','))
                 self.cursor.execute(query, column_values)
                 self.conn.commit()
 
@@ -186,7 +187,7 @@ class Bse(Spider):
         get_response = requests.get(url, stream=True)
         file_name = url.split("/")[-1]
         if flag == 1:
-            file_path = '/home/mca/Corp_Announcement' + file_name
+            file_path = '/home/mca/Corp_Announcement/' + file_name
         elif flag == 2:
             file_path = '/home/mca/Annual_Reports/' + file_name
         with open(file_path, 'wb') as f:
