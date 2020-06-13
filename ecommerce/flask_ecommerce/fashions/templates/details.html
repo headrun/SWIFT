@@ -137,10 +137,6 @@ $('#picker').daterangepicker({
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
-        $('#pagination-here, #pagination_here_down').bootpag({
-          total: JSON.parse(respo["totalCount"]),
-        })
-        console.log(res[1])
         for(var i=0;i<res.length;i++){
                 var valid_url = res[i]['reference_url'].includes('http')
                 var reference_url = res[i]['reference_url']
