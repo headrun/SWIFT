@@ -97,9 +97,6 @@ $('#picker').daterangepicker({
             var respo = JSON.parse(JSON.stringify(response))
             var items = ''
             var res = JSON.parse(respo["products"])
-            $('#pagination-here, #pagination_here_down').bootpag({
-              total: JSON.parse(respo["totalCount"]),
-            })
             for(var i=0;i<res.length;i++){
                 var valid_url = res[i]['reference_url'].includes('http')
                 var reference_url = res[i]['reference_url']
@@ -114,14 +111,12 @@ $('#picker').daterangepicker({
             $('ul.bootpag>li').not('.prev').first().trigger('click');
             console.log(res[1])
         });
-        brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
-        $.get(brandUrl,function(response) {
-              var res = JSON.parse(response)
-              var items = ''
-              for(var i=0;i<res.length;i++){
-                      items = items + '<option value="'+res[i]['brand']+'">'
-                  }
-              $('#brands').html(items);
+        totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+        $.get(totalCounturl,function(response) {
+            var res = JSON.parse(JSON.stringify(response))
+            $('#pagination-here, #pagination_here_down').bootpag({
+                total: JSON.parse(res["totalCount"]),
+              })   
         });
     });
 
@@ -142,10 +137,6 @@ $('#picker').daterangepicker({
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
-        $('#pagination-here, #pagination_here_down').bootpag({
-          total: JSON.parse(respo["totalCount"]),
-        })
-        console.log(res[1])
         for(var i=0;i<res.length;i++){
                 var valid_url = res[i]['reference_url'].includes('http')
                 var reference_url = res[i]['reference_url']
@@ -177,6 +168,14 @@ $('#picker').daterangepicker({
         $('#sourcename').html(items);
   });
 
+  totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+  $.get(totalCounturl,function(response) {
+      var res = JSON.parse(JSON.stringify(response))
+      $('#pagination-here, #pagination_here_down').bootpag({
+          total: JSON.parse(res["totalCount"]),
+        })   
+  });
+
   $('body').on('change', '#sorted_names', function(){
     sort_element = $("#sorted_names option:selected").val();
     brand_name='all';
@@ -188,9 +187,6 @@ $('#picker').daterangepicker({
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
-        $('#pagination-here, #pagination_here_down').bootpag({
-          total: JSON.parse(respo["totalCount"]),
-        })
         for(var i=0;i<res.length;i++){
                 var valid_url = res[i]['reference_url'].includes('http')
                 var reference_url = res[i]['reference_url']
@@ -203,7 +199,14 @@ $('#picker').daterangepicker({
             }
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
-   });
+      });
+      totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+      $.get(totalCounturl,function(response) {
+          var res = JSON.parse(JSON.stringify(response))
+          $('#pagination-here, #pagination_here_down').bootpag({
+              total: JSON.parse(res["totalCount"]),
+            })   
+      });
   });
   $('body').on('change', '#sources', function(){
     source = $("#sources option:selected").val();
@@ -216,9 +219,6 @@ $('#picker').daterangepicker({
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
-        $('#pagination-here, #pagination_here_down').bootpag({
-          total: JSON.parse(respo["totalCount"]),
-        })
         for(var i=0;i<res.length;i++){
                 var valid_url = res[i]['reference_url'].includes('http')
                 var reference_url = res[i]['reference_url']
@@ -232,15 +232,13 @@ $('#picker').daterangepicker({
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
   });
-    brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
-    $.get(brandUrl,function(response) {
-          var res = JSON.parse(response)
-          var items = ''
-          for(var i=0;i<res.length;i++){
-                  items = items + '<option value="'+res[i]['brand']+'">'
-              }
-          $('#brands').html(items);
-    });
+    totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+      $.get(totalCounturl,function(response) {
+          var res = JSON.parse(JSON.stringify(response))
+          $('#pagination-here, #pagination_here_down').bootpag({
+              total: JSON.parse(res["totalCount"]),
+            })   
+      });
   });
   $('body').on('change', '#category', function(){
     category_name = $("#category option:selected").val();
@@ -254,9 +252,6 @@ $('#picker').daterangepicker({
         var respo = JSON.parse(JSON.stringify(response))
         var items = ''
         var res = JSON.parse(respo["products"])
-        $('#pagination-here, #pagination_here_down').bootpag({
-          total: JSON.parse(respo["totalCount"]),
-        })
         for(var i=0;i<res.length;i++){
                 var valid_url = res[i]['reference_url'].includes('http')
                 var reference_url = res[i]['reference_url']
@@ -270,15 +265,13 @@ $('#picker').daterangepicker({
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
    });
-    brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
-    $.get(brandUrl,function(response) {
-          var res = JSON.parse(response)
-          var items = ''
-          for(var i=0;i<res.length;i++){
-                  items = items + '<option value="'+res[i]['brand']+'">'
-              }
-          $('#brands').html(items);
-    });
+    totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+      $.get(totalCounturl,function(response) {
+          var res = JSON.parse(JSON.stringify(response))
+          $('#pagination-here, #pagination_here_down').bootpag({
+              total: JSON.parse(res["totalCount"]),
+            })   
+      });
   });
   document.getElementsByName("brand")[0].onchange = function (event) {
      var evt = event || window.event;
@@ -294,9 +287,6 @@ $('#picker').daterangepicker({
               var respo = JSON.parse(JSON.stringify(response))
               var items = ''
               var res = JSON.parse(respo["products"])
-              $('#pagination-here, #pagination_here_down').bootpag({
-                total: JSON.parse(respo["totalCount"]),
-              })
               for(var i=0;i<res.length;i++){
                       var valid_url = res[i]['reference_url'].includes('http')
                       var reference_url = res[i]['reference_url']
@@ -310,6 +300,13 @@ $('#picker').daterangepicker({
               $('#add_element').html(items);
               $('ul.bootpag>li').not('.prev').first().trigger('click');
              });
+              totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+              $.get(totalCounturl,function(response) {
+                  var res = JSON.parse(JSON.stringify(response))
+                  $('#pagination-here, #pagination_here_down').bootpag({
+                      total: JSON.parse(res["totalCount"]),
+                    })   
+              });
              break;
          }
     }
@@ -367,7 +364,6 @@ $('#picker').daterangepicker({
 
 </nav>
 <div class="row" id="add_element">
-
 </div>
 <div class="wrapper">
     <div class="container">
