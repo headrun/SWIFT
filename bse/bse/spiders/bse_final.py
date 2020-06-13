@@ -117,8 +117,8 @@ class Bse(Spider):
                         self.urls[11]:{'table_name':'corp_info', 'params':params},
                         self.urls[12]:{'table_name':'peer', 'params':params},
                         self.urls[13]:{'table_name':'annual_report', 'params':params},
-                        self.urls[14]:{'table_name':'block_deals', 'params':params1},
-                        self.urls[15]:{'table_name':'bulk_deals', 'params':params2},
+                        self.urls[14]:{'table_name':'block_deals', 'params':params2},
+                        self.urls[15]:{'table_name':'bulk_deals', 'params':params1},
                         self.urls[16]:{'table_name':'corp_annexure_1', 'params':params3},
                         self.urls[17]:{'table_name':'corp_annexure_2', 'params':params3},
                         self.urls[18]:{'table_name':'corp_announcement', 'params':params5}
@@ -142,43 +142,49 @@ class Bse(Spider):
             pass
         res = json.loads(response.text)
         if type(res) != list:
-            for row in res['Table']:
-                column_names = [i for i in row.keys()]
-                column_values = ()
-                for i in column_names:
-                    if i == 'ATTACHMENTNAME':
-                        if row[i]:
-                            row[i] = 'https://www.bseindia.com/xml-data/corpfiling/AttachHis/'+row[i]
-                            self.download_pdf(row[i], 1)
-                    elif i == 'file_name':
-                        if row[i]:
-                            row[i] = 'https://www.bseindia.com/bseplus/AnnualReport/' +scrip_code+ '/' +row[i]
-                            self.download_pdf(row[i], 2)
-                    column_values = column_values + (row[i],)
-                try:
-                    col_change = column_names.index('Change')
-                    column_names[col_change] = 'change_'
-                except:
-                    pass
-                try:
-                    col_change = column_names.index('Foreign')
-                    column_names[col_change] = 'foreign_'
-                except:
-                    pass
-                column_names = column_names + [ 'created_at', 'modified_at']
-                if 'scrip_code' not in column_names and 'SCRIP_CODE' not in column_names and 'Fld_ScripCode' not in column_names and 'SCRIP_CD' not in column_names:
-                    column_names = column_names + ['scrip_code']
-                    column_values = tuple(list(column_values) + [scrip_code])
-                column_names = [item.lower() for item in column_names if item]
-                query = "insert ignore into  {0} ({1}) values ({2}, now(), now()) on duplicate key update modified_at = now()".format(tbl_name, ','.join(column_names), (('%s,')*(len(column_names)-2)).strip(','))
-                self.cursor.execute(query, column_values)
-                self.conn.commit()
+            if 'Table' in res:
+                for row in res['Table']:
+                    column_names = [i for i in row.keys()]
+                    column_values = ()
+                    for i in column_names:
+                        if i == 'ATTACHMENTNAME':
+                            if row[i]:
+                                row[i] = 'https://www.bseindia.com/xml-data/corpfiling/AttachHis/'+row[i]
+                                self.download_pdf(row[i], 1)
+                        elif i == 'file_name':
+                            if row[i]:
+                                row[i] = 'https://www.bseindia.com/bseplus/AnnualReport/' +scrip_code+ '/' +row[i]
+                                self.download_pdf(row[i], 2)
+                        column_values = column_values + (row[i],)
+                    try:
+                        col_change = column_names.index('Change')
+                        column_names[col_change] = 'change_'
+                    except:
+                        pass
+                    try:
+                        col_change = column_names.index('Foreign')
+                        column_names[col_change] = 'foreign_'
+                    except:
+                        pass
+                    if 'scrip_code' not in column_names and 'SCRIP_CODE' not in column_names and 'Fld_ScripCode' not in column_names and 'SCRIP_CD' not in column_names and 'scripcode' not in column_names and 'Fld_Scripcode' not in column_names:
+                        column_names = column_names + ['scrip_code']
+                        column_values = tuple(list(column_values) + [scrip_code])
+                    column_names = column_names + [ 'created_at', 'modified_at']
+                    column_names = [item.lower() for item in column_names if item]
+                    query = "insert ignore into  {0} ({1}) values ({2}, now(), now()) on duplicate key update modified_at = now()".format(tbl_name, ','.join(column_names), (('%s,')*(len(column_names)-2)).strip(','))
+                    self.cursor.execute(query, column_values)
+                    self.conn.commit()
+            else :
+                print('No data')
         else:
             for row in res:
                 column_names = [i for i in row.keys()]
+                if 'scrip_code' not in column_names and 'SCRIP_CODE' not in column_names and 'Fld_ScripCode' not in column_names and 'SCRIP_CD' not in column_names and 'scripcode' not in column_names and 'Fld_Scripcode' not in column_names:
+                    column_values = tuple([row[i] for i in column_names] + [scrip_code])
+                    column_names = column_names + [ 'scrip_code']
+                column_values = tuple([row[i] for i in column_names])
                 column_names = column_names + [ 'created_at', 'modified_at']
                 column_names = [item.lower() for item in column_names if item]
-                column_values = tuple([row[i] for i in column_names])
                 query = "insert ignore  into {0} ({1}) values ({2}, now(), now()) on duplicate key update modified_at = now()".format(tbl_name, ','.join(column_names), (('%s,')*(len(column_names)-2)).strip(','))
                 self.cursor.execute(query, column_values)
                 self.conn.commit()
