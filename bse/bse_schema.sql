@@ -27,6 +27,8 @@ CREATE TABLE `annual_report` (
   `file_name` varchar(100) DEFAULT NULL,
   `dt_tm` varchar(25) DEFAULT NULL,
   `scrip_code` varchar(25) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `file_name` (`file_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -39,13 +41,17 @@ DROP TABLE IF EXISTS `block_deals`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `block_deals` (
-  `CLIENT_NAME` varchar(100) DEFAULT NULL,
-  `DEAL_DATE` varchar(50) DEFAULT NULL,
-  `PRICE` varchar(25) DEFAULT NULL,
-  `QUANTITY` varchar(25) DEFAULT NULL,
-  `SCRIP_CODE` varchar(25) DEFAULT NULL,
-  `TRANSACTION_TYPE` varchar(10) DEFAULT NULL,
-  `scripname` varchar(200) DEFAULT NULL
+  `client_name` varchar(100) DEFAULT NULL,
+  `deal_date` varchar(50) DEFAULT NULL,
+  `price` varchar(25) DEFAULT NULL,
+  `quantity` varchar(25) DEFAULT NULL,
+  `scrip_code` varchar(25) NOT NULL,
+  `transaction_type` varchar(10) DEFAULT NULL,
+  `scripname` varchar(200) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `scrip_code` (`scrip_code`,`client_name`,`quantity`,`deal_date`),
+  UNIQUE KEY `client_name` (`client_name`,`quantity`,`deal_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -57,12 +63,16 @@ DROP TABLE IF EXISTS `board_meeting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `board_meeting` (
-  `LONG_NAME` varchar(200) DEFAULT NULL,
-  `Purpose_name` varchar(200) DEFAULT NULL,
-  `Short_name` varchar(200) DEFAULT NULL,
+  `long_name` varchar(200) DEFAULT NULL,
+  `purpose_name` varchar(200) DEFAULT NULL,
+  `short_name` varchar(200) DEFAULT NULL,
   `meeting_date` varchar(50) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL,
-  `tm` varchar(50) DEFAULT NULL
+  `scrip_code` varchar(25) NOT NULL,
+  `tm` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`scrip_code`),
+  UNIQUE KEY `scrip_code` (`scrip_code`,`purpose_name`,`meeting_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -75,10 +85,12 @@ DROP TABLE IF EXISTS `bse_crawl`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bse_crawl` (
   `security_code` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
+  `security_name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `crawl_status` int(11) NOT NULL DEFAULT '0',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`security_code`,`crawl_status`)
+  PRIMARY KEY (`security_code`,`crawl_status`),
+  UNIQUE KEY `security_code` (`security_code`,`crawl_status`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -90,13 +102,17 @@ DROP TABLE IF EXISTS `bulk_deals`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `bulk_deals` (
-  `CLIENT_NAME` varchar(100) DEFAULT NULL,
-  `DEAL_DATE` varchar(50) DEFAULT NULL,
-  `PRICE` varchar(25) DEFAULT NULL,
-  `QUANTITY` varchar(25) DEFAULT NULL,
-  `SCRIP_CODE` varchar(25) DEFAULT NULL,
-  `TRANSACTION_TYPE` varchar(10) DEFAULT NULL,
-  `scripname` varchar(200) DEFAULT NULL
+  `deal_date` varchar(25) DEFAULT NULL,
+  `scrip_code` varchar(25) NOT NULL,
+  `scripname` varchar(100) DEFAULT NULL,
+  `client_name` varchar(300) DEFAULT NULL,
+  `transaction_type` varchar(25) DEFAULT NULL,
+  `quantity` varchar(50) DEFAULT NULL,
+  `price` varchar(25) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `scrip_code` (`scrip_code`,`client_name`,`quantity`,`deal_date`),
+  UNIQUE KEY `client_name` (`client_name`,`quantity`,`deal_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -108,27 +124,29 @@ DROP TABLE IF EXISTS `consolidated_pledge`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `consolidated_pledge` (
-  `CompanyName` varchar(100) DEFAULT NULL,
-  `FLAg_Pledge` varchar(50) DEFAULT NULL,
-  `F_NewCol` varchar(25) DEFAULT NULL,
-  `Fld_EndDate` varchar(25) DEFAULT NULL,
-  `Fld_QuarterId` varchar(25) DEFAULT NULL,
-  `NoofShares_TOTAL_PROMOTER_HOLDING` varchar(10) DEFAULT NULL,
-  `Noofsharespledged` varchar(200) DEFAULT NULL,
-  `PROMOTEREncum_NoOfshares` varchar(100) DEFAULT NULL,
-  `PROMOTEREncum_Percof_PromoterShares` varchar(100) DEFAULT NULL,
-  `PROMOTEREncum_Percof_TotalShares` varchar(100) DEFAULT NULL,
-  `Percentage_TOTAL_PROMOTER_HOLDING` varchar(100) DEFAULT NULL,
-  `Public_NoofShares_HOLDING` varchar(100) DEFAULT NULL,
-  `SHP_PulishedTime` varchar(25) DEFAULT NULL,
-  `SRNO` varchar(50) DEFAULT NULL,
-  `ScripCode` varchar(25) DEFAULT NULL,
-  `TOTAL_NO_OF_ISSUED_SHARES` varchar(50) DEFAULT NULL,
-  `TotalNoofShares` varchar(50) DEFAULT NULL,
-  `dDateEnd` varchar(25) DEFAULT NULL,
-  `sQtrName` varchar(100) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL,
-  UNIQUE KEY `scrip_code` (`scrip_code`)
+  `companyName` varchar(100) DEFAULT NULL,
+  `flag_pledge` varchar(50) DEFAULT NULL,
+  `f_newcol` varchar(25) DEFAULT NULL,
+  `fld_enddate` varchar(25) DEFAULT NULL,
+  `fld_quarterid` varchar(25) DEFAULT NULL,
+  `noofshares_total_promoter_holding` varchar(100) DEFAULT NULL,
+  `noofsharespledged` varchar(200) DEFAULT NULL,
+  `promoterencum_noofshares` varchar(100) DEFAULT NULL,
+  `promoterencum_percof_promotershares` varchar(100) DEFAULT NULL,
+  `promoterencum_percof_totalshares` varchar(100) DEFAULT NULL,
+  `percentage_total_promoter_holding` varchar(100) DEFAULT NULL,
+  `public_noofshares_holding` varchar(100) DEFAULT NULL,
+  `shp_pulishedtime` varchar(25) DEFAULT NULL,
+  `srno` varchar(50) DEFAULT NULL,
+  `scripcode` varchar(25) NOT NULL,
+  `total_no_of_issued_shares` varchar(50) DEFAULT NULL,
+  `totalnoofshares` varchar(50) DEFAULT NULL,
+  `ddateend` varchar(25) DEFAULT NULL,
+  `sqtrname` varchar(100) DEFAULT NULL,
+  `scrip_code` varchar(25) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`scripcode`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -140,10 +158,13 @@ DROP TABLE IF EXISTS `corp_action`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `corp_action` (
-  `Amount` varchar(20) DEFAULT NULL,
-  `BCRD_from` varchar(200) DEFAULT NULL,
+  `amount` varchar(20) DEFAULT NULL,
+  `bcrd_from` varchar(200) DEFAULT NULL,
   `purpose_name` varchar(200) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `bcrd_from` (`bcrd_from`,`purpose_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -155,50 +176,52 @@ DROP TABLE IF EXISTS `corp_annexure_1`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `corp_annexure_1` (
-  `Fld_AffirmationLblId` varchar(200) DEFAULT NULL,
-  `Fld_AffirmationLblName` varchar(200) DEFAULT NULL,
-  `Fld_AppoinmentDate` varchar(50) DEFAULT NULL,
-  `Fld_AuthoriseDate` varchar(50) DEFAULT NULL,
-  `Fld_BODCompId` varchar(125) DEFAULT NULL,
-  `Fld_BODMeetingId` varchar(125) DEFAULT NULL,
-  `Fld_Category1` varchar(150) DEFAULT NULL,
-  `Fld_Category2` varchar(125) DEFAULT NULL,
-  `Fld_CategoryFinal` varchar(25) DEFAULT NULL,
-  `Fld_CessationDate` varchar(25) DEFAULT NULL,
-  `Fld_CommitteeCompId` varchar(50) DEFAULT NULL,
-  `Fld_CompDetails` varchar(300) DEFAULT NULL,
-  `Fld_CompStatus` varchar(200) DEFAULT NULL,
-  `Fld_DIN` varchar(200) DEFAULT NULL,
-  `Fld_DINReason` varchar(300) DEFAULT NULL,
-  `Fld_DOB` varchar(30) DEFAULT NULL,
-  `Fld_IndependantDirNum` varchar(300) DEFAULT NULL,
-  `Fld_IsRequirQuorumMet` varchar(200) DEFAULT NULL,
-  `Fld_MOBNotes` varchar(300) DEFAULT NULL,
-  `Fld_MasterID` varchar(50) DEFAULT NULL,
-  `Fld_MaxGap` varchar(300) DEFAULT NULL,
-  `Fld_MeetingDatePQ` varchar(50) DEFAULT NULL,
-  `Fld_MeetingDateRQ` varchar(500) DEFAULT NULL,
-  `Fld_MemberName` varchar(100) DEFAULT NULL,
-  `Fld_NameOfOtherCommittee` varchar(250) DEFAULT NULL,
-  `Fld_NameofCommittee` varchar(150) DEFAULT NULL,
-  `Fld_NameofDirectors` varchar(200) DEFAULT NULL,
-  `Fld_NoOfChairperson` varchar(200) DEFAULT NULL,
-  `Fld_NoOfDirectorship` varchar(100) DEFAULT NULL,
-  `Fld_NoOfIndDirectorship` varchar(300) DEFAULT NULL,
-  `Fld_NoOfMembership` varchar(200) DEFAULT NULL,
-  `Fld_Notes` varchar(200) DEFAULT NULL,
-  `Fld_PAN` varchar(50) DEFAULT NULL,
-  `Fld_PresentDirNum` varchar(100) DEFAULT NULL,
-  `Fld_QuarterID` varchar(50) DEFAULT NULL,
-  `Fld_ReAppoinmentDate` varchar(50) DEFAULT NULL,
-  `Fld_RegulationNo` varchar(50) DEFAULT NULL,
-  `Fld_Salutation` varchar(100) DEFAULT NULL,
-  `Fld_Scripcode` varchar(100) DEFAULT NULL,
-  `Fld_Sequence` varchar(100) DEFAULT NULL,
-  `Fld_Tenure` varchar(100) DEFAULT NULL,
+  `fld_affirmationLblid` varchar(200) DEFAULT NULL,
+  `fld_affirmationlblname` varchar(200) DEFAULT NULL,
+  `fld_appoinmentdate` varchar(50) DEFAULT NULL,
+  `fld_authorisedate` varchar(50) DEFAULT NULL,
+  `fld_bodcompid` varchar(125) DEFAULT NULL,
+  `fld_bodmeetingid` varchar(125) DEFAULT NULL,
+  `fld_category1` varchar(150) DEFAULT NULL,
+  `fld_category2` varchar(125) DEFAULT NULL,
+  `fld_categoryfinal` varchar(25) DEFAULT NULL,
+  `fld_cessationdate` varchar(25) DEFAULT NULL,
+  `fld_committeecompid` varchar(50) DEFAULT NULL,
+  `fld_compdetails` varchar(300) DEFAULT NULL,
+  `fld_compstatus` varchar(200) DEFAULT NULL,
+  `fld_din` varchar(200) DEFAULT NULL,
+  `fld_dinreason` varchar(300) DEFAULT NULL,
+  `fld_dob` varchar(30) DEFAULT NULL,
+  `fld_independantdirnum` varchar(300) DEFAULT NULL,
+  `fld_isrequirquorummet` varchar(200) DEFAULT NULL,
+  `fld_mobnotes` varchar(300) DEFAULT NULL,
+  `fld_masterid` varchar(50) DEFAULT NULL,
+  `fld_maxgap` varchar(300) DEFAULT NULL,
+  `fld_meetingdatepq` varchar(50) DEFAULT NULL,
+  `fld_meetingdaterq` varchar(500) DEFAULT NULL,
+  `fld_membername` varchar(100) DEFAULT NULL,
+  `fld_nameofothercommittee` varchar(250) DEFAULT NULL,
+  `fld_nameofcommittee` varchar(150) DEFAULT NULL,
+  `fld_nameofdirectors` varchar(200) DEFAULT NULL,
+  `fld_noofchairperson` varchar(200) DEFAULT NULL,
+  `fld_noofdirectorship` varchar(100) DEFAULT NULL,
+  `fld_noofinddirectorship` varchar(300) DEFAULT NULL,
+  `fld_noofmembership` varchar(200) DEFAULT NULL,
+  `fld_notes` varchar(200) DEFAULT NULL,
+  `fld_pan` varchar(50) DEFAULT NULL,
+  `fld_presentdirnum` varchar(100) DEFAULT NULL,
+  `fld_quarterid` varchar(50) DEFAULT NULL,
+  `fld_reappoinmentdate` varchar(50) DEFAULT NULL,
+  `fld_regulationno` varchar(50) DEFAULT NULL,
+  `fld_salutation` varchar(100) DEFAULT NULL,
+  `fld_scripcode` varchar(100) DEFAULT NULL,
+  `fld_sequence` varchar(100) DEFAULT NULL,
+  `fld_tenure` varchar(100) DEFAULT NULL,
   `scrip_code` varchar(25) DEFAULT NULL,
-  UNIQUE KEY `Fld_BODCompId` (`Fld_BODCompId`),
-  UNIQUE KEY `Fld_QuarterID` (`Fld_QuarterID`)
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `fld_bodcompid` (`fld_bodcompid`),
+  UNIQUE KEY `fld_quarterid` (`fld_quarterid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -210,48 +233,50 @@ DROP TABLE IF EXISTS `corp_annexure_2`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `corp_annexure_2` (
-  `Fld_AffirmationLblId` varchar(200) DEFAULT NULL,
-  `Fld_AffirmationLblName` varchar(200) DEFAULT NULL,
-  `Fld_AppoinmentDate` varchar(50) DEFAULT NULL,
-  `Fld_AuthoriseDate` varchar(50) DEFAULT NULL,
-  `Fld_BODCompId` varchar(125) DEFAULT NULL,
-  `Fld_BODMeetingId` varchar(125) DEFAULT NULL,
-  `Fld_Category1` varchar(150) DEFAULT NULL,
-  `Fld_Category2` varchar(125) DEFAULT NULL,
-  `Fld_CategoryFinal` varchar(25) DEFAULT NULL,
-  `Fld_CessationDate` varchar(25) DEFAULT NULL,
-  `Fld_CommitteeCompId` varchar(50) DEFAULT NULL,
-  `Fld_CompDetails` varchar(300) DEFAULT NULL,
-  `Fld_CompStatus` varchar(200) DEFAULT NULL,
-  `Fld_DIN` varchar(200) DEFAULT NULL,
-  `Fld_DINReason` varchar(300) DEFAULT NULL,
-  `Fld_DOB` varchar(30) DEFAULT NULL,
-  `Fld_IndependantDirNum` varchar(300) DEFAULT NULL,
-  `Fld_IsRequirQuorumMet` varchar(200) DEFAULT NULL,
-  `Fld_MOBNotes` varchar(300) DEFAULT NULL,
-  `Fld_MasterID` varchar(50) DEFAULT NULL,
-  `Fld_MaxGap` varchar(300) DEFAULT NULL,
-  `Fld_MeetingDatePQ` varchar(50) DEFAULT NULL,
-  `Fld_MeetingDateRQ` varchar(500) DEFAULT NULL,
-  `Fld_MemberName` varchar(100) DEFAULT NULL,
-  `Fld_NameOfOtherCommittee` varchar(250) DEFAULT NULL,
-  `Fld_NameofCommittee` varchar(150) DEFAULT NULL,
-  `Fld_NameofDirectors` varchar(200) DEFAULT NULL,
-  `Fld_NoOfChairperson` varchar(200) DEFAULT NULL,
-  `Fld_NoOfDirectorship` varchar(100) DEFAULT NULL,
-  `Fld_NoOfIndDirectorship` varchar(300) DEFAULT NULL,
-  `Fld_NoOfMembership` varchar(200) DEFAULT NULL,
-  `Fld_Notes` varchar(200) DEFAULT NULL,
-  `Fld_PAN` varchar(50) DEFAULT NULL,
-  `Fld_PresentDirNum` varchar(100) DEFAULT NULL,
-  `Fld_QuarterID` varchar(50) DEFAULT NULL,
-  `Fld_ReAppoinmentDate` varchar(50) DEFAULT NULL,
-  `Fld_RegulationNo` varchar(50) DEFAULT NULL,
-  `Fld_Salutation` varchar(100) DEFAULT NULL,
-  `Fld_Scripcode` varchar(100) DEFAULT NULL,
-  `Fld_Sequence` varchar(100) DEFAULT NULL,
-  `Fld_Tenure` varchar(100) DEFAULT NULL,
-  UNIQUE KEY `Fld_BODCompId` (`Fld_BODCompId`)
+  `fld_affirmationlblid` varchar(200) DEFAULT NULL,
+  `fld_affirmationlblname` varchar(200) DEFAULT NULL,
+  `fld_appoinmentdate` varchar(50) DEFAULT NULL,
+  `fld_authorisedate` varchar(50) DEFAULT NULL,
+  `fld_bodcompid` varchar(125) DEFAULT NULL,
+  `fld_bodmeetingid` varchar(125) DEFAULT NULL,
+  `fld_category1` varchar(150) DEFAULT NULL,
+  `fld_category2` varchar(125) DEFAULT NULL,
+  `fld_categoryfinal` varchar(25) DEFAULT NULL,
+  `fld_cessationdate` varchar(25) DEFAULT NULL,
+  `fld_committeecompid` varchar(50) DEFAULT NULL,
+  `fld_compdetails` varchar(300) DEFAULT NULL,
+  `fld_compstatus` varchar(200) DEFAULT NULL,
+  `fld_din` varchar(200) DEFAULT NULL,
+  `fld_dinreason` varchar(300) DEFAULT NULL,
+  `fld_dob` varchar(30) DEFAULT NULL,
+  `fld_independantdirnum` varchar(300) DEFAULT NULL,
+  `fld_isrequirquorummet` varchar(200) DEFAULT NULL,
+  `fld_mobnotes` varchar(300) DEFAULT NULL,
+  `fld_masterid` varchar(50) DEFAULT NULL,
+  `fld_maxgap` varchar(300) DEFAULT NULL,
+  `fld_meetingdatepq` varchar(50) DEFAULT NULL,
+  `fld_meetingDaterq` varchar(500) DEFAULT NULL,
+  `fld_membername` varchar(100) DEFAULT NULL,
+  `fld_nameofothercommittee` varchar(250) DEFAULT NULL,
+  `fld_nameofcommittee` varchar(150) DEFAULT NULL,
+  `fld_nameofdirectors` varchar(200) DEFAULT NULL,
+  `fld_noofchairperson` varchar(200) DEFAULT NULL,
+  `fld_noofdirectorship` varchar(100) DEFAULT NULL,
+  `fld_noofinddirectorship` varchar(300) DEFAULT NULL,
+  `fld_noofmembership` varchar(200) DEFAULT NULL,
+  `fld_notes` varchar(200) DEFAULT NULL,
+  `fld_pan` varchar(50) DEFAULT NULL,
+  `fld_presentdirnum` varchar(100) DEFAULT NULL,
+  `fld_quarterid` varchar(50) DEFAULT NULL,
+  `fld_reappoinmentdate` varchar(50) DEFAULT NULL,
+  `fld_regulationno` varchar(50) DEFAULT NULL,
+  `fld_salutation` varchar(100) DEFAULT NULL,
+  `fld_scripcode` varchar(100) DEFAULT NULL,
+  `fld_sequence` varchar(100) DEFAULT NULL,
+  `fld_tenure` varchar(100) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `fld_bodcompid` (`fld_bodcompid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -263,31 +288,33 @@ DROP TABLE IF EXISTS `corp_announcement`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `corp_announcement` (
-  `AGENDA_ID` varchar(200) DEFAULT NULL,
-  `ANNOUNCEMENT_TYPE` varchar(200) DEFAULT NULL,
-  `ATTACHMENTNAME` varchar(250) DEFAULT NULL,
-  `CATEGORYNAME` varchar(300) DEFAULT NULL,
-  `CRITICALNEWS` varchar(25) DEFAULT NULL,
-  `DT_TM` varchar(125) DEFAULT NULL,
-  `DissemDT` varchar(50) DEFAULT NULL,
-  `FILESTATUS` varchar(125) DEFAULT NULL,
-  `HEADLINE` varchar(125) DEFAULT NULL,
-  `MORE` varchar(125) DEFAULT NULL,
-  `NEWSID` varchar(25) DEFAULT NULL,
-  `NEWSSUB` varchar(200) DEFAULT NULL,
-  `NEWS_DT` varchar(200) DEFAULT NULL,
-  `NSURL` varchar(300) DEFAULT NULL,
-  `News_submission_dt` varchar(300) DEFAULT NULL,
-  `OLD` varchar(300) DEFAULT NULL,
-  `PDFFLAG` varchar(300) DEFAULT NULL,
-  `QUARTER_ID` varchar(200) DEFAULT NULL,
-  `RN` varchar(300) DEFAULT NULL,
-  `SCRIP_CD` varchar(200) DEFAULT NULL,
-  `SLONGNAME` varchar(200) DEFAULT NULL,
-  `TimeDiff` varchar(50) DEFAULT NULL,
-  `TotalPageCnt` varchar(100) DEFAULT NULL,
-  `XML_NAME` varchar(300) DEFAULT NULL,
-  UNIQUE KEY `NEWSID` (`NEWSID`)
+  `agenda_id` varchar(200) DEFAULT NULL,
+  `announcement_type` varchar(200) DEFAULT NULL,
+  `attachmentname` varchar(250) DEFAULT NULL,
+  `categoryname` varchar(300) DEFAULT NULL,
+  `criticalnews` varchar(25) DEFAULT NULL,
+  `dt_tm` varchar(125) DEFAULT NULL,
+  `dissemdt` varchar(50) DEFAULT NULL,
+  `filestatus` varchar(125) DEFAULT NULL,
+  `headline` varchar(125) DEFAULT NULL,
+  `more` varchar(125) DEFAULT NULL,
+  `newsid` varchar(25) DEFAULT NULL,
+  `newssub` varchar(200) DEFAULT NULL,
+  `news_dt` varchar(200) DEFAULT NULL,
+  `nsurl` varchar(300) DEFAULT NULL,
+  `news_submission_dt` varchar(300) DEFAULT NULL,
+  `old` varchar(300) DEFAULT NULL,
+  `pdfflag` varchar(300) DEFAULT NULL,
+  `quarter_id` varchar(200) DEFAULT NULL,
+  `rn` varchar(300) DEFAULT NULL,
+  `scrip_cd` varchar(200) DEFAULT NULL,
+  `slongname` varchar(200) DEFAULT NULL,
+  `timediff` varchar(50) DEFAULT NULL,
+  `totalpagecnt` varchar(100) DEFAULT NULL,
+  `xml_name` varchar(300) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `newsid` (`newsid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -299,12 +326,15 @@ DROP TABLE IF EXISTS `corp_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `corp_info` (
-  `sDesignation` varchar(200) DEFAULT NULL,
-  `sFirstname` varchar(200) DEFAULT NULL,
-  `sLastname` varchar(200) DEFAULT NULL,
-  `sMiddlename` varchar(200) DEFAULT NULL,
-  `sPrefix` varchar(25) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `sdesignation` varchar(200) DEFAULT NULL,
+  `sfirstname` varchar(200) DEFAULT NULL,
+  `slastname` varchar(200) DEFAULT NULL,
+  `smiddlename` varchar(200) DEFAULT NULL,
+  `sprefix` varchar(25) DEFAULT NULL,
+  `scrip_code` varchar(25) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `sfirstname` (`sfirstname`,`slastname`,`sdesignation`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -316,21 +346,23 @@ DROP TABLE IF EXISTS `debt`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `debt` (
-  `Change_` varchar(100) DEFAULT NULL,
-  `Dt_tm` varchar(50) DEFAULT NULL,
-  `HighRate` varchar(25) DEFAULT NULL,
-  `ISIN_NUMBER` varchar(50) DEFAULT NULL,
-  `Instrument` varchar(125) DEFAULT NULL,
-  `LowRate` varchar(100) DEFAULT NULL,
-  `Ltradert` varchar(200) DEFAULT NULL,
-  `OpenRate` varchar(100) DEFAULT NULL,
-  `ScripName` varchar(100) DEFAULT NULL,
-  `TURNOVER` varchar(100) DEFAULT NULL,
-  `VOLUME` varchar(100) DEFAULT NULL,
-  `YTM` varchar(100) DEFAULT NULL,
+  `change_` varchar(100) DEFAULT NULL,
+  `dt_tm` varchar(50) DEFAULT NULL,
+  `highrate` varchar(25) DEFAULT NULL,
+  `isin_number` varchar(50) DEFAULT NULL,
+  `instrument` varchar(125) DEFAULT NULL,
+  `lowrate` varchar(100) DEFAULT NULL,
+  `ltradert` varchar(200) DEFAULT NULL,
+  `openrate` varchar(100) DEFAULT NULL,
+  `scripname` varchar(100) DEFAULT NULL,
+  `turnover` varchar(100) DEFAULT NULL,
+  `volume` varchar(100) DEFAULT NULL,
+  `ytm` varchar(100) DEFAULT NULL,
   `change_percent` varchar(125) DEFAULT NULL,
   `scrip_cd` varchar(50) DEFAULT NULL,
   `scrip_code` varchar(25) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `scrip_cd` (`scrip_cd`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -343,21 +375,24 @@ DROP TABLE IF EXISTS `insider_1992`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `insider_1992` (
-  `BroadcastDTtm` varchar(100) DEFAULT NULL,
-  `Buy_Sell` varchar(50) DEFAULT NULL,
-  `Company_Name` varchar(200) DEFAULT NULL,
-  `FLD_MODE` varchar(150) DEFAULT NULL,
-  `Flag` varchar(50) DEFAULT NULL,
-  `Fld_AcqSoldDateFrom` varchar(100) DEFAULT NULL,
-  `Fld_AcqSoldDateTo` varchar(200) DEFAULT NULL,
-  `Insider_name` varchar(100) DEFAULT NULL,
-  `Modified_date` varchar(100) DEFAULT NULL,
-  `Perc_After` varchar(100) DEFAULT NULL,
-  `Perc_of_Buysell` varchar(100) DEFAULT NULL,
-  `Quantity` varchar(100) DEFAULT NULL,
-  `Quantity_after` varchar(125) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL,
-  `transaction_date` varchar(50) DEFAULT NULL
+  `broadcastdttm` varchar(100) DEFAULT NULL,
+  `buy_sell` varchar(50) DEFAULT NULL,
+  `company_name` varchar(200) DEFAULT NULL,
+  `fld_mode` varchar(150) DEFAULT NULL,
+  `flag` varchar(50) DEFAULT NULL,
+  `fld_acqsolddatefrom` varchar(100) DEFAULT NULL,
+  `fld_acqsolddateto` varchar(200) DEFAULT NULL,
+  `insider_name` varchar(100) DEFAULT NULL,
+  `modified_date` varchar(100) DEFAULT NULL,
+  `perc_after` varchar(100) DEFAULT NULL,
+  `perc_of_buysell` varchar(100) DEFAULT NULL,
+  `quantity` varchar(100) DEFAULT NULL,
+  `quantity_after` varchar(125) DEFAULT NULL,
+  `scrip_code` varchar(25) NOT NULL,
+  `transaction_date` varchar(50) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `modified_date` (`modified_date`,`insider_name`,`fld_acqsolddatefrom`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -369,53 +404,56 @@ DROP TABLE IF EXISTS `insider_2015`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `insider_2015` (
-  `Companyname` varchar(200) DEFAULT NULL,
-  `Fld_AttachmentICRA` varchar(200) DEFAULT NULL,
-  `Fld_AuthoriseDate` varchar(50) DEFAULT NULL,
-  `Fld_ContractSpecifications` varchar(300) DEFAULT NULL,
-  `Fld_CreateDate` varchar(25) DEFAULT NULL,
-  `Fld_DateIntimation` varchar(25) DEFAULT NULL,
-  `Fld_ExportFlag` varchar(50) DEFAULT NULL,
-  `Fld_FromDate` varchar(25) DEFAULT NULL,
-  `Fld_FromDateAllotment` varchar(25) DEFAULT NULL,
-  `Fld_ID` varchar(25) DEFAULT NULL,
-  `Fld_LetterDate` varchar(25) DEFAULT NULL,
-  `Fld_Mode` varchar(200) DEFAULT NULL,
-  `Fld_ModeofAcquisition` varchar(200) DEFAULT NULL,
-  `Fld_Notes` text,
-  `Fld_PercentofShareholdingPost` varchar(300) DEFAULT NULL,
-  `Fld_PercentofShareholdingPre` varchar(300) DEFAULT NULL,
-  `Fld_PersonCatgName` varchar(300) DEFAULT NULL,
-  `Fld_PromoterAdd` varchar(200) DEFAULT NULL,
-  `Fld_PromoterCIN` varchar(30) DEFAULT NULL,
-  `Fld_PromoterCatg` varchar(200) DEFAULT NULL,
-  `Fld_PromoterContact` varchar(300) DEFAULT NULL,
-  `Fld_PromoterDIN` varchar(100) DEFAULT NULL,
-  `Fld_PromoterName` varchar(500) DEFAULT NULL,
-  `Fld_PromoterPAN` varchar(100) DEFAULT NULL,
-  `Fld_ScripCode` varchar(50) DEFAULT NULL,
-  `Fld_SecurityNo` varchar(50) DEFAULT NULL,
-  `Fld_SecurityNoPost` varchar(200) DEFAULT NULL,
-  `Fld_SecurityNoPrior` varchar(200) DEFAULT NULL,
-  `Fld_SecurityType` varchar(100) DEFAULT NULL,
-  `Fld_SecurityTypeName` varchar(300) DEFAULT NULL,
-  `Fld_SecurityTypeNamePrior` varchar(200) DEFAULT NULL,
-  `Fld_SecurityTypePost` varchar(200) DEFAULT NULL,
-  `Fld_SecurityTypePrior` varchar(200) DEFAULT NULL,
-  `Fld_SecurityValue` varchar(200) DEFAULT NULL,
-  `Fld_StampDate` varchar(50) DEFAULT NULL,
-  `Fld_ToDate` varchar(50) DEFAULT NULL,
-  `Fld_ToDateAllotment` varchar(50) DEFAULT NULL,
-  `Fld_TradeDerivBuyUnits` varchar(100) DEFAULT NULL,
-  `Fld_TradeDerivBuyValue` varchar(100) DEFAULT NULL,
-  `Fld_TradeDerivSellUnits` varchar(100) DEFAULT NULL,
-  `Fld_TradeDerivSellValue` varchar(100) DEFAULT NULL,
-  `Fld_TradeExchange` varchar(100) DEFAULT NULL,
-  `Fld_TransactionType` varchar(100) DEFAULT NULL,
-  `Fld_TypeofContract` varchar(100) DEFAULT NULL,
-  `Fld_UpdateDate` varchar(50) DEFAULT NULL,
-  `Fld_attachment` varchar(300) DEFAULT NULL,
-  `ModeOfAquisation` varchar(300) DEFAULT NULL
+  `companyname` varchar(200) DEFAULT NULL,
+  `fld_attachmenticra` varchar(200) DEFAULT NULL,
+  `fld_authorisedate` varchar(50) DEFAULT NULL,
+  `fld_contractspecifications` varchar(300) DEFAULT NULL,
+  `fld_createdate` varchar(25) DEFAULT NULL,
+  `fld_dateintimation` varchar(25) DEFAULT NULL,
+  `fld_exportflag` varchar(50) DEFAULT NULL,
+  `fld_fromdate` varchar(25) DEFAULT NULL,
+  `fld_fromdateallotment` varchar(25) DEFAULT NULL,
+  `fld_id` varchar(25) DEFAULT NULL,
+  `fld_letterdate` varchar(25) DEFAULT NULL,
+  `fld_mode` varchar(200) DEFAULT NULL,
+  `fld_modeofacquisition` varchar(200) DEFAULT NULL,
+  `fld_notes` text,
+  `fld_percentofshareholdingpost` varchar(300) DEFAULT NULL,
+  `fld_percentofshareholdingpre` varchar(300) DEFAULT NULL,
+  `fld_personcatgname` varchar(300) DEFAULT NULL,
+  `fld_promoteradd` varchar(200) DEFAULT NULL,
+  `fld_promotercin` varchar(30) DEFAULT NULL,
+  `fld_promotercatg` varchar(200) DEFAULT NULL,
+  `fld_promotercontact` varchar(300) DEFAULT NULL,
+  `fld_promoterdin` varchar(100) DEFAULT NULL,
+  `fld_promotername` varchar(500) DEFAULT NULL,
+  `fld_promoterpan` varchar(100) DEFAULT NULL,
+  `fld_scripcode` varchar(50) NOT NULL,
+  `fld_securityno` varchar(50) DEFAULT NULL,
+  `fld_securitynopost` varchar(200) DEFAULT NULL,
+  `fld_securitynoprior` varchar(200) DEFAULT NULL,
+  `fld_securitytype` varchar(100) DEFAULT NULL,
+  `fld_securitytypename` varchar(300) DEFAULT NULL,
+  `fld_securitytypenameprior` varchar(200) DEFAULT NULL,
+  `fld_securitytypepost` varchar(200) DEFAULT NULL,
+  `fld_securitytypeprior` varchar(200) DEFAULT NULL,
+  `fld_securityvalue` varchar(200) DEFAULT NULL,
+  `fld_stampdate` varchar(50) DEFAULT NULL,
+  `fld_todate` varchar(50) DEFAULT NULL,
+  `fld_todateallotment` varchar(50) DEFAULT NULL,
+  `fld_tradederivbuyunits` varchar(100) DEFAULT NULL,
+  `fld_tradederivbuyvalue` varchar(100) DEFAULT NULL,
+  `fld_tradederivsellunits` varchar(100) DEFAULT NULL,
+  `fld_tradederivsellvalue` varchar(100) DEFAULT NULL,
+  `fld_tradeexchange` varchar(100) DEFAULT NULL,
+  `fld_transactiontype` varchar(100) DEFAULT NULL,
+  `fld_typeofcontract` varchar(100) DEFAULT NULL,
+  `fld_updatedate` varchar(50) DEFAULT NULL,
+  `fld_attachment` varchar(300) DEFAULT NULL,
+  `modeofaquisation` varchar(300) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `fld_id` (`fld_id`,`fld_scripcode`,`fld_promoterpan`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -427,23 +465,25 @@ DROP TABLE IF EXISTS `insider_sast`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `insider_sast` (
-  `Acq_Sale` varchar(100) DEFAULT NULL,
-  `Acq_sale_Pct` varchar(100) DEFAULT NULL,
-  `Acq_sale_qty` varchar(100) DEFAULT NULL,
-  `Acquisition_After` varchar(150) DEFAULT NULL,
-  `Acquisition_Pct_After` varchar(50) DEFAULT NULL,
-  `Acquisition_date` varchar(100) DEFAULT NULL,
-  `Company_Name` varchar(200) DEFAULT NULL,
-  `FLD_MODE` varchar(100) DEFAULT NULL,
-  `Fld_AcqSoldDateFrom` varchar(100) DEFAULT NULL,
-  `Fld_NameOfPG` varchar(100) DEFAULT NULL,
-  `Fld_TotDilPerAfterAcq` varchar(100) DEFAULT NULL,
-  `NEWDT` varchar(100) DEFAULT NULL,
+  `acq_sale` varchar(100) DEFAULT NULL,
+  `acq_sale_pct` varchar(100) DEFAULT NULL,
+  `acq_sale_qty` varchar(100) DEFAULT NULL,
+  `acquisition_after` varchar(150) DEFAULT NULL,
+  `acquisition_pct_after` varchar(50) DEFAULT NULL,
+  `acquisition_date` varchar(100) DEFAULT NULL,
+  `company_name` varchar(200) DEFAULT NULL,
+  `fld_mode` varchar(100) DEFAULT NULL,
+  `fld_acqsolddatefrom` varchar(100) DEFAULT NULL,
+  `fld_nameofpg` varchar(100) DEFAULT NULL,
+  `fld_totdilperafteracq` varchar(100) DEFAULT NULL,
+  `newdt` varchar(100) DEFAULT NULL,
   `flag` varchar(125) DEFAULT NULL,
   `modify_date` varchar(50) DEFAULT NULL,
   `ord` varchar(100) DEFAULT NULL,
   `scrip_code` varchar(25) DEFAULT NULL,
-  `shareholdername` varchar(200) DEFAULT NULL
+  `shareholdername` varchar(200) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -461,7 +501,10 @@ CREATE TABLE `notice` (
   `segmentname` varchar(125) DEFAULT NULL,
   `categoryname` varchar(125) DEFAULT NULL,
   `departmentname` varchar(125) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL,
+  `scrip_code` varchar(25) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`scrip_code`),
   UNIQUE KEY `notice_no` (`notice_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -474,39 +517,41 @@ DROP TABLE IF EXISTS `peer`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `peer` (
-  `BV` varchar(200) DEFAULT NULL,
-  `Bodies_Corporate` varchar(200) DEFAULT NULL,
-  `Cash_EPS` varchar(150) DEFAULT NULL,
-  `Change_` varchar(300) DEFAULT NULL,
-  `DII` varchar(125) DEFAULT NULL,
-  `EPS` varchar(125) DEFAULT NULL,
-  `Equity` varchar(150) DEFAULT NULL,
-  `FACE_VALUE` varchar(125) DEFAULT NULL,
-  `FII` varchar(125) DEFAULT NULL,
-  `Foreign_` varchar(125) DEFAULT NULL,
-  `INDIAN` varchar(25) DEFAULT NULL,
-  `Institution` varchar(200) DEFAULT NULL,
-  `LTP` varchar(200) DEFAULT NULL,
-  `NPM` varchar(300) DEFAULT NULL,
-  `Name` varchar(300) DEFAULT NULL,
-  `NonIns` varchar(300) DEFAULT NULL,
-  `OPM` varchar(300) DEFAULT NULL,
-  `PAT` varchar(200) DEFAULT NULL,
-  `PB` varchar(30) DEFAULT NULL,
-  `PE` varchar(200) DEFAULT NULL,
-  `PnPGrp` varchar(300) DEFAULT NULL,
-  `Public` varchar(100) DEFAULT NULL,
-  `RONW` varchar(500) DEFAULT NULL,
-  `ResQtr` varchar(100) DEFAULT NULL,
-  `Results_QuarterName` varchar(150) DEFAULT NULL,
-  `Revenue` varchar(50) DEFAULT NULL,
-  `SHP_QuarterName` varchar(200) DEFAULT NULL,
+  `bv` varchar(200) DEFAULT NULL,
+  `bodies_corporate` varchar(200) DEFAULT NULL,
+  `cash_eps` varchar(150) DEFAULT NULL,
+  `change_` varchar(300) DEFAULT NULL,
+  `dii` varchar(125) DEFAULT NULL,
+  `eps` varchar(125) DEFAULT NULL,
+  `equity` varchar(150) DEFAULT NULL,
+  `face_value` varchar(125) DEFAULT NULL,
+  `fii` varchar(125) DEFAULT NULL,
+  `foreign_` varchar(125) DEFAULT NULL,
+  `indian` varchar(25) DEFAULT NULL,
+  `institution` varchar(200) DEFAULT NULL,
+  `ltp` varchar(200) DEFAULT NULL,
+  `npm` varchar(300) DEFAULT NULL,
+  `name` varchar(300) DEFAULT NULL,
+  `nonins` varchar(300) DEFAULT NULL,
+  `opm` varchar(300) DEFAULT NULL,
+  `pat` varchar(200) DEFAULT NULL,
+  `pb` varchar(30) DEFAULT NULL,
+  `pe` varchar(200) DEFAULT NULL,
+  `pnpgrp` varchar(300) DEFAULT NULL,
+  `public` varchar(100) DEFAULT NULL,
+  `ronw` varchar(500) DEFAULT NULL,
+  `resqtr` varchar(100) DEFAULT NULL,
+  `results_quartername` varchar(150) DEFAULT NULL,
+  `revenue` varchar(50) DEFAULT NULL,
+  `shp_quartername` varchar(200) DEFAULT NULL,
   `scrip_cd` varchar(200) DEFAULT NULL,
   `w52hi` varchar(100) DEFAULT NULL,
   `w52hidt` varchar(100) DEFAULT NULL,
   `w52lo` varchar(100) DEFAULT NULL,
   `w52lodt` varchar(200) DEFAULT NULL,
   `scrip_code` varchar(25) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `scrip_cd` (`scrip_cd`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -551,26 +596,29 @@ DROP TABLE IF EXISTS `sast_annual`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sast_annual` (
-  `CS_Fld_No_of_Share` varchar(200) DEFAULT NULL,
-  `CS_Fld_Per_DilutedShare` varchar(200) DEFAULT NULL,
-  `CS_Fld_Per_Share` varchar(150) DEFAULT NULL,
-  `Fld_ExchangeName` varchar(300) DEFAULT NULL,
-  `Fld_FYear` varchar(25) DEFAULT NULL,
-  `Fld_Name` varchar(125) DEFAULT NULL,
-  `Fld_ScripCode` varchar(50) DEFAULT NULL,
-  `OI_Fld_No_of_Share` varchar(125) DEFAULT NULL,
-  `OI_Fld_Per_DilutedShare` varchar(125) DEFAULT NULL,
-  `OI_Fld_Per_Share` varchar(125) DEFAULT NULL,
-  `SH_Fld_No_of_Share` varchar(25) DEFAULT NULL,
-  `SH_Fld_Per_DilutedShare` varchar(200) DEFAULT NULL,
-  `SH_Fld_Per_Share` varchar(200) DEFAULT NULL,
-  `VR_Fld_No_of_Share` varchar(300) DEFAULT NULL,
-  `VR_Fld_Per_DilutedShare` varchar(300) DEFAULT NULL,
-  `VR_Fld_Per_Share` varchar(300) DEFAULT NULL,
-  `WR_Fld_No_of_Share` varchar(300) DEFAULT NULL,
-  `WR_Fld_Per_DilutedShare` varchar(200) DEFAULT NULL,
-  `WR_Fld_Per_Share` varchar(300) DEFAULT NULL,
-  `sLongName` varchar(200) DEFAULT NULL
+  `cs_fld_no_of_share` varchar(200) DEFAULT NULL,
+  `cs_fld_per_dilutedshare` varchar(200) DEFAULT NULL,
+  `cs_fld_per_share` varchar(150) DEFAULT NULL,
+  `fld_exchangename` varchar(300) DEFAULT NULL,
+  `fld_fyear` varchar(25) DEFAULT NULL,
+  `fld_name` varchar(125) DEFAULT NULL,
+  `fld_scripcode` varchar(50) NOT NULL,
+  `oi_fld_no_of_share` varchar(125) DEFAULT NULL,
+  `oi_fld_per_dilutedshare` varchar(125) DEFAULT NULL,
+  `oi_fld_per_share` varchar(125) DEFAULT NULL,
+  `sh_fld_no_of_share` varchar(25) DEFAULT NULL,
+  `sh_fld_per_dilutedshare` varchar(200) DEFAULT NULL,
+  `sh_fld_per_share` varchar(200) DEFAULT NULL,
+  `vr_fld_no_of_share` varchar(300) DEFAULT NULL,
+  `vr_fld_per_dilutedshare` varchar(300) DEFAULT NULL,
+  `vr_fld_per_share` varchar(300) DEFAULT NULL,
+  `wr_fld_no_of_share` varchar(300) DEFAULT NULL,
+  `wr_fld_per_dilutedshare` varchar(200) DEFAULT NULL,
+  `wr_fld_per_share` varchar(300) DEFAULT NULL,
+  `slongname` varchar(200) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `fld_exchangename` (`fld_exchangename`,`fld_name`,`fld_fyear`,`oi_fld_no_of_share`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -582,14 +630,17 @@ DROP TABLE IF EXISTS `share_holder_meeting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `share_holder_meeting` (
-  `DT_TM` varchar(100) DEFAULT NULL,
-  `Industry_name` varchar(200) DEFAULT NULL,
-  `Long_Name` varchar(200) DEFAULT NULL,
-  `MEETING_DATE` varchar(150) DEFAULT NULL,
-  `PURPOSE_NAME` varchar(250) DEFAULT NULL,
-  `Short_name` varchar(200) DEFAULT NULL,
-  `URL` varchar(300) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `dt_tm` varchar(100) DEFAULT NULL,
+  `industry_name` varchar(200) DEFAULT NULL,
+  `long_name` varchar(200) DEFAULT NULL,
+  `meeting_date` varchar(150) DEFAULT NULL,
+  `purpose_name` varchar(250) DEFAULT NULL,
+  `short_name` varchar(200) DEFAULT NULL,
+  `url` varchar(300) DEFAULT NULL,
+  `scrip_code` varchar(25) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `dt_tm` (`dt_tm`,`industry_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -617,22 +668,24 @@ DROP TABLE IF EXISTS `slb`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `slb` (
-  `Bst_S_rate` varchar(200) DEFAULT NULL,
-  `Bst_b_rate` varchar(200) DEFAULT NULL,
-  `Dt_tm` varchar(50) DEFAULT NULL,
-  `HighRate` varchar(300) DEFAULT NULL,
-  `LowRate` varchar(25) DEFAULT NULL,
-  `Ltradert` varchar(125) DEFAULT NULL,
-  `NoOfTrd` varchar(50) DEFAULT NULL,
-  `OpenRate` varchar(125) DEFAULT NULL,
-  `Tot_B_qty` varchar(125) DEFAULT NULL,
-  `Tot_S_qty` varchar(125) DEFAULT NULL,
-  `Trd_vol` varchar(25) DEFAULT NULL,
+  `bst_s_rate` varchar(200) DEFAULT NULL,
+  `bst_b_rate` varchar(200) DEFAULT NULL,
+  `dt_tm` varchar(50) DEFAULT NULL,
+  `highrate` varchar(300) DEFAULT NULL,
+  `lowrate` varchar(25) DEFAULT NULL,
+  `ltradert` varchar(125) DEFAULT NULL,
+  `nooftrd` varchar(50) DEFAULT NULL,
+  `openrate` varchar(125) DEFAULT NULL,
+  `tot_b_qty` varchar(125) DEFAULT NULL,
+  `tot_s_qty` varchar(125) DEFAULT NULL,
+  `trd_vol` varchar(25) DEFAULT NULL,
   `closerate` varchar(200) DEFAULT NULL,
   `expirationdate` varchar(200) DEFAULT NULL,
   `scrip_Cd` varchar(300) DEFAULT NULL,
   `scripname` varchar(300) DEFAULT NULL,
   `scrip_code` varchar(25) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UNIQUE KEY `scrip_Cd` (`scrip_Cd`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -645,17 +698,20 @@ DROP TABLE IF EXISTS `voting`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `voting` (
-  `Description` text,
-  `Fld_AgendaDetails` varchar(200) DEFAULT NULL,
-  `Fld_AgendaInterest` varchar(50) DEFAULT NULL,
-  `Fld_MasterID` varchar(300) DEFAULT NULL,
-  `Fld_MeetingDate` varchar(25) DEFAULT NULL,
-  `Fld_ResolTypeID` varchar(125) DEFAULT NULL,
-  `Fld_Scripcode` varchar(50) DEFAULT NULL,
-  `Fld_XMLName` varchar(125) DEFAULT NULL,
-  `ScripName` varchar(125) DEFAULT NULL,
+  `description` text,
+  `fld_agendadetails` varchar(200) DEFAULT NULL,
+  `fld_agendainterest` varchar(50) DEFAULT NULL,
+  `fld_masterid` varchar(300) DEFAULT NULL,
+  `fld_meetingdate` varchar(25) DEFAULT NULL,
+  `fld_resoltypeid` varchar(125) DEFAULT NULL,
+  `fld_scripcode` varchar(50) DEFAULT NULL,
+  `fld_xmlname` varchar(125) DEFAULT NULL,
+  `scripname` varchar(125) DEFAULT NULL,
   `fld_srno` varchar(125) DEFAULT NULL,
-  `scrip_code` varchar(25) DEFAULT NULL
+  `scrip_code` varchar(25) NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `fld_agendadetails` (`fld_agendadetails`,`fld_meetingdate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -668,4 +724,4 @@ CREATE TABLE `voting` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-12 16:31:25
+-- Dump completed on 2020-06-15  7:50:14

@@ -103,34 +103,36 @@ class Bse(Spider):
                          'https://api.bseindia.com/BseIndiaAPI/api/AnnGetData/w?'
                         ]
 
-            self.tbl = {self.urls[0]:{'table_name':'debt', 'params':params},
-                        self.urls[1]:{'table_name':'slb', 'params':params},
-                        self.urls[2]:{'table_name':'board_meeting', 'params':params},
-                        self.urls[3]:{'table_name':'share_holder_meeting', 'params':params},
-                        self.urls[4]: {'table_name':'voting', 'params':params},
-                        self.urls[5]:{'table_name':'corp_action', 'params':params},
-                        self.urls[6]:{'table_name':'insider_1992', 'params':params},
-                        self.urls[7]:{'table_name':'insider_2015', 'params':params},
-                        self.urls[8]:{'table_name':'insider_sast', 'params':params},
-                        self.urls[9]:{'table_name':'sast_annual', 'params':params4},
-                        self.urls[10]:{'table_name':'consolidated_pledge', 'params':params},
-                        self.urls[11]:{'table_name':'corp_info', 'params':params},
-                        self.urls[12]:{'table_name':'peer', 'params':params},
-                        self.urls[13]:{'table_name':'annual_report', 'params':params},
-                        self.urls[14]:{'table_name':'block_deals', 'params':params2},
-                        self.urls[15]:{'table_name':'bulk_deals', 'params':params1},
-                        self.urls[16]:{'table_name':'corp_annexure_1', 'params':params3},
-                        self.urls[17]:{'table_name':'corp_annexure_2', 'params':params3},
-                        self.urls[18]:{'table_name':'corp_announcement', 'params':params5}
-                       }
-            for ur in self.urls:
-                url = ur+urlencode(self.tbl[ur]['params'])
-                yield Request(url, callback=self.parse, headers=headers)
+            self.tbl = [{'table_name':'debt', 'params':params},
+                        {'table_name':'slb', 'params':params},
+                        {'table_name':'board_meeting', 'params':params},
+                        {'table_name':'share_holder_meeting', 'params':params},
+                        {'table_name':'voting', 'params':params},
+                        {'table_name':'corp_action', 'params':params},
+                        {'table_name':'insider_1992', 'params':params},
+                        {'table_name':'insider_2015', 'params':params},
+                        {'table_name':'insider_sast', 'params':params},
+                        {'table_name':'sast_annual', 'params':params4},
+                        {'table_name':'consolidated_pledge', 'params':params},
+                        {'table_name':'corp_info', 'params':params},
+                        {'table_name':'peer', 'params':params},
+                        {'table_name':'annual_report', 'params':params},
+                        {'table_name':'block_deals', 'params':params2},
+                        {'table_name':'bulk_deals', 'params':params1},
+                        {'table_name':'corp_annexure_1', 'params':params3},
+                        {'table_name':'corp_annexure_2', 'params':params3},
+                        {'table_name':'corp_announcement', 'params':params5}
+                       ]
+            for url, tbl_param in zip(self.urls, self.tbl):
+                url = url+urlencode(tbl_param['params'])
+                print(url)
+                yield Request(url, callback=self.parse, headers=headers, meta={'params':tbl_param})
             self.cursor.execute("update bse_crawl set crawl_status = 1 where security_code = '{0}'".format(code))
 
     def parse(self, response):
+        print(response.url)
         sp_url = response.url.split('?')[0] + '?'
-        tbl_name = self.tbl[sp_url]['table_name']
+        tbl_name = response.meta['params'].get('table_name', '')
         res_url = str(response.url)
         try:
             scrip_code = parse_qs(urlparse(res_url).query)['scripcode'][0]
