@@ -1,3 +1,4 @@
+import requests
 from urllib.parse import urljoin
 from scrapy.selector import Selector
 from ecommerce.common_utils import EcommSpider,\
@@ -5,7 +6,7 @@ from ecommerce.common_utils import EcommSpider,\
 
 
 class AmazonUSBrowse(EcommSpider):
-    name = 'amazon.com_browse'
+    name = 'amazonus_browse'
     domain_url = 'https://www.amazon.com'
     start_urls = []
 
@@ -26,7 +27,7 @@ class AmazonUSBrowse(EcommSpider):
         }
 
     def start_requests(self):
-        urls = ['https://www.amazon.com/s?k=t-shirt&i=fashion-mens-clothing']
+        urls = ['https://www.amazon.com/s?k=t-shirt&i=fashion-mens-clothing','https://www.amazon.com/s?k=t-shirt&i=fashion&bbn=7147440011&rh=n:7141123011,n:7147440011,n:1040660']
         for url in urls:
             yield Request(url, callback=(self.parse), headers=(self.headers))
 
@@ -38,15 +39,19 @@ class AmazonUSBrowse(EcommSpider):
             yield Request(response.url, callback=self.parse, headers=self.headers, meta=response.meta, dont_filter=True)
 
         else:
+            gender_category = extract_data(sel, '//*[@id="search"]/span/div/span/h1/div/div[1]/div/div/a[2]/span/text()')
             category_nodes = get_nodes(sel, './/li[contains(@class, "a-spacing-micro s-navigation-indent-2")]')
+            categories_list = ['Shirts', 'T-Shirts & Tanks', 'Fashion Hoodies & Sweatshirts', 'Dresses', 'Tops, Tees & Blouses']
             for category_node in category_nodes:
                 category = extract_data(category_node, './span/a/span/text()')
                 category_id = extract_data(category_node, './@id')
                 category_link = extract_data(category_node, './span/a/@href')
+                if category not in categories_list:
+                    continue
                 if category_link:
                     if 'http' not in category_link:
                         category_link = urljoin(self.domain_url, category_link)
-                meta = {'category': category, 'category_id': category_id, 'category_link': category_link}
+                meta = {'category': gender_category, 'sub_category': category}
                 yield Request(category_link, callback=self.parse_categories, headers=self.headers, meta=meta)
                  
     def parse_categories(self, response):
@@ -57,7 +62,7 @@ class AmazonUSBrowse(EcommSpider):
             yield Request(response.url, callback=self.parse_sub_categories, headers=self.headers, meta=response.meta, dont_filter=True)
 
         else:
-            meta_data = {'category': response.meta['category'], 'category_id': response.meta['category_id'], 'category_link': response.meta['category_link']}
+            meta_data = {'category': response.meta['category'], 'sub_category': response.meta['sub_category']}
             sub_category_nodes = get_nodes(sel, './/li[contains(@class, "a-spacing-micro s-navigation-indent-2")]')
             for sub_category_node in sub_category_nodes:
                 sub_category = extract_data(sub_category_node, './span/a/span/text()')
@@ -66,7 +71,6 @@ class AmazonUSBrowse(EcommSpider):
                 if sub_category_link:
                     if 'http' not in sub_category_link:
                         sub_category_link = urljoin(self.domain_url, sub_category_link)
-                meta_data.update({'sub_category': sub_category, 'sub_category_id': sub_category_id, 'sub_category_link': sub_category_link})
                 yield Request(sub_category_link, callback=self.parse_sub_categories, headers=self.headers, meta=meta_data)
 
     def parse_sub_categories(self, response):
@@ -77,12 +81,15 @@ class AmazonUSBrowse(EcommSpider):
             yield Request(response.url, callback=self.parse_sub_categories, headers=self.headers, meta=response.meta, dont_filter=True)
 
         else:
-            meta_data = {'category': response.meta['category'], 'category_id': response.meta['category_id'], 'category_link': response.meta['category_link'], 'sub_category': response.meta['sub_category'], 'sub_category_id': response.meta['sub_category_id'], 'sub_category_link': response.meta['sub_category_link']}
+            meta_data = {'category': response.meta['category'], 'sub_category': response.meta['sub_category']}
             product_nodes = get_nodes(sel, '//ul[contains(@class, "s-result-list")]/li') or \
             get_nodes(sel, '//div[contains(@class, "s-result-list")]//div[@data-component-type="s-search-result"]')
             for product_node in product_nodes:
-                product_id = extract_data(product_node, './@data-asin')
-                link = urljoin('https://www.amazon.com/dp/', '%s?th=1&psc=1' % product_id)
+                sk = extract_data(product_node, './@data-asin')
+                link = urljoin('https://www.amazon.com/dp/', '%s?th=1s&psc=1' % sk)
+                print(meta_data['category'], meta_data['sub_category'],link)
+                self.get_page('amazonus_fashions_terminal', link, sk, meta_data=meta_data)
+
             next_page = extract_data(sel, '//a[@title="Next Page"]/@href') or extract_data(sel, '//li[@class="a-last"]/a[contains(text(), "Next")]/@href')
             if next_page:
                 if 'http' not in next_page:

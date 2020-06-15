@@ -1,6 +1,6 @@
 import json
+from ast import literal_eval
 from urllib.parse import parse_qs, urlparse, urlencode
-#from sqlalchemy import create_engine
 from MySQLdb import connect
 from pandas import read_sql, DataFrame
 from pydispatch import dispatcher
@@ -19,7 +19,7 @@ class Bse(Spider):
         self.conn = connect(db='bse', host='localhost', user='mca',
                             passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         self.cursor = self.conn.cursor()
-        self.cursor.execute("truncate notice")
+        self.crawl_list = literal_eval(kwargs.get('jsons', '[]'))
         dispatcher.connect(self.spider_closed, signals.spider_closed)
 
     def spider_closed(self):
@@ -40,9 +40,8 @@ class Bse(Spider):
             'referer': 'https://www.bseindia.com/stock-share-price/reliance-industries-ltd/reliance/500325/financials-results/',
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
-        df = read_sql('select * from bse_crawl', self.conn)
-        scrip_code = df['security_code'].to_list()
-        for code in scrip_code:
+        
+        for code in self.crawl_list:
             params = [('scripcode', code)]
 
             financials_url = 'https://api.bseindia.com/BseIndiaAPI/api/GetReportNewFor_Result/w?%s' % urlencode(params)
@@ -87,13 +86,13 @@ class Bse(Spider):
                 ds[data[0][idx]] = val
             lis_.append(ds)
         output_dict = {category: lis_}
-        query = "insert ignore into results_qrt (scrip_code, json_value, created_at, updated_at) values('%s', '%s', now(), now() )"
+        query = "insert ignore into results_qrt (scrip_code, json_value, created_at, updated_at) values('%s', '%s', now(), now())"
         self.cursor.execute(query % (scrip_code, json.dumps(output_dict)))
         self.conn.commit()
 
         body = json.loads(response.body)
         sel = Selector(text=body.get('AnninCr', ''))
-	category = 'results_annual'
+        category = 'results_annual'
         sub_heading = sel.xpath(
             '//tbody//tr//td[@align="left"]//text()').extract()
         main_heading = sel.xpath(
@@ -118,7 +117,7 @@ class Bse(Spider):
                 ds[data[0][idx]] = val
             lis_.append(ds)
         output_dict = {category: lis_}
-        query = "insert ignore into results_annual (scrip_code, json_value, created_at, updated_at) values('%s', '%s', now(), now() )"
+        query = "insert ignore into results_annual (scrip_code, json_value, created_at, updated_at) values('%s', '%s', now(), now())"
         self.cursor.execute(query % (scrip_code, json.dumps(output_dict)))
         self.conn.commit()
 
@@ -150,7 +149,7 @@ class Bse(Spider):
                 ds[fin_values[0][idx]] = val
             lis_.append(ds)
         output_dict = {category: lis_}
-        query = "insert ignore into shareholding_pattern (scrip_code, json_value, created_at, updated_at) values('%s', '%s', now(), now() )"
+        query = "insert ignore into shareholding_pattern (scrip_code, json_value, created_at, updated_at) values('%s', '%s', now(), now())"
         self.cursor.execute(query % (scrip_code, json.dumps(output_dict)))
         self.conn.commit()
 
@@ -211,9 +210,11 @@ class Bse(Spider):
         yield FormRequest(response.url, formdata=data, callback=self.parse_notices, meta=meta)
         data1['scrip_code'] = scrip_code
         column_names = data1.columns.to_list()
+        column_names = column_names + [ 'created_at', 'modified_at']
+        column_names = [item.lower() for item in column_names if item]
         for i in range(len(data1)):
             column_values = tuple(data1.iloc[i].values)
             values_ = ['%s'] * len(column_names)
-            query = "insert ignore into  notice ({0}) values ({1})".format(','.join(column_names), (('%s,')*len(column_names)).strip(','))
+            query = "insert ignore into  notice ({0}) values ({1}, now(), now()) on duplicate key update modified_at = now()".format(','.join(column_names), (('%s,')*(len(column_names)-2)).strip(','))
             self.cursor.execute(query, column_values)
             self.conn.commit()

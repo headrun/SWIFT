@@ -90,7 +90,3 @@ AUTOTHROTTLE_DEBUG = False
 #HTTPCACHE_DIR = 'httpcache'
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
-DB_HOST = 'localhost'
-DB_USERNAME = 'root'
-DB_PASSWORD = '[newpassword]'
-DATABASE = 'bse'
