@@ -6,6 +6,19 @@
 <link type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" rel="stylesheet"/>
 
 
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/"
+crossorigin="anonymous">
+<!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+crossorigin="anonymous"> -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.2.1/css/flag-icon.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+
+
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
@@ -23,12 +36,14 @@ var sort_element;
 var source;
 var total_pages=1;
 var category_name;
+var country_name='IND';
 var brand_name='all';
 var image_dict  = {
     "myntra":"/static/images/myntra.png",
     "nnnow":"/static/images/nnnow.png",
     "amazon":"/static/images/amazon-img.jpg",
-    "ajio":"/static/images/ajio.png"
+    "ajio":"/static/images/ajio.png",
+    "walmart":"/static/images/walmart.png"
 }
 
 // var page_number=1;
@@ -51,7 +66,7 @@ $('#pagination-here, #pagination_here_down').bootpag({
     })
 $('#pagination-here').on("page", function (event, num) {
 
-  var url = "/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element,category:category_name, page_num: num ,brandName:brand_name})
+  var url = "/search?" + $.param({ startdate: from_date, enddate: to_date, source: source, sortBy: sort_element,category:category_name, page_num: num ,brandName:brand_name,country:country_name})
   $('.loader').removeClass('hide');
   $.get(url, function (response) {
     $('.loader').addClass('hide');
@@ -89,9 +104,10 @@ $('#picker').daterangepicker({
         to_date     = $('#picker').data('daterangepicker').endDate.format('YYYY-MM-DD');
         brand_name = 'all';
         document.getElementById('brandInput').value = "";
-        var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+        var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
         $('#date').html(start.format('MMMM DD, YYYY') + ' - ' + end.format('MMMM DD, YYYY'))
         $('.loader').removeClass('hide');
+        $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
         $.get(url,function(response) {
             $('.loader').addClass('hide');
             var respo = JSON.parse(JSON.stringify(response))
@@ -111,7 +127,7 @@ $('#picker').daterangepicker({
             $('ul.bootpag>li').not('.prev').first().trigger('click');
             console.log(res[1])
         });
-        totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+        totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
         $.get(totalCounturl,function(response) {
             var res = JSON.parse(JSON.stringify(response))
             $('#pagination-here, #pagination_here_down').bootpag({
@@ -130,7 +146,7 @@ $('#picker').daterangepicker({
   console.log(sort_element)
   console.log(source)
   console.log(category_name)
-  var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+  var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
   $('.loader').removeClass('hide');
   $.get(url,function(response) {
         $('.loader').addClass('hide');
@@ -149,7 +165,7 @@ $('#picker').daterangepicker({
             }
         $('#add_element').html(items);
   });
-  brandUrl = "/brands?"+$.param({startdate:from_date, enddate: to_date})
+  brandUrl = "/brands?"+$.param({country:country_name})
   $.get(brandUrl,function(response) {
         var res = JSON.parse(response)
         var items = ''
@@ -158,7 +174,7 @@ $('#picker').daterangepicker({
             }
         $('#brands').html(items);
   });
-  sourceUrl = "/sources"
+  sourceUrl = "/sources?"+$.param({country:country_name})
   $.get(sourceUrl,function(response) {
         var res = JSON.parse(response)
         var items = '<option selected value="all">All</option>'
@@ -168,7 +184,7 @@ $('#picker').daterangepicker({
         $('#sourcename').html(items);
   });
 
-  totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+  totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
   $.get(totalCounturl,function(response) {
       var res = JSON.parse(JSON.stringify(response))
       $('#pagination-here, #pagination_here_down').bootpag({
@@ -180,7 +196,8 @@ $('#picker').daterangepicker({
     sort_element = $("#sorted_names option:selected").val();
     brand_name='all';
     document.getElementById('brandInput').value = "";
-    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+    $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name, country:country_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
         $('.loader').addClass('hide');
@@ -200,7 +217,7 @@ $('#picker').daterangepicker({
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
       });
-      totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+      totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
       $.get(totalCounturl,function(response) {
           var res = JSON.parse(JSON.stringify(response))
           $('#pagination-here, #pagination_here_down').bootpag({
@@ -212,7 +229,8 @@ $('#picker').daterangepicker({
     source = $("#sources option:selected").val();
     brand_name='all'
     document.getElementById('brandInput').value = "";
-    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+    $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
         $('.loader').addClass('hide');
@@ -232,7 +250,7 @@ $('#picker').daterangepicker({
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
   });
-    totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
       $.get(totalCounturl,function(response) {
           var res = JSON.parse(JSON.stringify(response))
           $('#pagination-here, #pagination_here_down').bootpag({
@@ -242,10 +260,46 @@ $('#picker').daterangepicker({
   });
   $('body').on('change', '#category', function(){
     category_name = $("#category option:selected").val();
-    console.log(category_name)
-    brand_name = 'all';
+    brand_name='all'
     document.getElementById('brandInput').value = "";
-    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+    $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
+    $('.loader').removeClass('hide');
+    $.get(url,function(response) {
+        $('.loader').addClass('hide');
+        var respo = JSON.parse(JSON.stringify(response))
+        var items = ''
+        var res = JSON.parse(respo["products"])
+        for(var i=0;i<res.length;i++){
+                var valid_url = res[i]['reference_url'].includes('http')
+                var reference_url = res[i]['reference_url']
+                if(!valid_url){
+                    reference_url = 'https://www.myntra.com/'+res[i]['reference_url']
+                }
+                items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
+                items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+            }
+        $('#add_element').html(items);
+        $('ul.bootpag>li').not('.prev').first().trigger('click');
+  });
+    totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
+      $.get(totalCounturl,function(response) {
+          var res = JSON.parse(JSON.stringify(response))
+          $('#pagination-here, #pagination_here_down').bootpag({
+              total: JSON.parse(res["totalCount"]),
+            })   
+      });
+  });
+  $('body').on('change', '#country', function(){
+    country_name = $("#country option:selected").val();
+    console.log(country_name)
+    brand_name = 'all';
+    source = 'all';
+    category_name = 'all';
+    document.getElementById('brandInput').value = "";
+    $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
+    var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
     $('.loader').removeClass('hide');
     $.get(url,function(response) {
         $('.loader').addClass('hide');
@@ -265,13 +319,31 @@ $('#picker').daterangepicker({
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
    });
-    totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name})
+    totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
       $.get(totalCounturl,function(response) {
           var res = JSON.parse(JSON.stringify(response))
           $('#pagination-here, #pagination_here_down').bootpag({
               total: JSON.parse(res["totalCount"]),
             })   
       });
+    brandUrl = "/brands?"+$.param({country:country_name})
+    $.get(brandUrl,function(response) {
+          var res = JSON.parse(response)
+          var items = ''
+          for(var i=0;i<res.length;i++){
+                  items = items + '<option value="'+res[i]['brand']+'">'
+              }
+          $('#brands').html(items);
+    });
+    sourceUrl = "/sources?"+$.param({country:country_name})
+    $.get(sourceUrl,function(response) {
+          var res = JSON.parse(response)
+          var items = '<option selected value="all">All</option>'
+          for(var i=0;i<res.length;i++){
+                  items = items + '<option value="'+res[i]['source']+'">'+res[i]['source']+'</option>'
+              }
+          $('#sourcename').html(items);
+    });
   });
   document.getElementsByName("brand")[0].onchange = function (event) {
      var evt = event || window.event;
@@ -281,7 +353,8 @@ $('#picker').daterangepicker({
          if (document.getElementById('brands').options[i].value ==  document.getElementsByName("brand")[0].value)
          {
             brand_name = document.getElementById('brands').options[i].value
-            var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+            var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
+            $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
             $.get(url,function(response) {
               $('.loader').addClass('hide');
               var respo = JSON.parse(JSON.stringify(response))
@@ -300,7 +373,7 @@ $('#picker').daterangepicker({
               $('#add_element').html(items);
               $('ul.bootpag>li').not('.prev').first().trigger('click');
              });
-              totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name})
+              totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
               $.get(totalCounturl,function(response) {
                   var res = JSON.parse(JSON.stringify(response))
                   $('#pagination-here, #pagination_here_down').bootpag({
@@ -311,6 +384,76 @@ $('#picker').daterangepicker({
          }
     }
  }
+ $(document).ready(function () {
+    $('.dropdown-menu-col a').click(function (e) {
+        console.log(e)
+        console.log(country_name)
+        //get the selected flag class
+        var selectedFlag = $(this).find('span').attr('class');
+        $('.current').text($(this).text());
+        //remove the previous flag class
+        $('.dropdown.dropdown-lang').find('button>span').removeClass();
+        //add the newly selected flag class
+        $('.dropdown.dropdown-lang').find('button>span').addClass(selectedFlag);
+        var x = $(event.target).text();
+        if (x == "United States"){
+          country_name = "US"
+        } else{
+          country_name = "IND"
+        }
+        brand_name = 'all';
+      source = 'all';
+      category_name = 'all';
+      document.getElementById('brandInput').value = "";
+      $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
+      var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
+      $('.loader').removeClass('hide');
+      $.get(url,function(response) {
+          $('.loader').addClass('hide');
+          var respo = JSON.parse(JSON.stringify(response))
+          var items = ''
+          var res = JSON.parse(respo["products"])
+          for(var i=0;i<res.length;i++){
+                  var valid_url = res[i]['reference_url'].includes('http')
+                  var reference_url = res[i]['reference_url']
+                  if(!valid_url){
+                      reference_url = 'https://www.myntra.com/'+res[i]['reference_url']
+                  }
+                  items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
+                  items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
+                  items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+              }
+          $('#add_element').html(items);
+          $('ul.bootpag>li').not('.prev').first().trigger('click');
+     });
+      totalCounturl = "/totalCount?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,country:country_name})
+        $.get(totalCounturl,function(response) {
+            var res = JSON.parse(JSON.stringify(response))
+            $('#pagination-here, #pagination_here_down').bootpag({
+                total: JSON.parse(res["totalCount"]),
+              })   
+        });
+      brandUrl = "/brands?"+$.param({country:country_name})
+      $.get(brandUrl,function(response) {
+            var res = JSON.parse(response)
+            var items = ''
+            for(var i=0;i<res.length;i++){
+                    items = items + '<option value="'+res[i]['brand']+'">'
+                }
+            $('#brands').html(items);
+      });
+      sourceUrl = "/sources?"+$.param({country:country_name})
+      $.get(sourceUrl,function(response) {
+            var res = JSON.parse(response)
+            var items = '<option selected value="all">All</option>'
+            for(var i=0;i<res.length;i++){
+                    items = items + '<option value="'+res[i]['source']+'">'+res[i]['source']+'</option>'
+                }
+            $('#sourcename').html(items);
+      });
+
+    });
+  });
 
 });
 
@@ -318,7 +461,7 @@ $('#picker').daterangepicker({
 
 <div class="container">
 <nav class="navbar navbar-light bg-primary margin-down">
-    <div id="picker" class="col-md-3 nav-item nav-align">
+    <div id="picker" class="col-md-2.5 nav-item nav-align">
         <i class="fa fa-calender"></i> &nbsp;
         <span id="date"></span>
         &nbsp; <i class="fa fa-caret-down"></i>
@@ -347,19 +490,29 @@ $('#picker').daterangepicker({
           <option value="Unisex Kids">Unisex Kids</option>
         </select>
     </div>
-    <div class="nav-item nav-align col-md-2">
-      <!-- <input type="text" id="brandSearch" list="json-datalist" placeholder="Search Brand" name="search" class="header-styles search">
-        <datalist id="json-datalist">
-          <select id="brandName">
-          </select>
-        </datalist>
-      <button type="submit" class="button-icon"><i class="fa fa-search"></i></button> -->
+    <div class="nav-item nav-align col-md-1.5">
       <datalist id="brand">
         <select id="brands">
         </select>
       </datalist>
       <input type="text" list="brand" placeholder="Search Brand" name="brand" class="header-styles search" id="brandInput">
-      <!-- <input type="text" name="brand" list="brand"/> -->
+    </div>
+    <!-- <div id="country" class="col-md-1.5 nav-item nav-align dropdown-header">
+        <select class="browser-default custom-select header-styles">
+          <option selected value="IND">India</option>
+          <option value="US">United States</option>
+        </select>
+    </div> -->
+    <div class="dropdown dropdown-lang">
+      <button class="dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          <span class="flag-icon flag-icon-in"></span>
+      </button>
+      <div class="dropdown-menu dropdown-menu-right">
+          <div class="dropdown-menu-col">
+              <a href="javascript:;" id="IND"  class="dropdown-item"><span class="flag-icon flag-icon-in" value="IND"></span>India</a>
+              <a href="javascript:;" id="US" value="US" class="dropdown-item"><span class="flag-icon flag-icon-us"></span>United States</a>
+          </div>
+      </div>
     </div>
 
 </nav>

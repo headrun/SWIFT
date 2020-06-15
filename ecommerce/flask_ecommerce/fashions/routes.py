@@ -1,5 +1,6 @@
 import json
 from flask_mysqldb import MySQL
+from pymysql.cursors import DictCursor
 from flask import Flask, render_template, request
 from datetime import date, datetime
 import math
@@ -8,9 +9,9 @@ app = Flask(__name__, static_url_path="/static", static_folder="static")
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = 'Ecomm@34^$'
-app.config['MYSQL_DB'] = 'ECOMMERCEDB'
+# app.config['MYSQL_DB'] = 'ECOMMERCEDB'
 mysql = MySQL(app)
-
+country_list={"IND":"ECOMMERCEDB","US":"ECOMMERCEDB_US"}
 
 @app.route('/')
 def home():
@@ -18,8 +19,11 @@ def home():
 
 @app.route('/brands')
 def brand():
+    country = request.args.get('country')
+    country_db = country_list.get(country)
     brandCur = mysql.connection.cursor()
-    brandCur.execute("select brand from products_info group by brand;")
+    sql_query = "select brand from %s.products_info group by brand;"%country_db
+    brandCur.execute(sql_query)
     row_headers = [x[0] for x in brandCur.description if x]
     results = brandCur.fetchall()
     json_data = []
@@ -30,8 +34,11 @@ def brand():
     return brands
 @app.route('/sources')
 def source():
+    country = request.args.get('country')
+    country_db = country_list.get(country)
     sourceCur = mysql.connection.cursor()
-    sourceCur.execute("select source from products_info group by source;")
+    sql_query = "select source from %s.products_info group by source;"%country_db
+    sourceCur.execute(sql_query)
     row_headers = [x[0] for x in sourceCur.description if x]
     results = sourceCur.fetchall()
     json_data = []
@@ -49,6 +56,8 @@ def totalCount():
     page_num = request.args.get('page_num', 1)
     category = request.args.get('category','all')
     brandName = request.args.get('brandName', 'all')
+    country = request.args.get('country')
+    country_db = country_list.get(country)
     if source == '':
         source = 'all'
     if brandName == '':
@@ -57,25 +66,25 @@ def totalCount():
     if source == "all":
         if category == "all":
             if brandName == "all":
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s'"%(start_date, end_date)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s'"%(country_db, start_date, end_date)
             else:
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s'"%(start_date, end_date, brandName)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s'"%(country_db, start_date, end_date, brandName)
         else:
             if brandName == "all":
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s'"%(start_date, end_date, category)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s'"%(country_db, start_date, end_date, category)
             else:
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s'"%(start_date, end_date, category, brandName)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s'"%(country_db, start_date, end_date, category, brandName)
     else:
         if category == "all":
             if brandName == "all":
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s'"%(start_date, end_date, source)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s'"%(country_db, start_date, end_date, source)
             else:
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s'"%(start_date, end_date, source, brandName)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s'"%(country_db, start_date, end_date, source, brandName)
         else:
             if brandName == "all":
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s'"%(start_date, end_date, source, category)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s'"%(country_db, start_date, end_date, source, category)
             else:
-                sql_query = "select count(*) from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s'" %(start_date, end_date, source, category, brandName)
+                sql_query = "select count(*) from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s'" %(country_db, start_date, end_date, source, category, brandName)
     totalcount_cur.execute(sql_query)
     total_count = totalcount_cur.fetchall()
     totalCount = math.ceil(total_count[0][0]/20)
@@ -91,6 +100,8 @@ def data():
     page_num = request.args.get('page_num', 1)
     category = request.args.get('category')
     brandName = request.args.get('brandName', 'all')
+    country = request.args.get('country')
+    country_db = country_list.get(country)
     if source == '':
         source = 'all'
     if brandName == '':
@@ -107,141 +118,141 @@ def data():
         if source == "all":
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, category, limit, offset)
+                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, category, brandName, limit, offset)
         else:
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, source, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, source, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, source, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, source, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, source, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(start_date, end_date, source, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY ratings_count DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, brandName, limit, offset)
     elif sort_by == "discount":
         if source == "all":
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, category, brandName, limit, offset)
         else:
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, source, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, source, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, source, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, source, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, source, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(start_date, end_date, source, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY discount_percentage DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, brandName, limit, offset)
     elif sort_by == "hightolow":
         if source == "all":
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY mrp DESC limit %s offset %s;"%( country_db, start_date, end_date, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(country_db, start_date, end_date, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY mrp DESC limit %s offset %s;"%(country_db, start_date, end_date, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(country_db, start_date, end_date, category, brandName, limit, offset)
         else:
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, source, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY mrp DESC limit %s offset %s;"%(country_db, start_date, end_date, source, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, source, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(country_db, start_date, end_date, source, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, source, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY mrp DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(start_date, end_date, source, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY mrp DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, brandName, limit, offset)
 
     elif sort_by == "lowtohigh":
         if source == "all":
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, category, brandName, limit, offset)
         else:
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, source, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, source, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, source, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, source, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, source, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, source, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(start_date, end_date, source, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY mrp ASC limit %s offset %s;"%(country_db, start_date, end_date, source, category, brandName, limit, offset)
     elif sort_by == "whatsNew":
         if source == "all":
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, category, brandName, limit, offset)
         else:
             if category == "all":
                 if brandName == "all":   
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, source, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, source, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, source, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, source, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, source, category, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(start_date, end_date, source, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,category,discount_percentage,source,created_at,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' ORDER BY created_at DESC limit %s offset %s;"%(country_db, start_date, end_date, source, category, brandName, limit, offset)
     else:
         if source == "all":
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' limit %s offset %s;"%(start_date, end_date, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' limit %s offset %s;"%(country_db, start_date, end_date, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' limit %s offset %s;"%(start_date, end_date, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and brand='%s' limit %s offset %s;"%(country_db, start_date, end_date, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' limit %s offset %s;"%(start_date, end_date, category, limit, offset)
+                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' limit %s offset %s;"%(country_db, start_date, end_date, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' limit %s offset %s;"%(start_date, end_date, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and category='%s' and brand='%s' limit %s offset %s;"%(country_db, start_date, end_date, category, brandName, limit, offset)
         else:
             if category == "all":
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' limit %s offset %s;"%(start_date, end_date, source, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' limit %s offset %s;"%(country_db, start_date, end_date, source, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' limit %s offset %s;"%(start_date, end_date, source, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and brand='%s' limit %s offset %s;"%(country_db, start_date, end_date, source, brandName, limit, offset)
             else:
                 if brandName == "all":
-                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' limit %s offset %s;"%(start_date, end_date, source, category, limit, offset)
+                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' limit %s offset %s;"%(country_db, start_date, end_date, source, category, limit, offset)
                 else:
-                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' limit %s offset %s;"%(start_date, end_date, source, category, brandName, limit, offset)
+                    sql_query = "select brand,reference_url,category,ratings_count,source,selling_price,mrp,image_url,title from %s.products_info where DATE(created_at)>='%s' and DATE(created_at)<= '%s' and source='%s' and category='%s' and brand='%s' limit %s offset %s;"%(country_db, start_date, end_date, source, category, brandName, limit, offset)
     cur.execute(sql_query)
     row_headers = [x[0] for x in cur.description if x]
     results = cur.fetchall()
