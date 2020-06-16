@@ -81,7 +81,11 @@ $('#pagination-here').on("page", function (event, num) {
                 }
                 items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                if (res[i]['selling_price'] != res[i]['mrp']){
+                  items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                }
+                items = items + "</div></div></figcaption></figure></a></div>"
             }
     $('#add_element').html(items);
     console.log(res[1])
@@ -121,7 +125,11 @@ $('#picker').daterangepicker({
                 }
                 items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                if (res[i]['selling_price'] != res[i]['mrp']){
+                  items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                }
+                items = items + "</div></div></figcaption></figure></a></div>"
             }
             $('#add_element').html(items);
             $('ul.bootpag>li').not('.prev').first().trigger('click');
@@ -161,7 +169,11 @@ $('#picker').daterangepicker({
                 }
                 items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                if (res[i]['selling_price'] != res[i]['mrp']){
+                  items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                }
+                items = items + "</div></div></figcaption></figure></a></div>"
             }
         $('#add_element').html(items);
   });
@@ -212,7 +224,11 @@ $('#picker').daterangepicker({
                 }
                 items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                if (res[i]['selling_price'] != res[i]['mrp']){
+                  items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                }
+                items = items + "</div></div></figcaption></figure></a></div>"
             }
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
@@ -245,7 +261,11 @@ $('#picker').daterangepicker({
                 }
                 items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                if (res[i]['selling_price'] != res[i]['mrp']){
+                  items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                }
+                items = items + "</div></div></figcaption></figure></a></div>"
             }
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
@@ -278,7 +298,11 @@ $('#picker').daterangepicker({
                 }
                 items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                if (res[i]['selling_price'] != res[i]['mrp']){
+                  items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                }
+                items = items + "</div></div></figcaption></figure></a></div>"
             }
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
@@ -314,7 +338,11 @@ $('#picker').daterangepicker({
                 }
                 items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                 items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                if (res[i]['selling_price'] != res[i]['mrp']){
+                  items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                }
+                items = items + "</div></div></figcaption></figure></a></div>"
             }
         $('#add_element').html(items);
         $('ul.bootpag>li').not('.prev').first().trigger('click');
@@ -368,7 +396,11 @@ $('#picker').daterangepicker({
                       }
                       items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                       items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                      items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                      items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                      if (res[i]['selling_price'] != res[i]['mrp']){
+                        items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                      }
+                      items = items + "</div></div></figcaption></figure></a></div>"
                   }
               $('#add_element').html(items);
               $('ul.bootpag>li').not('.prev').first().trigger('click');
@@ -421,7 +453,11 @@ $('#picker').daterangepicker({
                   }
                   items = items + "<div class='col-md-3 d-flex';><a style='width: 100%;' href='"+reference_url+"' target='_blank' class='highlightit'><figure class='card card-product' style='width: 100%; margin: 0 0 2rem;'><div class='img-wrap'><img style='position: relative;' src="+res[i]['image_url']+"><img class='float-right' style='margin:0 10px; position: absolute;left: 0' src='" + image_dict[res[i]['source']] + "' height='30px' width='30px'></div><figcaption class='info-wrap'>"
                   items = items+"<h6 class='title text-dots'><strong>"+res[i]['brand']+"</strong></h6><h6 class='title text-dots'>"+res[i]['title']+"</h6><div class='action-wrap'><span class='price-new float-right numberCircle'>"+res[i]['ratings_count']+"</span>"
-                  items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span><del class='price-old'>"+res[i]['mrp']+"</del></div></div></figcaption></figure></a></div>"
+                  items = items+"<div class='price-wrap h5'><span class='price-new'>"+res[i]['selling_price']+"</span>"
+                  if (res[i]['selling_price'] != res[i]['mrp']){
+                    items = items + "<del class='price-old'>"+res[i]['mrp']+"</del>"
+                  }
+                  items = items + "</div></div></figcaption></figure></a></div>"
               }
           $('#add_element').html(items);
           $('ul.bootpag>li').not('.prev').first().trigger('click');
