@@ -42,6 +42,7 @@ class AmazonUSFashionTerminal(EcommSpider):
             brand = extract_data(sel, '//a[@id="bylineInfo"]/text()').lower().replace('brand:', '').strip()
             title = extract_data(sel, '//span[@id="productTitle"]/text()').strip()
             description = extract_data(sel, '//div[@id="productDescription"]/p/text()').strip()
+            description = description.encode('ascii', 'ignore').decode('utf-8') if description else ''
             rating_text = extract_data(sel, '//span[@id="acrPopover"]/@title')
             rating_count_text = extract_data(sel, '//span[@id="acrCustomerReviewText"]/text()')
             images = extract_data(sel, '//div[@id="imgTagWrapperId"]/img/@data-a-dynamic-image')
