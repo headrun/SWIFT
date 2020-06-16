@@ -203,10 +203,13 @@ class Bse(Spider):
         get_response = requests.get(url, stream=True, headers=headers)
         file_name = url.split("/")[-1]
         if flag == 1:
-            file_path = corp + scrip_code + '/' + file_name
+            file_path = corp + scrip_code + '/' 
         elif flag == 2:
-            file_path = annual + scrip_code + '/' + file_name
-        with open(file_path, 'wb') as f:
+            file_path = annual + scrip_code + '/'
+        if not os.path.exists(file_path):
+            os.makedirs(file_path)
+        os.chdir(file_path)
+        with open(file_name, 'wb') as f:
             for chunk in get_response.iter_content(chunk_size=1024):
                 if chunk:
                     f.write(chunk)
