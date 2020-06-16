@@ -1,4 +1,5 @@
 import json
+import os
 import requests
 from ast import literal_eval
 from urllib.parse import parse_qs, urlparse, urlencode
@@ -125,12 +126,10 @@ class Bse(Spider):
                        ]
             for url, tbl_param in zip(self.urls, self.tbl):
                 url = url+urlencode(tbl_param['params'])
-                print(url)
                 yield Request(url, callback=self.parse, headers=headers, meta={'params':tbl_param})
             self.cursor.execute("update bse_crawl set crawl_status = 1 where security_code = '{0}'".format(code))
 
     def parse(self, response):
-        print(response.url)
         sp_url = response.url.split('?')[0] + '?'
         tbl_name = response.meta['params'].get('table_name', '')
         res_url = str(response.url)
@@ -152,11 +151,11 @@ class Bse(Spider):
                         if i == 'ATTACHMENTNAME':
                             if row[i]:
                                 row[i] = 'https://www.bseindia.com/xml-data/corpfiling/AttachHis/'+row[i]
-                                self.download_pdf(row[i], 1)
+                                self.download_pdf(row[i], 1, scrip_code)
                         elif i == 'file_name':
                             if row[i]:
                                 row[i] = 'https://www.bseindia.com/bseplus/AnnualReport/' +scrip_code+ '/' +row[i]
-                                self.download_pdf(row[i], 2)
+                                self.download_pdf(row[i], 2, scrip_code)
                         column_values = column_values + (row[i],)
                     try:
                         col_change = column_names.index('Change')
@@ -191,13 +190,22 @@ class Bse(Spider):
                 self.cursor.execute(query, column_values)
                 self.conn.commit()
 
-    def download_pdf(self, url, flag):
-        get_response = requests.get(url, stream=True)
+    def download_pdf(self, url, flag, scrip_code):
+        home_dir = os.getenv('HOME')
+        root_folder = home_dir + '/BSE_PDF/'
+        annual = root_folder + 'Annual_Reports/' 
+        corp = root_folder + 'Corp_Announcement/'
+        if not os.path.exists(annual):
+            os.makedirs(annual)
+        if not os.path.exists(corp):
+            os.makedirs(corp)
+        headers = {'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.129 Safari/537.36',}
+        get_response = requests.get(url, stream=True, headers=headers)
         file_name = url.split("/")[-1]
         if flag == 1:
-            file_path = '/home/mca/Corp_Announcement/' + file_name
+            file_path = corp + scrip_code + '/' + file_name
         elif flag == 2:
-            file_path = '/home/mca/Annual_Reports/' + file_name
+            file_path = annual + scrip_code + '/' + file_name
         with open(file_path, 'wb') as f:
             for chunk in get_response.iter_content(chunk_size=1024):
                 if chunk:

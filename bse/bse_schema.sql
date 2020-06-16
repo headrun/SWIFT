@@ -71,8 +71,8 @@ CREATE TABLE `board_meeting` (
   `tm` varchar(50) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`scrip_code`),
-  UNIQUE KEY `scrip_code` (`scrip_code`,`purpose_name`,`meeting_date`)
+  UNIQUE KEY `scrip_code` (`scrip_code`,`purpose_name`,`meeting_date`),
+  UNIQUE KEY `long_name` (`long_name`,`purpose_name`,`meeting_date`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -483,7 +483,8 @@ CREATE TABLE `insider_sast` (
   `scrip_code` varchar(25) DEFAULT NULL,
   `shareholdername` varchar(200) DEFAULT NULL,
   `created_at` datetime DEFAULT NULL,
-  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  UNIQUE KEY `bse_sast` (`scrip_code`,`shareholdername`,`fld_acqsolddatefrom`,`acq_sale`,`acq_sale_pct`,`acq_sale_qty`,`acquisition_after`,`acquisition_pct_after`,`modify_date`,`ord`,`newdt`,`flag`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -495,7 +496,7 @@ DROP TABLE IF EXISTS `notice`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `notice` (
-  `notice_no` varchar(100) DEFAULT NULL,
+  `notice_no` varchar(100) NOT NULL,
   `subject` varchar(200) DEFAULT NULL,
   `subject_link` varchar(250) DEFAULT NULL,
   `segmentname` varchar(125) DEFAULT NULL,
@@ -504,8 +505,7 @@ CREATE TABLE `notice` (
   `scrip_code` varchar(25) NOT NULL,
   `created_at` datetime DEFAULT NULL,
   `modified_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`scrip_code`),
-  UNIQUE KEY `notice_no` (`notice_no`)
+  PRIMARY KEY (`notice_no`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -724,4 +724,4 @@ CREATE TABLE `voting` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-15  7:50:14
+-- Dump completed on 2020-06-16 13:12:34

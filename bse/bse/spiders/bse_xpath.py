@@ -40,7 +40,6 @@ class Bse(Spider):
             'referer': 'https://www.bseindia.com/stock-share-price/reliance-industries-ltd/reliance/500325/financials-results/',
             'accept-language': 'en-GB,en-US;q=0.9,en;q=0.8',
         }
-        
         for code in self.crawl_list:
             params = [('scripcode', code)]
 
@@ -52,8 +51,9 @@ class Bse(Spider):
             yield Request(shares_url, callback=self.parse_shares, headers=headers)
 
             notice_url = 'https://www.bseindia.com/markets/MarketInfo/NoticesCirculars.aspx?txtscripcd=%s' % code
-            yield Request(notice_url, callback=self.parse_notices)
-            self.cursor.execute("update bse_crawl set crawl_status = 1 where security_code = '{0}'".format(code))
+            yield Request(notice_url, callback=self.parse_notices, headers=headers)
+        self.cursor.execute("update bse_crawl set crawl_status = 1 where security_code = '{0}'".format(code))
+    
     def parse_financials(self, response):
         res_url = str(response.url)
         scrip_code = parse_qs(urlparse(res_url).query)['scripcode'][0]
@@ -178,7 +178,7 @@ class Bse(Spider):
                       'segmentname': segmentname, 'categoryname': categoryname, 'departmentname': departmentname}
             temp = DataFrame([fields])
             data1 = data1.append(temp)
-
+        
         page_no = response.meta.get('page_no', '2')
         data = {
             '__EVENTTARGET': 'ctl00$ContentPlaceHolder1$GridView2',
