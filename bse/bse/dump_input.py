@@ -3,10 +3,10 @@ from MySQLdb import connect
 
 class Input2SQL():
     def main(self):
-        conn = connect(db='bse', host='localhost', user='root',
-                            passwd='', charset="utf8", use_unicode=True)
+        conn = connect(db='bse', host='localhost', user='mca',
+                            passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
         cursor = conn.cursor()
-        data = pd.read_csv('/home/headrun/anandhu/projects/crawling/SWIFT/bse/bse/TickerCodes.csv')
+        data = pd.read_csv('/home/mca/SWIFT/bse/bse/TickerCodes.csv')
         df = data[['Security Code', 'Security Name']]
         df.rename(columns={'Security Code': 'security_code', 'Security Name': 'security_name'}, inplace=True)
         values = [tuple(item) for item in df._values]

@@ -1,7 +1,7 @@
 import json
 from itertools import cycle
 from scrapyd_api import ScrapydAPI
-from common_utils import get_urlq_cursor
+from MySQLdb import connect
 
 class CrawlScheduler():
 
@@ -11,7 +11,9 @@ class CrawlScheduler():
 
         # round_robin = cycle(search_tokens_list)
         scrapyd = ScrapydAPI('http://127.0.0.1:6800')
-        conn, cursor = get_urlq_cursor()
+        conn = connect(db='bse', host='localhost', user='mca',
+                            passwd='H3@drunMcaMy07', charset="utf8", use_unicode=True)
+        cursor = conn.cursor()
         query = 'select security_code from bse_crawl where crawl_status = 0'
         cursor.execute(query)
         bse_sec_code = cursor.fetchall()
