@@ -116,7 +116,7 @@ class WalmartSpider(EcommSpider):
                     insight_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'category':category,
                         'sub_category': sub_category, 'brand': brand, 'ratings_count': rating_count,
-                        'reviews_count': 0, 'mrp': price, 'currency':currency, 'selling_price': price,
+                        'reviews_count': 0, 'mrp': price, 'selling_price': price, 'currency':currency,
                         'discount_percentage': 0,'is_available': availability
                     })
                     yield insight_item
@@ -124,7 +124,7 @@ class WalmartSpider(EcommSpider):
                     meta_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': sku, 'web_id': product_id, 'size': size, 'title': name,
                         'category':category, 'sub_category': sub_category, 'brand':brand, 'rating':rating,'ratings_count': rating_count,
-                        'reviews_count': 0, 'mrp':price, 'currency':currency, 'selling_price': price,'discount_percentage':0,
+                        'reviews_count': 0, 'mrp':price, 'selling_price': price, 'currency':currency, 'discount_percentage':0,
                         'is_available': availability, 'descripion': description, 'specs': '', 'image_url': image_url, 
                         'reference_url': reference_url, 'aux_info': json.dumps(aux_info)
                     })
