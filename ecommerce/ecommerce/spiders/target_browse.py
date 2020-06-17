@@ -149,7 +149,6 @@ class TargetSpider(EcommSpider):
         reference_url_ = item_details.get('reference_url', '')
         aux_info_ = item_details.get('aux_info', '')
         currency_type = "USD"
-        #import pdb; pdb.set_trace()
         if mrp_ == '0' or mrp_ == '':
             return
         else:
