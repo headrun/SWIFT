@@ -139,7 +139,7 @@ class TargetSpider(EcommSpider):
         size_detail_ = item_details.get('size_details', '')
         avial_detail_ = item_details.get('avail_details', '')
         sku_ = item_details.get('sku', '')
-        title_ = item_details.get('title', '')
+        title_ = item_details.get('title', '').replace('\n', '')
         category_ = item_details.get('category', '')
         sub_category_ = item_details.get('sub_category', '')
         brand_ = item_details.get('brand', '')
