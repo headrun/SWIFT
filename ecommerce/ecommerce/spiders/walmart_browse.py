@@ -90,6 +90,8 @@ class WalmartSpider(EcommSpider):
             if dict1:
                 brand = dict1['item']['product']['midasContext']['brand']
                 currency = extract_data(sel, "//span[contains(@itemprop, 'priceCurrency')]/@content")
+                if price == '':
+                    price = extract_data(sel, '//*[@id="price"]/span/div[1]/span/span/span/span[2]/@content') or extract_data(sel, '//*[@id="price"]/div/span[1]/span/span[2]/span[2]/@content')
                 aux_info = {'product_id': product_id, 'json_page': response.url}
                 description = dict1['item']['product']['buyBox']['products'][0]['idmlSections']['idmlLongDescription']
                 if description:
