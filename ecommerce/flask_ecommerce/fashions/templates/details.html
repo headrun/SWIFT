@@ -43,7 +43,8 @@ var image_dict  = {
     "nnnow":"/static/images/nnnow.png",
     "amazon":"/static/images/amazon-img.jpg",
     "ajio":"/static/images/ajio.png",
-    "walmart":"/static/images/walmart.png"
+    "walmart":"/static/images/walmart.png",
+    "Target":"/static/images/target.png"
 }
 
 // var page_number=1;
@@ -383,6 +384,7 @@ $('#picker').daterangepicker({
             brand_name = document.getElementById('brands').options[i].value
             var url = "/search?" + $.param({startdate:from_date, enddate: to_date,source:source,sortBy:sort_element,category:category_name,brandName:brand_name,country:country_name})
             $('#pagination-here, #pagination_here_down').bootpag({ total: 1})
+            $('.loader').removeClass('hide');
             $.get(url,function(response) {
               $('.loader').addClass('hide');
               var respo = JSON.parse(JSON.stringify(response))
