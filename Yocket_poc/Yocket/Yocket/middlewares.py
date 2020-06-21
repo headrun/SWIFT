@@ -5,13 +5,16 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-from scrapy import signals
+from os import path, getcwd
+from random import choice
+from inspect import isgenerator
 from w3lib.http import basic_auth_header
-import random
+from scrapy import signals
+from scrapy.utils.project import get_project_settings
 
-proxies = ['swiss.secureconnect.me','it.secureconnect.me','us-fl.secureconnect.me','hk.secureconnect.me','cavan.secureconnect.me','br.secureconnect.me','cz.secureconnect.me','sk.secureconnect.me','ch.secureconnect.me','bg.secureconnect.me','hg.secureconnect.me','ukr.secureconnect.me', 'jp.secureconnect.me','us-sf.secureconnect.me','mx.secureconnect.me','ch.secureconnect.me','ire.secureconnect.me','swe.secureconnect.me','th.secureconnect.me','isr-loc2.secureconnect.me']
+settings = get_project_settings()
 
-class YocketSpiderMiddleware(object):
+class YocketDownloaderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the spider middleware does not modify the
     # passed objects.
@@ -59,7 +62,7 @@ class YocketSpiderMiddleware(object):
         spider.logger.info('Spider opened: %s' % spider.name)
 
 
-class YocketDownloaderMiddleware(object):
+class EcommerceDownloaderMiddleware(object):
     # Not all methods need to be defined. If a method is not defined,
     # scrapy acts as if the downloader middleware does not modify the
     # passed objects.
@@ -74,10 +77,6 @@ class YocketDownloaderMiddleware(object):
     def process_request(self, request, spider):
         # Called for each request that goes through the downloader
         # middleware.
-        proxy = random.choice(proxies)
-        request.meta['proxy'] = 'http://'+ proxy+':6060'
-        request.headers['Proxy-Authorization'] = basic_auth_header('vinuthna@headrun.com','Hotthdrn591!')
-        request.headers['User-Agent'] = random.choice(ua_list)
 
         # Must either:
         # - return None: continue processing this request
@@ -108,3 +107,39 @@ class YocketDownloaderMiddleware(object):
 
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
+
+
+class SpiderMiddleware(object):
+
+    def process_spider_output(self, response, result, spider):
+        if isgenerator(result):
+            result = list(result)
+            _result = []
+            for r in result:
+                if isinstance(r, (list, tuple)):
+                    _result.extend(r)
+                else:
+                    _result.append(r)
+            result = _result
+
+        return result
+
+class ProxyMiddleware(object):
+
+    PROXY_ENABLED_SOURCES = settings.get('PROXY_ENABLED_SOURCES', [])
+    print("Proxy From Middlewares")
+    def process_request(self, request, spider):
+        source = spider.name.split('_')[0]
+        if source in self.PROXY_ENABLED_SOURCES:
+            proxy_path = path.abspath(path.join(getcwd(), '../proxies.txt'))
+            with open(proxy_path, 'r') as proxy_file:
+                proxy_list = proxy_file.readlines()
+
+            user_agent_path = path.abspath(path.join(getcwd(), '../user_agents.txt'))
+            with open(user_agent_path, 'r') as user_agent_file:
+                user_agent_list = user_agent_file.readlines()
+
+            proxy, port, user_ip, password = choice(proxy_list).strip().split(':')
+            request.meta['proxy'] = 'https://%s:%s' % (proxy, port)
+            request.headers['Proxy-Authorization'] = basic_auth_header(user_ip, password)
+            request.headers['User-Agent'] = choice(user_agent_list)
