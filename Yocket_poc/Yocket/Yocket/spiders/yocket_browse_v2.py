@@ -6,7 +6,7 @@ from Yocket.common_utils import GenSpider, extract_data,\
     extract_list_data
 
 class YocketBrowse(GenSpider):
-    name = 'yocket_browse'
+    name = 'yocket_browse_v2'
 
     def __init__(self, *args, **kwargs):
         super(YocketBrowse, self).__init__(*args, **kwargs)
