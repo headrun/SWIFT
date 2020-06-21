@@ -5,10 +5,32 @@
 # See documentation in:
 # https://docs.scrapy.org/en/latest/topics/items.html
 
-import scrapy
+from scrapy.item import Item, Field
 
 
-class YocketItem(scrapy.Item):
-    # define the fields for your item here like:
-    # name = scrapy.Field()
-    pass
+class CSVItem(Item):
+    ProfileName = Field()
+    UndergradDegree = Field()
+    UndergradUniversity = Field()
+    UndergradCgpa = Field()
+    Experience = Field()
+    WorkExperience = Field()
+    CompanyName = Field()
+    Jobtitle = Field()
+    Techpapers = Field()
+    Numberofresearch = Field()
+    Skills = Field()
+    InterestedTermandYear = Field()
+    InterestedCourse = Field()
+    GRETotalScore = Field()
+    GREVerbalScore = Field()
+    GREQuantScore = Field()
+    TOEFLSCORE = Field()
+    IELTSSCORE = Field()
+    Applieduniversity = Field()
+    Appliedcourse = Field()
+    Applieddate = Field()
+    Status = Field()
+    Link = Field()
+    SourceUniversity = Field()
+
