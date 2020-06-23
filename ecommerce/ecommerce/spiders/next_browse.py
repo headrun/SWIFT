@@ -8,7 +8,6 @@ from ecommerce.items import InsightItem, MetaItem
 class NextSpider(EcommSpider): 
     name = 'next_browse'
     domain_url = "https://www.next.us/en/shop"
-    handle_httpstatus_list = [404] 
 
     def __init__(self, *args, **kwargs):
         super(NextSpider, self).__init__(*args, **kwargs)
