@@ -139,7 +139,7 @@ class TargetSpider(EcommSpider):
         size_detail_ = item_details.get('size_details', '')
         avial_detail_ = item_details.get('avail_details', '')
         sku_ = item_details.get('sku', '')
-        title_ = item_details.get('title', '')
+        title_ = item_details.get('title', '').replace('\n', '')
         category_ = item_details.get('category', '')
         sub_category_ = item_details.get('sub_category', '')
         brand_ = item_details.get('brand', '')
@@ -149,26 +149,29 @@ class TargetSpider(EcommSpider):
         reference_url_ = item_details.get('reference_url', '')
         aux_info_ = item_details.get('aux_info', '')
         currency_type = "USD"
-        for size_, avail in zip(size_detail_, avial_detail_):
-            hd_id_ = encode_md5('%s%s%s' % (source__, str(sku_), size_))
-            is_avail = avail
-            insight_item = InsightItem()
-            insight_item.update({
-                'hd_id': hd_id_, 'source': source__, 'sku': sku_, 'size': size_,
-                'category':category_, 'sub_category': sub_category_, 'brand': brand_,
-                'ratings_count': '', 'reviews_count': '', 'mrp': mrp_,
-                'selling_price': selling_price_, 'currency': currency_type,
-                'discount_percentage': discount_percentage_, 'is_available': is_avail
+        if mrp_ == '0' or mrp_ == '':
+            return
+        else:
+            for size_, avail in zip(size_detail_, avial_detail_):
+                hd_id_ = encode_md5('%s%s%s' % (source__, str(sku_), size_))
+                is_avail = avail
+                insight_item = InsightItem()
+                insight_item.update({
+                    'hd_id': hd_id_, 'source': source__, 'sku': sku_, 'size': size_,
+                    'category':category_, 'sub_category': sub_category_, 'brand': brand_,
+                    'ratings_count': '', 'reviews_count': '', 'mrp': mrp_,
+                    'selling_price': selling_price_, 'currency': currency_type,
+                    'discount_percentage': discount_percentage_, 'is_available': is_avail
+                                    })
+                yield insight_item
+                meta_item = MetaItem()
+                meta_item.update({
+                    'hd_id': hd_id_, 'source': source__, 'sku': sku_, 'web_id': sku_, 'size': size_,
+                    'title': title_, 'category':category_, 'sub_category': sub_category_,
+                    'brand': brand_, 'rating':rating_, 'ratings_count': '', 'reviews_count': '',
+                    'mrp':mrp_, 'selling_price': selling_price_, 'currency': currency_type,
+                    'discount_percentage': discount_percentage_, 'is_available': is_avail,
+                    'descripion': descripion_, 'specs': '', 'image_url': image_url_,
+                    'reference_url': reference_url_, 'aux_info': aux_info_
                                 })
-            yield insight_item
-            meta_item = MetaItem()
-            meta_item.update({
-                'hd_id': hd_id_, 'source': source__, 'sku': sku_, 'web_id': sku_, 'size': size_,
-                'title': title_, 'category':category_, 'sub_category': sub_category_,
-                'brand': brand_, 'rating':rating_, 'ratings_count': '', 'reviews_count': '',
-                'mrp':mrp_, 'selling_price': selling_price_, 'currency': currency_type,
-                'discount_percentage': discount_percentage_, 'is_available': is_avail,
-                'descripion': descripion_, 'specs': '', 'image_url': image_url_,
-                'reference_url': reference_url_, 'aux_info': aux_info_
-                            })
-            yield meta_item
+                yield meta_item

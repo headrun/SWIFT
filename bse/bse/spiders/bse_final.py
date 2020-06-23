@@ -209,10 +209,8 @@ class Bse(Spider):
         if not os.path.exists(file_path):
             os.makedirs(file_path)
         os.chdir(file_path)
-        if os.path.isfile(file_name):
-            print('File Exists')
-        else:
-            with open(file_name, 'wb') as f:
-                for chunk in get_response.iter_content(chunk_size=1024):
-                    if chunk:
-                        f.write(chunk)
+        with open(file_name, 'wb') as f:
+            for chunk in get_response.iter_content(chunk_size=1024):
+                if chunk:
+                    f.write(chunk)
+

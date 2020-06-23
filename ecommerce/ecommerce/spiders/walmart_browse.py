@@ -90,6 +90,8 @@ class WalmartSpider(EcommSpider):
             if dict1:
                 brand = dict1['item']['product']['midasContext']['brand']
                 currency = extract_data(sel, "//span[contains(@itemprop, 'priceCurrency')]/@content")
+                if price == '':
+                    price = extract_data(sel, '//*[@id="price"]/span/div[1]/span/span/span/span[2]/@content') or extract_data(sel, '//*[@id="price"]/div/span[1]/span/span[2]/span[2]/@content')
                 aux_info = {'product_id': product_id, 'json_page': response.url}
                 description = dict1['item']['product']['buyBox']['products'][0]['idmlSections']['idmlLongDescription']
                 if description:
@@ -116,7 +118,7 @@ class WalmartSpider(EcommSpider):
                     insight_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': sku, 'size': size, 'category':category,
                         'sub_category': sub_category, 'brand': brand, 'ratings_count': rating_count,
-                        'reviews_count': 0, 'mrp': price, 'currency':currency, 'selling_price': price,
+                        'reviews_count': 0, 'mrp': price, 'selling_price': price, 'currency':currency,
                         'discount_percentage': 0,'is_available': availability
                     })
                     yield insight_item
@@ -124,7 +126,7 @@ class WalmartSpider(EcommSpider):
                     meta_item.update({
                         'hd_id': hd_id, 'source': source, 'sku': sku, 'web_id': product_id, 'size': size, 'title': name,
                         'category':category, 'sub_category': sub_category, 'brand':brand, 'rating':rating,'ratings_count': rating_count,
-                        'reviews_count': 0, 'mrp':price, 'currency':currency, 'selling_price': price,'discount_percentage':0,
+                        'reviews_count': 0, 'mrp':price, 'selling_price': price, 'currency':currency, 'discount_percentage':0,
                         'is_available': availability, 'descripion': description, 'specs': '', 'image_url': image_url, 
                         'reference_url': reference_url, 'aux_info': json.dumps(aux_info)
                     })
