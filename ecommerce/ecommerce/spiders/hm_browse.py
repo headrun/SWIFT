@@ -9,8 +9,8 @@ class HmSpider(EcommSpider):
 
     def __init__(self, *args, **kwargs):
         super(HmSpider, self).__init__(*args, **kwargs)
-        self.category_array = ['t-shirts-tank-tops']
-        self.product_type = ['men_tshirtstanks']
+        self.category_array = ['men/products/t-shirts-tank-tops', 'men/products/shorts', 'men/products/shirts', 'men/products/pants', 'men/products/hoodies-sweatshirts', 'men/products/suits-blazers', 'men/products/jackets-coats', 'men/products/underwear', 'men/products/nightwear-loungewear', 'men/products/sportswear', 'men/new-arrivals/clothes', 'men/products/swim-wear-trunks', 'men/products/cardigans-sweaters', 'women/products/dresses', 'women/products/tops', 'women/products/shirts-blouses', 'women/products/pants', 'women/products/jeans', 'women/products/swimwear', 'women/products/skirts', 'women/products/shorts', 'women/products/workout-clothes', 'women/products/hoodies-sweatshirts', 'women/products/blazers-vests', 'women/products/cardigans-sweaters', 'women/products/jackets-coats', 'women/new-arrivals/clothes']
+        self.product_type = ['men_tshirtstanks', 'men_shorts','men_shirts', 'men_trousers', 'men_hoodiessweatshirts', 'men_blazerssuits', 'men_jacketscoats', 'men_underwear', 'men_nightwearloungewear', 'men_sport', 'men_newarrivals', 'trunks', 'sweaters', 'ladies_dresses', 'ladies_tops', 'ladies_shirtsblouses', 'ladies_trousers', 'ladies_jeans', 'ladies_swimwear', 'ladies_skirts', 'ladies_shorts', 'ladies_sport', 'ladies_hoodiessweatshirts', 'ladies_blazerswaistcoats', 'ladies_cardigansjumpers', 'ladies_jacketscoats', 'ladies_newarrivals']
         self.headers = {
             'authority': 'www2.hm.com',
             'pragma': 'no-cache',
@@ -26,8 +26,10 @@ class HmSpider(EcommSpider):
         }
     def start_requests(self):
         for category, product_type in zip(self.category_array, self.product_type):
-            url = 'https://www2.hm.com/en_us/men/products/%s/_jcr_content/main/productlisting.display.json?product-type=%s&sort=stock&image-size=small&image=model&offset=0&page-size=36'%(category, product_type)
-            meta = {'page':0,'category':category, 'product_type':product_type}
+            url = 'https://www2.hm.com/en_us/%s/_jcr_content/main/productlisting.display.json?product-type=%s&sort=stock&image-size=small&image=model&offset=0&page-size=36'%(category, product_type)
+            if product_type == 'trunks' or  product_type == 'sweaters':
+                url = 'https://www2.hm.com/en_us/%s/_jcr_content/main/productlisting.display.json?&sort=stock&image-size=small&image=model&offset=0&page-size=36'%(category)
+            meta = {'page':0, 'category':category, 'product_type':product_type}
             yield Request(url, callback=self.parse, headers=self.headers, meta=meta)
 
     def parse(self, response):
@@ -35,49 +37,55 @@ class HmSpider(EcommSpider):
         page = response.meta['page']
         category = response.meta['category']
         product_type = response.meta['product_type']
-        sizes = data.get('filters',[])[0]
-        products = data.get('products',[])
+        sizes = data.get('filters', [])[0]
+        products = data.get('products', [])
         for product in products:
-            product_link = 'https://www2.hm.com/'+product.get('link','')
-            product_id = product.get('articleCode','') 
-            meta = {'sizes':sizes,'product_id':product_id, 'page':page}
-            yield Request(product_link, headers=self.headers, callback=self.parse_meta,meta=meta)
+            product_link = 'https://www2.hm.com/'+product.get('link', '')
+            product_id = product.get('articleCode', '') 
+            meta = {'sizes':sizes, 'product_id':product_id, 'page':page}
+            yield Request(product_link, headers=self.headers, callback=self.parse_meta, meta=meta)
         if products:
             page = page+36
-            url = 'https://www2.hm.com/en_us/men/products/%s/_jcr_content/main/productlisting.display.json?product-type=%s&sort=stock&image-size=small&image=model&offset=%s&page-size=36'%(category, product_type, page)
-            meta = {'page':page,'category':category, 'product_type':product_type}
+            url = 'https://www2.hm.com/en_us/%s/_jcr_content/main/productlisting.display.json?product-type=%s&sort=stock&image-size=small&image=model&offset=%s&page-size=36'%(category, product_type, page)
+            if product_type == 'trunks' or  product_type == 'sweaters':
+                url = 'https://www2.hm.com/en_us/%s/_jcr_content/main/productlisting.display.json?&sort=stock&image-size=small&image=model&offset=%s&page-size=36'%(category, page)
+            meta = {'page':page, 'category':category, 'product_type':product_type}
             yield Request(url, headers=self.headers, meta=meta, callback=self.parse)
 
 
     def parse_meta(self, response):
+        sel = Selector(response)
         sizes_ = response.meta['sizes']
         product_id = response.meta['product_id']
-        sizes = sizes_.get('filtervalues',[])
-        data = json.loads(''.join(response.xpath('//script[@type="application/ld+json"]//text()').extract()).replace('\r\n',''))
-        product_name = data.get('name','')
-        product_category = response.xpath('//span[@itemprop="name"]//text()')[1].extract()
-        image_url = 'https:'+data.get('image','')
-        description = data.get('description','')
-        skuid = data.get('sku','')
-        sku_id = data.get('sku','') + '001'
-        brandname = data.get('brand',{}).get('name','').replace('amp;','')
-        sub_category = data.get('category',{}).get('name','')
-        currency = data.get('offers',[])[0].get('priceCurrency','')
-        price =  data.get('offers',[])[0].get('price','')
-        meta = {'product_name':product_name , 'product_category':product_category, 
+        sizes = sizes_.get('filtervalues', [])
+        data_ = extract_data(sel, '//script[@type="application/ld+json"]//text()').replace('\r\n', '')
+        data = json.loads(data_)
+        product_name = data.get('name', '')
+        product_category = extract_list_data(sel, '//span[@itemprop="name"]//text()')[1]
+        image_url = 'https:'+data.get('image', '')
+        description = data.get('description', '')
+        skuid = data.get('sku', '')
+        sku_id = data.get('sku', '') + '001'
+        brandname = data.get('brand', {}).get('name', '').replace('amp;', '')
+        sub_category = data.get('category', {}).get('name', '')
+        currency = data.get('offers', [])[0].get('priceCurrency', '')
+        price = data.get('offers', [])[0].get('price', '')
+        meta = {'product_name':product_name, 'product_category':product_category, 
                 'image_url':image_url, 'description':description, 'skuid':skuid, 
                 'brandname': brandname, 'currency':currency, 'price':price,
                 'product_id':product_id, 'sizes':sizes, 'sub_category':sub_category,
                 'url':response.url, 'sku_id':sku_id}
         url = 'https://www2.hm.com/en_us/reviews/rrs/ugcsummary?sku=%s'%(sku_id)
-        yield Request(url, headers=self.headers,callback=self.parse_next,meta=meta)
+        yield Request(url, headers=self.headers, callback=self.parse_next, meta=meta)
 
     def parse_next(self, response):
         source = 'hm'
-        data = json.loads(response.text)[0]
-        reviews = data.get('reviews','')
-        rating_count = data.get('ratings','')
-        rating = data.get('averageRating','')
+        datas = json.loads(response.text)
+        reviews, rating_count, rating = '', '', ''
+        for data in datas:
+            reviews = data.get('reviews', '')
+            rating_count = data.get('ratings', '')
+            rating = data.get('averageRating', '')
         sub_category = response.meta['sub_category']
         product_name = response.meta['product_name']
         product_category = response.meta['product_category']    
@@ -93,7 +101,7 @@ class HmSpider(EcommSpider):
         sizes = response.meta['sizes']
         aux_info = {'product_id':product_id, 'json_page':url}
         for size in sizes:
-            size = size.get('name','')
+            size = size.get('name', '')
             if size == '2xl':
                 size = 'xxl'
             insight_item = InsightItem()
