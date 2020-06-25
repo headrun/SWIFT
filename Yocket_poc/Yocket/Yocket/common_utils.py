@@ -117,18 +117,6 @@ class GenSpider(Spider):
             for rec in recs:
                 yield rec
 
-    def start_requests(self):
-        start_urls = self._start_urls or getattr(self, 'start_urls', None)
-        source, content_type, crawl_type = self.get_source_content_and_crawl_type(self.name)
-
-        requests = []
-        if crawl_type == "terminal":
-            requests = self.get_terminal_requests(content_type, requests)
-        elif start_urls:
-            requests = self.get_start_urls_requests(start_urls, requests)
-
-        return requests
-
     def get_start_urls_requests(self, start_urls, requests):
         if not isinstance(start_urls, (tuple, list)) and not isgenerator(start_urls):
             start_urls = [start_urls]
@@ -162,7 +150,7 @@ class GenSpider(Spider):
                 req_meta = {'data': meta_data, 'sk': sk}
                 req = Request(
                     #url, self.parse, None, meta=req_meta,
-                    url, self.parse, meta=req_meta,
+                    url, self.parse_student_details, meta=req_meta,
                     headers=self.request_headers,
                     dont_filter=self.allow_duplicate_urls,
                 )
@@ -296,8 +284,7 @@ class GenSpider(Spider):
         if self.metadata_file:
             return self.metadata_file
 
-        metadata_queries_filename = path.join(
-            QUERY_FILES_DIR, "%s_metadata_%s.queries" % (self.name, get_current_ts_with_ms()))
+        metadata_queries_filename = path.join(QUERY_FILES_DIR, "%s_metadata_%s.txt" % (self.name, get_current_ts_with_ms()))
         self.metadata_file = open(metadata_queries_filename, 'w')
 
         return self.metadata_file

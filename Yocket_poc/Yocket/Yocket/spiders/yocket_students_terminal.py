@@ -1,4 +1,5 @@
 from json import dumps
+from scrapy.http import Request
 from scrapy.selector import Selector
 from Yocket.items import CSVItem
 from Yocket.common_utils import GenSpider, extract_data,\
@@ -23,12 +24,25 @@ class YocketTerminal(GenSpider):
             "referer": "https://yocket.in/account/login"
         }
 
+    def start_requests(self):
+        self.get_metadata_file().write('%s\n' % ';'.join(list(CSVItem.fields.keys())))
+        self.get_metadata_file().flush()
+        data = {"email": "sreenivas.dega1@gmail.com", "password": "Headrun591!"}
+        url = "https://yocket.in/users/login.json"
+        yield Request(url, headers=self.request_headers, body=dumps(data), method="POST")
+
     def parse(self, response):
+        source, content_type, crawl_type = self.get_source_content_and_crawl_type(self.name)
+        requests = self.get_terminal_requests(content_type, [])
+        return requests
+
+    def parse_student_details(self, response):
         sel = Selector(response)
-        university = response.meta.get('data', {}).get('university', '')
+        sk = response.meta['sk']
         work_experiences, job_titles, company_names = [], [], []
         course_tests_dict, researches = {}, []
-        profile_name = extract_data(sel, '//div[@class="col-sm-12"]//h1//strong/text()').strip() or response.url.split('/')[-1].title()
+        profile_name = extract_data(sel, '//div[@class="col-sm-12"]//h1//strong/text()').strip()
+        university = extract_data(sel, '//div[@class="col-sm-12 university-header"]//h3/text()')
         degree = extract_data(sel, '//p[@class="card-font"]//b//text()')
         cgpa = extract_data(sel, '//p[@class="teal"]//b//text()')
         skills = [item.strip() for item in extract_list_data(sel, '//div[@id="users-skills"]//div//h4/text()')]
@@ -86,9 +100,11 @@ class YocketTerminal(GenSpider):
                 "GRETotalScore": gre_details.get("total_value", ""), "GREVerbalScore": gre_details.get("sub_scores", {}).get("Verbal", ""),
                 "Applieduniversity": applied_university, "GREQuantScore": gre_details.get("sub_scores", {}).get("Quant", ""),
                 "Appliedcourse": applied_course, "TOEFLSCORE": course_tests_dict.get("", {}).get("total_value", ""),
-                "Applieddate": applied_date.split(':')[0].strip(), "IELTSSCORE": course_tests_dict.get("IELTS", {}).get("total_value", ""),
+                "Applieddate": applied_date.split(':')[-1].strip(), "IELTSSCORE": course_tests_dict.get("IELTS", {}).get("total_value", ""),
                 "Link": response.url, "SourceUniversity": university
             })
 
             yield csv_item
 
+        if csv_item:
+            self.got_page(sk, got_pageval=1)

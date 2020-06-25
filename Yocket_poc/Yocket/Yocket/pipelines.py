@@ -8,7 +8,7 @@ class YocketPipeline():
 
     def process_item(self, item, spider):
         if isinstance(item, CSVItem):
-            csv_values = "#<>#".join([
+            csv_values = ";".join([
                 item["ProfileName"], item["UndergradDegree"], item["UndergradUniversity"], item["UndergradCgpa"],
                 item["Experience"], item["WorkExperience"], item["CompanyName"], item["Jobtitle"], item["Techpapers"],
                 item["Numberofresearch"], item["Skills"], item["InterestedTermandYear"], item["InterestedCourse"],
