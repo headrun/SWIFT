@@ -26,9 +26,9 @@ class YocketTerminal(GenSpider):
         }
 
     def start_requests(self):
-        self.get_metadata_file().write('%s\n' % ';'.join(['ProfileName', 'UndergradDegree', 'UndergradUniversity',
-            'UndergradCgpa', 'Experience', 'WorkExperience', 'CompanyName', 'Jobtitle', 'Techpapers', 'Numberofresearch',
-            'Skills', 'InterestedTermandYear', 'InterestedCourse', 'GREScore(TOTAL)', 'GREScore(VERBAL)', 'GREScore(QUANT)',
+        self.get_metadata_file().write('%s\n' % ';'.join(['ProfileName', 'UndergradDegree', 'UndergradUniversity',\
+            'UndergradCgpa', 'Experience', 'WorkExperience', 'CompanyName', 'Jobtitle', 'Techpapers', 'Numberofresearch',\
+            'Skills', 'InterestedTermandYear', 'InterestedCourse', 'GREScore(TOTAL)', 'GREScore(VERBAL)', 'GREScore(QUANT)',\
             'TOEFLSCORE', 'IELTSSCORE', 'Applieduniversity', 'Appliedcourse', 'Applieddate', 'Status', 'Link', 'SourceUniversity']))
         self.get_metadata_file().flush()
         data = {"email": "sreenivas.dega1@gmail.com",
@@ -46,7 +46,7 @@ class YocketTerminal(GenSpider):
         sel = Selector(response)
         sk = response.meta['sk']
         work_experiences, job_titles, company_names = [], [], []
-        course_tests_dict, researches = {}, []
+        course_tests_dict, researches, csv_item = {}, [], {}
         profile_name = extract_data(
             sel, '//div[@class="col-sm-12"]//h1//strong/text()').strip()
         university = extract_data(
@@ -137,3 +137,5 @@ class YocketTerminal(GenSpider):
 
         if csv_item:
             self.got_page(sk, got_pageval=1)
+        else:
+            self.got_page(sk, got_pageval=2)
