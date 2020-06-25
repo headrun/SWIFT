@@ -8,11 +8,10 @@ from ecommerce.items import InsightItem, MetaItem
 class NextSpider(EcommSpider): 
     name = 'next_browse'
     domain_url = "https://www.next.us/en/shop"
-    handle_httpstatus_list = [404] 
 
     def __init__(self, *args, **kwargs):
         super(NextSpider, self).__init__(*args, **kwargs)
-        self.category_array = ['gender-men/feat-newin', 'gender-men-productaffiliation-tops']
+        self.category_array = ['gender-men/feat-newin', 'gender-men-productaffiliation-tops', 'gender-men-productaffiliation-casualshirts/category', 'gender-men-productaffiliation-formalshirts', 'gender-men-productaffiliation-coatsandjackets', 'gender-men-category-jeans', 'gender-men-category-joggers', 'gender-men-productaffiliation-knitwear', 'gender-men-productaffiliation-trousers', 'gender-men-productaffiliation-shortsswimwear', 'gender-men-productaffiliation-suits', 'gender-men-productaffiliation-sweatshirtsandhoodies', 'gender-women/feat-newin', 'gender-women-productaffiliation-coatsandjackets', 'gender-women-category-dresses', 'gender-women-productaffiliation-sweatshirtsandhoodies', 'gender-women-category-jeans', 'gender-women-productaffiliation-knitwear', 'gender-women-productaffiliation-jumpsuitsandplaysuits', 'gender-women-productaffiliation-trousersleggings', 'gender-women-productaffiliation-tops', 'gender-women-productaffiliation-shortsandskirts', 'gender-women-productaffiliation-tailoring', 'gender-women-productaffiliation-swimwear', 'gender-women-productaffiliation-tops']
         self.headers = {
             'authority': 'www.next.us',
             'pragma': 'no-cache',
