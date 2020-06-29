@@ -17,7 +17,7 @@ class CrawlScheduler():
         search_items = cursor.fetchall()
         search_items = [
             (search_item[0], search_item[1], search_item[2], round_robin.__next__().strip()) for search_item in search_items if search_item]
-        chuncked_search_items = [item for item in self.get_chunks(search_items, 1000) if item]
+        chuncked_search_items = [item for item in self.get_chunks(search_items, 500) if item]
         for chuncked_search_item in chuncked_search_items:
             scrapyd.schedule('impendi', 'ebay_browse', jsons=json.dumps(chuncked_search_item))
 

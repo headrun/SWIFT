@@ -98,7 +98,7 @@ class EbayBrowse(XMLFeedSpider):
                 if item_end_time < search_end_time:
                     continue
 
-            if ebay_item['location'] and 'china' not in ebay_item['location'].lower():
+            if ebay_item['location'] and 'china' not in ebay_item['location'].lower() and ebay_item['selling_state'] == 'EndedWithSales':
                 yield ebay_item
 
         pagination = int(extract_data(sel, '//paginationOutput/totalPages/text()'))
