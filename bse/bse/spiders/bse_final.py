@@ -1,10 +1,10 @@
 import json
 import os
 import requests
+import ftplib
 from ast import literal_eval
 from urllib.parse import parse_qs, urlparse, urlencode
 from MySQLdb import connect
-from pandas import read_sql
 from pydispatch import dispatcher
 from scrapy import signals
 from scrapy.spiders import Spider
@@ -126,7 +126,7 @@ class Bse(Spider):
                        ]
             for url, tbl_param in zip(self.urls, self.tbl):
                 url = url+urlencode(tbl_param['params'])
-                yield Request(url, callback=self.parse, headers=headers, meta={'params':tbl_param})
+                yield Request(url, callback=self.parse, headers=headers, meta={'params': tbl_param})
             self.cursor.execute("update bse_crawl set crawl_status = 1 where security_code = '{0}'".format(code))
 
     def parse(self, response):
@@ -191,6 +191,10 @@ class Bse(Spider):
                 self.conn.commit()
 
     def download_pdf(self, url, flag, scrip_code):
+        server = 'u144678.your-storagebox.de'
+        username = 'u144678'
+        password = 'j5oBQYXvVFKsjkCs'
+        ftp = ftplib.FTP(server, username, password)
         home_dir = os.getenv('HOME')
         root_folder = home_dir + '/BSE_PDF/'
         annual = root_folder + 'Annual_Reports/' 
@@ -203,12 +207,34 @@ class Bse(Spider):
         get_response = requests.get(url, stream=True, headers=headers)
         file_name = url.split("/")[-1]
         if flag == 1:
-            file_path = corp + scrip_code + '/' 
+            ftp_scrip_code_path = 'BSE_PDF/Corp_Announcement/'+ scrip_code
+            # Need to chk folder exists
+            if ftp_scrip_code_path in ftp.nlst():
+                ftp.mkd(ftp_scrip_code_path)
+                file_path = corp + scrip_code + '/' 
+            else:
+                file_path = corp + scrip_code + '/'
+                try:
+                    ftp.mkd(ftp_scrip_code_path)
+                except:
+                    pass
         elif flag == 2:
-            file_path = annual + scrip_code + '/'
+            ftp_scrip_code_path = 'BSE_PDF/Annual_Reports/'+ scrip_code
+            # Need to chk folder exists
+            if ftp_scrip_code_path in ftp.nlst():
+                ftp.mkd(ftp_scrip_code_path)
+                file_path = annual + scrip_code + '/'
+            else:
+                file_path = annual + scrip_code + '/'
+                try:
+                    ftp.mkd(ftp_scrip_code_path)
+                except:
+                    pass
+
         if not os.path.exists(file_path):
             os.makedirs(file_path)
         os.chdir(file_path)
+
         if os.path.isfile(file_name):
             print('File Exists')
         else:
@@ -216,4 +242,11 @@ class Bse(Spider):
                 for chunk in get_response.iter_content(chunk_size=1024):
                     if chunk:
                         f.write(chunk)
+        ftp_scrip_code_path = ftp_scrip_code_path + '/'
+        ftp.cwd(ftp_scrip_code_path)  
+        # Need to check whether file exists
+        fh = open(file_name, 'rb')
+        ftp.storbinary('STOR %s' %(file_name), fh)
+        fh.close()
+        os.remove(file_path + file_name)
 
