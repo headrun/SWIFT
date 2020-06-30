@@ -19,10 +19,10 @@ class CrawlScheduler():
         bse_sec_code = cursor.fetchall()
         bse_sec_code = [sec_code[0] for sec_code in bse_sec_code if sec_code]
         chuncked_sec_codes = [item for item in self.get_chunks(bse_sec_code, 100) if item]
-        chuncked_sec_code = chuncked_sec_codes[0]
-        #for chuncked_sec_code in chuncked_sec_codes:
-        scrapyd.schedule('bse', 'bse_final', jsons=json.dumps(chuncked_sec_code))
-        scrapyd.schedule('bse', 'bse_xpath', jsons=json.dumps(chuncked_sec_code))
+        #chuncked_sec_code = chuncked_sec_codes[0]
+        for chuncked_sec_code in chuncked_sec_codes:
+            scrapyd.schedule('bse', 'bse_final', jsons=json.dumps(chuncked_sec_code))
+            scrapyd.schedule('bse', 'bse_xpath', jsons=json.dumps(chuncked_sec_code))
         cursor.close()
         conn.close()
 
