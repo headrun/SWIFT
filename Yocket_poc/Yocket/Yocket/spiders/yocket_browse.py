@@ -25,11 +25,16 @@ class YocketBrowse(GenSpider):
         }
 
     def start_requests(self):
-        data = {"pageCount": "1", "curr_url": "https://yocket.in/universities-in-usa"}
-        url = "https://yocket.in/universities-in-usa.json"
-        yield Request(url, callback=self.parse, headers=self.headers, body=dumps(data), method="POST", meta={"page": 1})
+        data = {"email":"sreenivas.dega1@gmail.com", "password":"Headrun591!"}
+        url = 'https://yocket.in/users/login.json'
+        yield Request(url, callback=self.parse, headers=self.headers, body=dumps(data), method="POST")
 
     def parse(self, response):
+        data = {"pageCount": "1", "curr_url": "https://yocket.in/universities-in-usa"}
+        url = "https://yocket.in/universities-in-usa.json"
+        yield Request(url, callback=self.parse_login, headers=self.headers, body=dumps(data), method="POST", meta={"page": 1})
+
+    def parse_login(self, response):
         page = response.meta["page"]
         data = loads(response.body)
         universities = data.get("universities", [])
@@ -72,10 +77,9 @@ class YocketBrowse(GenSpider):
         for student_link in students_links:
             if student_link and "http" not in student_link:
                 student_id = student_link.split('/')[-1]
-                student_link = urljoin("https://yocket.in/", student_link)
+                student_link = urljoin("https://yocket.in/", student_link.strip())
                 meta_data = {"university": university}
                 self.get_page("yocket_students_terminal", student_link, student_id, meta_data=meta_data)
-            #yield Request(student_link, callback=self.parse_data, headers=self.headers, meta={'university': university})
 
         pagination = extract_data(sel, '//ul[@class="pagination"]/li[contains(@class,"next")]/a/@href')
         if pagination:

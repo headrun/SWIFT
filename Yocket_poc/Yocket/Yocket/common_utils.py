@@ -149,8 +149,7 @@ class GenSpider(Spider):
                     meta_data = eval(meta_data)
                 req_meta = {'data': meta_data, 'sk': sk}
                 req = Request(
-                    #url, self.parse, None, meta=req_meta,
-                    url, self.parse_student_details, meta=req_meta,
+                    url, self.parse, None, meta=req_meta,
                     headers=self.request_headers,
                     dont_filter=self.allow_duplicate_urls,
                 )
