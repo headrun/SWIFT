@@ -2,8 +2,8 @@ from json import dumps, loads
 from urllib.parse import urljoin
 from scrapy.http import Request
 from scrapy.selector import Selector
-from Yocket.common_utils import GenSpider, extract_data,\
-    extract_list_data
+from Yocket.common_utils import GenSpider,\
+    extract_data, extract_list_data
 
 class YocketBrowse(GenSpider):
     name = 'yocket_browse'
@@ -25,16 +25,11 @@ class YocketBrowse(GenSpider):
         }
 
     def start_requests(self):
-        data = {"email":"sreenivas.dega1@gmail.com", "password":"Headrun591!"}
-        url = 'https://yocket.in/users/login.json'
-        yield Request(url, callback=self.parse, headers=self.headers, body=dumps(data), method="POST")
-
-    def parse(self, response):
         data = {"pageCount": "1", "curr_url": "https://yocket.in/universities-in-usa"}
         url = "https://yocket.in/universities-in-usa.json"
-        yield Request(url, callback=self.parse_login, headers=self.headers, body=dumps(data), method="POST", meta={"page": 1})
+        yield Request(url, callback=self.parse, headers=self.headers, body=dumps(data), method="POST", meta={"page": 1})
 
-    def parse_login(self, response):
+    def parse(self, response):
         page = response.meta["page"]
         data = loads(response.body)
         universities = data.get("universities", [])
