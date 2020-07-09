@@ -45,7 +45,7 @@ class CsvPre():
 
     def send_email(self, attachment):
         fromaddr = "noreply@headrun.com"
-        toaddr = ["charan@headrun.com"]
+        toaddr = ["charan@headrun.com", "vinuthna@headrun.com"]
         msg = MIMEMultipart()
         msg['From'] = fromaddr
         msg['To'] = ','.join(toaddr)
