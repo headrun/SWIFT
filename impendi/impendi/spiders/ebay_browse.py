@@ -1,5 +1,6 @@
 from ast import literal_eval
 from datetime import datetime
+from pytz import UTC
 from dateutil.parser import parse
 from pydispatch import dispatcher
 from scrapy import signals
@@ -13,6 +14,7 @@ from impendi.common_utils import get_nodes,\
     update_urlqueue_with_resp_status, close_mysql_connection
 
 class EbayBrowse(XMLFeedSpider):
+    handle_httpstatus_list = [500]
     name = 'ebay_browse'
     start_urls = []
 
@@ -92,8 +94,8 @@ class EbayBrowse(XMLFeedSpider):
             })
 
             if '0000' not in end_time and '0000' not in ebay_item['end_time']:
-                search_end_time = parse(end_time)
-                item_end_time = parse(ebay_item['end_time'])
+                search_end_time = parse(end_time).replace(tzinfo=UTC)
+                item_end_time = parse(ebay_item['end_time']).replace(tzinfo=UTC)
 
                 if item_end_time < search_end_time:
                     continue
