@@ -43,13 +43,13 @@ class MyntraSpider(EcommSpider):
         _data = json.loads(response.body.decode('utf-8'))
         products = _data.get('products', [])
         for product in products:
-            product_id = normalize(product.get('productId', ''))
+            product_id = product.get('productId', '')
             name = normalize(product.get('productName', ''))
-            rating = normalize(product.get('rating', ''))
-            rating_count = normalize(product.get('ratingCount', ''))
+            rating = product.get('rating', '')
+            rating_count = product.get('ratingCount', '')
             brand = normalize(product.get('brand', ''))
-            mrp = normalize(product.get('mrp', ''))
-            price = normalize(product.get('price', ''))
+            mrp = product.get('mrp', '')
+            price = product.get('price', '')
             sub_category = normalize(product.get('category', ''))
             category = normalize(product.get('gender', ''))
             image_url = normalize(product.get('searchImage', ''))
@@ -58,7 +58,7 @@ class MyntraSpider(EcommSpider):
             aux_info = {'product_id': product_id, 'json_page': response.url}
             availabilities_info = product.get('inventoryInfo', [])
             for availability_info in availabilities_info:
-                sku = normalize(availability_info.get('skuId', ''))
+                sku = availability_info.get('skuId', '')
                 size = normalize(availability_info.get('label', ''))
                 availability = 0
                 if availability_info.get('available', False):
