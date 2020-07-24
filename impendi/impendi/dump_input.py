@@ -8,6 +8,10 @@ class Input2SQL():
         df = data.parse('InputData ImpendiAnalytics', skiprows=3)
         df = df[['SKU ID', 'Search Keyword', 'End Time', 'End Time']]
         values = [tuple(item) for item in df._values]
+
+        query = 'truncate ebay_crawl; truncate EBAYDB.ebay_sold_items'
+        cursor.execute(query)
+
         query = 'insert into ebay_crawl (sk, search_key, end_time, created_at, modified_at) values(%s, %s, %s, now(), now()) on duplicate key update modified_at = now(), end_time = %s'
         cursor.executemany(query, values)
         conn.commit()
