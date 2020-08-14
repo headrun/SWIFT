@@ -16,6 +16,6 @@ def upload():
         except:
             flash('Encountered error while uploading the file', 'error')
 
-        return redirect('/upload')
+        return render_template('upload.html')
     else:
     	return render_template('upload.html')
