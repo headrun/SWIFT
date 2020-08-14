@@ -50,7 +50,7 @@ class CsvPre():
         msg = MIMEMultipart()
         msg['From'] = fromaddr
         msg['To'] = ','.join(toaddr)
-        msg['Subject'] = "Ebay Sold Items"
+        msg['Subject'] = "Ebay Sold Items on %s" % str(datetime.now().date())
         body = "PFA"
         msg.attach(MIMEText(body, 'plain'))
         filename = attachment.name.split('/')[-1]
