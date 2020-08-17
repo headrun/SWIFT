@@ -74,7 +74,8 @@ class CsvPre():
 
         tar_filename = path.join(tar_dir, "%s.tar.gz" % self.file_name)
         with tarfile.open(tar_filename, "w:gz") as tar:
-            tar.add(self.file_name, self.input_file)
+            tar.add(self.file_name)
+            tar.add(self.input_file)
         return tar_filename
 
 
