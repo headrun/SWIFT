@@ -15,6 +15,7 @@ headers_dict = {'sk': 'SKU ID', 'search_key': 'Search Keyword', 'item_id': 'Item
 class CsvPre():
     def __init__(self):
         self.file_name = 'ebay_sold_items_%s.csv' % datetime.now().strftime('%Y_%m_%d')
+        self.input_file = 'Impendi_Analytics_Masterfile_Dataset.xlsx'
 
     def main(self):
         q_conn, q_cursor = get_urlq_cursor()
@@ -44,24 +45,24 @@ class CsvPre():
         q_conn.close()
 
     def send_email(self, attachment):
-        fromaddr = "noreply@headrun.com"
+        fromaddr = "impendi@outlook.com"
         toaddr = ["charan@headrun.com", "vinuthna@headrun.com"]
         msg = MIMEMultipart()
         msg['From'] = fromaddr
         msg['To'] = ','.join(toaddr)
-        msg['Subject'] = "Ebay Sold Items"
+        msg['Subject'] = "Ebay Sold Items on %s" % str(datetime.now().date())
         body = "PFA"
         msg.attach(MIMEText(body, 'plain'))
-        filename = attachment.name
+        filename = attachment.name.split('/')[-1]
         p = MIMEBase('application', 'gz')
         p.set_payload((attachment).read())
         encoders.encode_base64(p)
         p.add_header('Content-Disposition',
                      "attachment; filename= %s" % filename)
         msg.attach(p)
-        s = smtplib.SMTP('smtp.gmail.com', 587)
+        s = smtplib.SMTP('smtp-mail.outlook.com', 587)
         s.starttls()
-        s.login(fromaddr, "hdrn591!")
+        s.login(fromaddr, "Headrun@2020")
         text = msg.as_string()
         s.sendmail(fromaddr, ','.join(toaddr), text)
         s.quit()
@@ -74,6 +75,7 @@ class CsvPre():
         tar_filename = path.join(tar_dir, "%s.tar.gz" % self.file_name)
         with tarfile.open(tar_filename, "w:gz") as tar:
             tar.add(self.file_name)
+            tar.add(self.input_file)
         return tar_filename
 
 

@@ -1,18 +1,21 @@
 import re
 import json
 from urllib.parse import urljoin
-from ecommerce.common_utils import *
 from ecommerce.items import InsightItem, MetaItem
+from ecommerce.common_utils import EcommSpider,\
+    Request, encode_md5, normalize
+
 
 class AjioSpider(EcommSpider):
-    name = 'ajio_browse'
+    name = "ajio_browse"
     domain_url = "https://www.ajio.com"
-    handle_httpstatus_list = [400] 
+    handle_httpstatus_list = [400]
 
     def __init__(self, *args, **kwargs):
         super(AjioSpider, self).__init__(*args, **kwargs)
-        self.category_array = ['s/men-newin-clothing', 'men-jackets-coats/c/830216010', 'men-jeans/c/830216001', 'men-shirts/c/830216013', 'men-shorts-3-4ths/c/830216002', 'men-sweatshirt-hoodies/c/830216011', 'men-track-pants/c/830216003', 'men-trousers-pants/c/830216004', 'men-tshirts/c/830216014', 's/kurtas-for-men', 's/men-jackets-collection', 's/men-shirts-collection', 's/fresh-arrivals-women-clothing', 'women-tops/c/830316017', 'women-tshirts/c/830316018', 'women-jeans-jeggings/c/830316001', 'women-dresses/c/830316007', 'women-trousers-pants/c/830316006', 'women-shirts/c/830316016', 'women-track-pants/c/830316005', 's/women-skirts-and-shorts-3621-51391', 'women-jackets-coats/c/830316012', 'women-jumpsuits-playsuits/c/830316008', 'women-shrugs-boleros/c/830316011', 'women-sweatshirts-hoodies/c/830316013', 'women-sweaters-cardigans/c/830316019', 'women-kurtas/c/830303011', 'women-salwars-churidars/c/830303002', 'women-kurtis-tunics/c/830303012', 'women-sarees/c/830303008', 's/dupattas-women', 'women-dress-material/c/830303004', 'women-kurta-suit-sets/c/830303009' ,'women-blouses/c/830303007', 'women-leggings/c/830316002', 's/women-jackets-and-shrugs-3621-51391', 'women-skirts-ghagras/c/830303003', 's/shawls-and-wraps', 's/women-palazzos-and-culottes-3621-51391', 'women-dresses-gowns/c/830309004', 's/fusion-kurtas-3650-1875', 's/fusion-kurtis-and-tunics-3650-1875', 'women-pants-shorts/c/830309002', 'women-jackets-shrugs/c/830309006', 'women-shirts-tops-tunic/c/830309010', 's/boys-denims-trousers', 's/boys-joggers-track-pants', 's/boys-outerwear', 's/boys-shirts', 's/boys-shorts', 's/boys-tshirts', 's/girls-dresses-frocks', 's/girls-jeans-jeggings', 's/girls-leggings', 's/girls-outerwear', 's/girls-skirts-shorts', 's/girls-tops-tshirts']
-        self.headers = headers = {
+        self.category_array = ['s/men-newin-clothing', 'men-jackets-coats/c/830216010', 'men-jeans/c/830216001', 'men-shirts/c/830216013', 'men-shorts-3-4ths/c/830216002', 'men-sweatshirt-hoodies/c/830216011', 'men-track-pants/c/830216003', 'men-trousers-pants/c/830216004', 'men-tshirts/c/830216014', 's/kurtas-for-men', 's/men-jackets-collection', 's/men-shirts-collection', 's/fresh-arrivals-women-clothing', 'women-tops/c/830316017', 'women-tshirts/c/830316018', 'women-jeans-jeggings/c/830316001', 'women-dresses/c/830316007', 'women-trousers-pants/c/830316006', 'women-shirts/c/830316016', 'women-track-pants/c/830316005', 's/women-skirts-and-shorts-3621-51391', 'women-jackets-coats/c/830316012', 'women-jumpsuits-playsuits/c/830316008', 'women-shrugs-boleros/c/830316011', 'women-sweatshirts-hoodies/c/830316013', 'women-sweaters-cardigans/c/830316019', 'women-kurtas/c/830303011', 'women-salwars-churidars/c/830303002', 'women-kurtis-tunics/c/830303012', 'women-sarees/c/830303008', 's/dupattas-women', 'women-dress-material/c/830303004', 'women-kurta-suit-sets/c/830303009', 'women-blouses/c/830303007', 'women-leggings/c/830316002', 's/women-jackets-and-shrugs-3621-51391', 'women-skirts-ghagras/c/830303003', 's/shawls-and-wraps', 's/women-palazzos-and-culottes-3621-51391', 'women-dresses-gowns/c/830309004', 's/fusion-kurtas-3650-1875', 's/fusion-kurtis-and-tunics-3650-1875', 'women-pants-shorts/c/830309002', 'women-jackets-shrugs/c/830309006', 'women-shirts-tops-tunic/c/830309010', 's/boys-denims-trousers', 's/boys-joggers-track-pants', 's/boys-outerwear', 's/boys-shirts', 's/boys-shorts', 's/boys-tshirts', 's/girls-dresses-frocks', 's/girls-jeans-jeggings', 's/girls-leggings', 's/girls-outerwear', 's/girls-skirts-shorts', 's/girls-tops-tshirts']
+
+        self.headers = {
             'Connection': 'keep-alive',
             'Pragma': 'no-cache',
             'Cache-Control': 'no-cache',
@@ -26,92 +29,101 @@ class AjioSpider(EcommSpider):
 
     def start_requests(self):
         for category in self.category_array:
-            url = 'https://www.ajio.com/%s'%category
+            url = 'https://www.ajio.com/%s' % category
             yield Request(url, callback=self.parse, headers=self.headers)
 
     def parse(self, response):
-        text = ''.join(response.xpath('//script[contains(text(), "window.__PRELOADED_STATE__")]/text()').extract()).replace('\r\n', '').replace(';', '')
+        text = ''.join(response.xpath(
+            '//script[contains(text(), "window.__PRELOADED_STATE__")]/text()').extract()).replace('\r\n', '').replace(';', '')
         data = ''.join(re.findall('window.__PRELOADED_STATE__ = (.*)', text)).strip()
-        datas = ''
+
         try:
             datas = json.loads(data)
-        except: pass
-        if datas:   
-            curatedId = datas.get('request', {}).get('query', {}).get('curatedid', '')
-            curted = datas.get('request', {}).get('query', {}).get('curated', '')
-            if curatedId:
-                num = response.xpath('//script[@type="application/ld+json"][2]//text()').extract()
-                num = ''.join(''.join(re.findall('@id(.*)', ''.join(re.findall('item(.*)', ''.join(re.findall('@id(.*)', ''.join(re.findall('item(.*)', ''.join(num))))))))).split(',')[0].split('/')[-1]).split('"')[0]
-                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=1&pageSize=45&format=json&query=relevance&sortBy=relevance&curated=true&curatedid=%s&gridColumns=3&facets=&advfilter=true' % (num, curatedId)
+        except json.decoder.JSONDecodeError as error:
+            datas = {}
+            self.log.error('Failed to crawl - %s', error)
+
+        if datas:
+            curated_id = datas.get('request', {}).get('query', {}).get('curatedid', '')
+            if curated_id:
+                num = response.xpath(
+                    '//script[@type="application/ld+json"][2]//text()').extract()
+                num = ''.join(''.join(re.findall('@id(.*)', ''.join(re.findall('item(.*)', ''.join(re.findall(
+                    '@id(.*)', ''.join(re.findall('item(.*)', ''.join(num))))))))).split(',')[0].split('/')[-1]).split('"')[0]
+                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=1&pageSize=45&format=json&query=relevance&sortBy=relevance&curated=true&curatedid=%s&gridColumns=3&facets=&advfilter=true' % (
+                    num, curated_id)
             else:
                 num = response.url.split('/')[-1]
-                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=1&pageSize=45&format=json&query=relevance&sortBy=relevance&gridColumns=3&facets=&advfilter=true'% num
-            meta = {'range': 0, 'page': 1, 'curatedId':curatedId, 'num':num, "handle_httpstatus_list":[400]}
+                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=1&pageSize=45&format=json&query=relevance&sortBy=relevance&gridColumns=3&facets=&advfilter=true' % num
+            meta = {'range': 0, 'page': 1, 'curated_id': curated_id, 'num': num}
             yield Request(url, callback=self.parse_data, meta=meta, headers=self.headers)
 
     def parse_data(self, response):
-        curatedId = response.meta['curatedId']
-        data = ''
+        source = self.name.split('_')[0]
+        number = response.meta['num']
+        page = response.meta['page']
+        curated_id = response.meta['curated_id']
+
         try:
             data = json.loads(response.text)
-        except: pass
-        number = response.meta['num']
-        code_ = data.get('categoryCode', '')
-        category = data.get('rilfnlBreadCrumbList', {}).get('rilfnlBreadCrumb', [])[0].get('name','')
-        sub_category = data.get('freeTextSearch', '')
-        page = response.meta['page']
-        source = self.name.split('_')[0]
-        meta_data = {'category':category, 'sub_category':sub_category}
+        except json.decoder.JSONDecodeError as error:
+            data = {}
+            self.log.error('Failed to crawl - %s', error)
+
+        code_ = normalize(data.get('categoryCode', ''))
+        category = normalize(data.get('rilfnlBreadCrumbList', {}).get('rilfnlBreadCrumb', [])[0].get('name', ''))
+        sub_category = normalize(data.get('freeTextSearch', ''))
         products = data.get('products', [])
         for product in products:
-            code = product.get('code', '')
-            brandname = product.get('fnlColorVariantData', {}).get('brandName', '')
-            outfiturl = product.get('fnlColorVariantData', {}).get('outfitPictureURL', '')
-            discount = product.get('discountPercent', 0)
+            code = normalize(product.get('code', ''))
+            brandname = normalize(product.get('fnlColorVariantData', {}).get('brandName', ''))
+            outfiturl = normalize(product.get('fnlColorVariantData', {}).get('outfitPictureURL', ''))
+            discount = normalize(product.get('discountPercent', 0))
             discount_percentage = 0
             if discount != 0:
-                discount_percentage = float(discount.replace(' ','').replace('%off',''))
-            selling_price = product.get('price', {}).get('value', 0)
-            mrp = product.get('wasPriceData', {}).get('value', 0)
+                discount_percentage = float(discount.replace(' ', '').replace('%', '').replace('off', ''))
+            selling_price = normalize(product.get('price', {}).get('value', 0))
+            mrp = normalize(product.get('wasPriceData', {}).get('value', 0))
             availability = 0
             if mrp != 0:
                 availability = 1
-            product_name = product.get('name', '')
+            product_name = normalize(product.get('name', ''))
             product_url = urljoin(self.domain_url, product.get('url', ''))
-            sizes = product.get('productSizeData', {}).get('sizeVariants', '')
+            sizes = product.get('productSizeData', {}).get('sizeVariants', [])
             for size in sizes:
-                size = size
                 hd_id = encode_md5('%s%s%s' % (source, str(code), size))
                 aux_info = {'product_id': code_, 'json_page': response.url}
-                insight_item = InsightItem() 
+                insight_item = InsightItem()
                 insight_item.update({
                     'hd_id': hd_id, 'source': source, 'sku': code, 'size': size,
-                    'category':category, 'sub_category': sub_category,
+                    'category': category, 'sub_category': sub_category,
                     'brand': brandname, 'ratings_count': 0, 'reviews_count': 0,
-                    'mrp':mrp, 'selling_price': selling_price, 'currency': 'INR',
+                    'mrp': mrp, 'selling_price': selling_price, 'currency': 'INR',
                     'discount_percentage': discount_percentage, 'is_available': availability
                 })
                 yield insight_item
 
                 meta_item = MetaItem()
                 meta_item.update({
-                    'hd_id': hd_id, 'source': source, 'sku': code, 'web_id':code_,
+                    'hd_id': hd_id, 'source': source, 'sku': code, 'web_id': code_,
                     'size': size, 'title': product_name, 'category': category,
-                    'sub_category': sub_category,'brand': brandname, 'rating':0,
-                    'ratings_count': 0, 'reviews_count':0, 'mrp': mrp,
-                    'selling_price': selling_price, 'currency': 'INR', 
+                    'sub_category': sub_category, 'brand': brandname, 'rating': 0,
+                    'ratings_count': 0, 'reviews_count': 0, 'mrp': mrp,
+                    'selling_price': selling_price, 'currency': 'INR',
                     'discount_percentage': discount_percentage, 'is_available': availability, 'descripion': '',
-                    'specs':'', 'image_url':outfiturl, 'reference_url': product_url,
+                    'specs': '', 'image_url': outfiturl, 'reference_url': product_url,
                     'aux_info': json.dumps(aux_info)
                 })
                 yield meta_item
 
         if products:
             page += 1
-            if curatedId:
-                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=%s&pageSize=45&format=json&query=relevance&sortBy=relevance&curated=true&curatedid=%s&gridColumns=3&facets=&advfilter=true' % (number, page, curatedId)
+            if curated_id:
+                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=%s&pageSize=45&format=json&query=relevance&sortBy=relevance&curated=true&curatedid=%s&gridColumns=3&facets=&advfilter=true' % (
+                    number, page, curated_id)
             else:
-                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=%s&pageSize=45&format=json&query=relevance&sortBy=relevance&gridColumns=3&facets=&advfilter=true'% (number, page)                
-    
-            meta = {'page': page, 'num':number, 'curatedId':curatedId}
+                url = 'https://www.ajio.com/api/category/%s?fields=SITE&currentPage=%s&pageSize=45&format=json&query=relevance&sortBy=relevance&gridColumns=3&facets=&advfilter=true' % (
+                    number, page)
+
+            meta = {'page': page, 'num': number, 'curated_id': curated_id}
             yield Request(url, headers=self.headers, callback=self.parse_data, meta=meta)

@@ -401,10 +401,10 @@ def get_logger(log_file):
     return logger
 
 def xcode(text, encoding='utf8', mode='strict'):
-    return text.encode(encoding, mode) if isinstance(text, str) else text
+    return text.decode(encoding, mode) if isinstance(text, bytes) else text
 
 def encode_md5(x):
-    return md5(xcode(x)).hexdigest()
+    return md5(xcode(x).encode('utf8')).hexdigest()
 
 def move_file(source, dest):
     cmd = "mv %s %s" % (source, dest)
@@ -423,6 +423,9 @@ def clean(text):
     value = re.sub("              ", " ", value)
 
     return value
+
+def normalize(text):
+    return clean(compact(xcode(text)))
 
 def compact(text, level=0):
     if text is None:

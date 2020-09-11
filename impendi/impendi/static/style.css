@@ -1,0 +1,79 @@
+.container{
+  margin-top: 30px;
+}
+
+h4{
+  text-align: center;
+}
+
+.documentation{
+  font-family: "BenchNine";
+  text-align: center;
+  margin-top: 50px;
+  font-size: 24px;
+}
+
+#js-upload-files{
+  margin-top: 20px;
+  margin-left: 430px;
+}
+
+#title{
+  font-family: "Permanent Marker";
+  font-size: 24px;
+}
+
+#upload-text{
+  font-family: "BenchNine";
+  font-size: 24px;
+}
+
+#submit{
+  margin-left: 500px;
+  margin-top: 15px;
+}
+
+div.card{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.bg-backgound{
+  background-color: #417690;
+}
+
+.btn-bground-primary{
+  color: #ffffff;
+  background-color: #417690;
+  background-image: none;
+  border-color: #417690;
+}
+
+
+/* layout.css Style */
+.upload-drop-zone {
+  height: 200px;
+  border-width: 2px;
+  margin-bottom: 20px;
+}
+
+
+/* skin.css Style*/
+.upload-drop-zone {
+  color: #ccc;
+  border-style: dashed;
+  border-color: #ccc;
+  line-height: 200px;
+  text-align: center
+}
+.upload-drop-zone.drop {
+  color: #222;
+  border-color: #222;
+}
+
+
+#flash_message {
+    /** margin: 30px 666px; **/
+    margin-top: 50px;
+    text-align: center;
+    width: max-content;
+}
