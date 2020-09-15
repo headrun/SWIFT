@@ -1,9 +1,12 @@
+import argparse
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import datetime
 import MySQLdb
 
+parser = argparse.ArgumentParser()
 
 class Impendi_alert():
     def __init__(self):
@@ -16,26 +19,29 @@ class Impendi_alert():
         self.conn.close()
 
     def send_mail(self, html_content, subject):
-        sender = 'noreply@headrun.com'
-        recipients = [, 'ranjan@headrun.com', 'sankar@headrun.com', 'anandhu@headrun.com']
-        password = 'hdrn591!'
+        sender = os.environ.get('sender', '')
+        recipients = os.environ.get('recipients', '')
+        password = os.environ.get('password', '')
         msg = MIMEMultipart('alternative')
         msg['Subject'] = subject
         msg['From'] = sender
-        msg['To'] = ','.join(recipients) #Recipients should be a list
+        msg['To'] = recipients
 
         part = MIMEText(html_content, 'html')
         msg.attach(part)
         server = smtplib.SMTP('smtp.gmail.com:587')
         server.starttls()
         server.login(sender, password)
-        server.sendmail(sender, recipients, msg.as_string())
+        server.sendmail(sender, recipients.split(','), msg.as_string())
         print("Mail has been sent")
         server.quit()
 
     def main(self):
         try:
-            date = datetime.datetime.now() - datetime.timedelta(1)
+            parser.add_argument(
+            '--date', '-d', help='Date for running alert', default=1, type=int)
+            args = parser.parse_args()
+            date = datetime.datetime.now() - datetime.timedelta(args.date)
             date_format = str(date.date())
             query = "select distinct date(created_at) from ebay_crawl\
                      where date(created_at) = '{0}'".format(date_format)
