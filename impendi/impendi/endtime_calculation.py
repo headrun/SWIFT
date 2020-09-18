@@ -46,7 +46,7 @@ class EndtimeCalculation():
                    'CategoryName', 'Name', 'ItemNumber', 'ExclusiveTo', 'Tags']
         final_endtime = final_endtime.reindex(columns=headers)
         final_endtime.to_excel('Impendi_Analytics_Masterfile_Dataset_' +
-                     str(date.today()) + '.xlsx', index=False)
+                     str(date.today()) + '.xlsx', sheet_name='InputData ImpendiAnalytics', index=False)
 
 
 if __name__ == '__main__':
