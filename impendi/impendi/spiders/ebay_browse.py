@@ -97,7 +97,7 @@ class EbayBrowse(XMLFeedSpider):
                 search_end_time = parse(end_time).replace(tzinfo=UTC)
                 item_end_time = parse(ebay_item['end_time']).replace(tzinfo=UTC)
 
-                if item_end_time < search_end_time:
+                if item_end_time <= search_end_time:
                     continue
 
             if ebay_item['location'] and 'china' not in ebay_item['location'].lower() and ebay_item['selling_state'] == 'EndedWithSales':
