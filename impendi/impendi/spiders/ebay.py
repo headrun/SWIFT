@@ -32,7 +32,7 @@ class EbaySpider():
         self.conn.close()
 
     def getdata(self):
-        self.cursor.execute('select sk, search_key, end_time from ebay_crawl limit 200')
+        self.cursor.execute('select sk, search_key, end_time from ebay_crawl')
         key_words = self.cursor.fetchall()
         url = 'https://www.ebay.com/sch/i.html'
         final_result = []
@@ -59,8 +59,8 @@ class EbaySpider():
                     )
             res = Selector(text=requests.get(url, headers=self.headers, params=params).text)
             item_urls = res.xpath('//li[following-sibling::li[@class="lvresult clearfix li"]]//h3[@class="lvtitle"]/a/@href').extract()
-            for url in item_urls:
-                parsed_data = self.parsedata(url, sku, search_key, end_time)
+            for item_url in item_urls:
+                parsed_data = self.parsedata(item_url, sku, search_key, end_time)
                 if parsed_data:
                     final_result.append(parsed_data)
         df = pd.DataFrame(final_result, columns=['SKU ID', 'Search Key', 'ItemListingURL', 'Title', 'Condition', 'End Time', 'Price', 'Image URL', 'Location', 'Item ID', 'Category', 'Timestamp'])
@@ -94,4 +94,3 @@ class EbaySpider():
 
 if __name__ == '__main__':
     obj = EbaySpider()
-
