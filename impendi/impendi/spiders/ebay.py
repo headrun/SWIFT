@@ -51,7 +51,11 @@ for key in key_words:
         item_res = Selector(text=response_text)
         sku = key[0]
         search_key = key[1]
-        input_end_date = pd.to_datetime(key[2].replace('.000Z', ''), format='%Y-%m-%dT%H:%M:%S')
+        input_end_date = key[2]
+        if '0000' not in input_end_date:
+            input_end_date = pd.to_datetime(input_end_date.replace('.000Z', ''), format='%Y-%m-%dT%H:%M:%S').strftime('%Y-%m-%dT%H:%M:%S')
+        else:
+            input_end_date
         prod_url = url
         location = ''.join(item_res.xpath('//div[contains(text(), "Item location:")]/following-sibling::div[1]/text()').extract())
         date_time = ''.join(item_res.xpath('//*[@id="bb_tlft"]/span/span[@class="timeMs"]/@timems').extract())
@@ -60,7 +64,6 @@ for key in key_words:
             end_date = datetime.datetime.fromtimestamp(date_time).strftime('%Y-%m-%d %H:%M:%S')
         else:
             end_date = ''
-        end_date = pd.to_datetime(end_date)
         if location.lower() != 'china' and input_end_date < end_date:
             continue
         title = ''.join(item_res.xpath('//*[@id="itemTitle"]/text()').extract())
