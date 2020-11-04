@@ -32,7 +32,7 @@ class EbaySpider():
         self.conn.close()
 
     def getdata(self):
-        self.cursor.execute('select sk, search_key, end_time from ebay_crawl limit 200')
+        self.cursor.execute('select sk, search_key, end_time from ebay_crawl')
         key_words = self.cursor.fetchall()
         url = 'https://www.ebay.com/sch/i.html'
         final_result = []
