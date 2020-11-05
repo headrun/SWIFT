@@ -1,6 +1,7 @@
 import requests
 from scrapy.selector import Selector
 import datetime
+from datetime import date
 import MySQLdb
 import pandas as pd
 
@@ -64,7 +65,7 @@ class EbaySpider():
                 if parsed_data:
                     final_result.append(parsed_data)
         df = pd.DataFrame(final_result, columns=['SKU ID', 'Search Key', 'ItemListingURL', 'Title', 'Condition', 'End Time', 'Price', 'Image URL', 'Location', 'Item ID', 'Category', 'Timestamp'])
-        df.to_csv('ebay_sold_items.csv', index=False)
+        df.to_csv('ebay_sold_items_' + str(date.today()) + '.csv' , index=False)
     
     def parsedata(self, url, sku, search_key, end_time):
         response_text = requests.get(url, headers=self.headers).text
