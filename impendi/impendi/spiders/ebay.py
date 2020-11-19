@@ -42,7 +42,7 @@ class EbaySpider(scrapy.Spider):
 
 
     def start_requests(self):
-        self.cursor.execute('select sk, search_key, end_time from ebay_crawl limit 2')
+        self.cursor.execute('select sk, search_key, end_time from ebay_crawl;')
         key_words = self.cursor.fetchall()
         for key in key_words:
             url = 'https://www.ebay.com/sch/i.html?'
@@ -53,9 +53,19 @@ class EbaySpider(scrapy.Spider):
 
     def parse(self, response):
         sel= Selector(response)
-        item_urls = sel.xpath('//ul//li//h3[@class="lvtitle"]//a//@href').extract()
+        item_urls = []
+        item_urls1 = sel.xpath('//li[following-sibling::li[@class="lvresult clearfix li"]]//h3[@class="lvtitle"]/a/@href').extract()
+        item_urls2 = sel.xpath('//ul//li//h3[@class="lvtitle"]//a//@href').extract()
+        next_page = "".join(sel.xpath('//td[@class="pagn-next"]//a[@aria-label="Next page of results"]//@href').extract())
+        if next_page:
+            item_urls = item_urls2
+        else:
+            item_urls = item_urls1
         for item_url in item_urls:
-            yield Request(item_url, callback=self.parsedata, headers = self.headers, meta = response.meta)
+            yield Request(item_url, callback=self.parsedata, headers = self.headers, meta = response.meta, dont_filter=True)
+        next_page = "".join(sel.xpath('//td[@class="pagn-next"]//a[@aria-label="Next page of results"]//@href').extract())
+        if next_page and '_pgn=' in next_page and 'www.ebay.com/sch/i.html?' in next_page:
+            yield Request(next_page, callback=self.parse, headers = self.headers, meta = response.meta)
 
     def parsedata(self, response):
         item_res = Selector(response)
