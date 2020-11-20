@@ -18,7 +18,8 @@ class ImpendiPipeline(object):
                 str(item['shipping_service_currency']), str(item['current_price']), str(item['current_price_currency']),
                 str(item['converted_current_price']), str(item['converted_current_price_currency']),str(item['selling_state']),
                 str(item['condition']), str(item['listing_type']), str(item['best_offer_enabled']), str(item['buy_it_now_available']),
-                str(item['start_time']), str(item['end_time']), str(item['image_url']), str(item['item_url']), str(item['timestamp'])
+                str(item['start_time']), str(item['end_time']), str(item['image_url']), str(item['item_url']), str(item['timestamp']),
+                str(item['created_at']), str(item['modified_at'])
             ])
 
             spider.queries_file.write('%s\n' % ebay_values)

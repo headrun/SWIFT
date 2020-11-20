@@ -38,4 +38,5 @@ class EbayItem(Item):
     image_url = Field()
     item_url = Field()
     timestamp = Field()
-
+    created_at = Field()
+    modified_at = Field()
