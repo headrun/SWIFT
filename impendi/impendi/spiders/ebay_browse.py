@@ -97,7 +97,9 @@ class EbayBrowse(XMLFeedSpider):
         except:
             input_end_date = end_time.replace('.000Z', '')
         prod_url = response.url
-        location = ''.join(item_res.xpath('//div[contains(text(), "Item location:")]/following-sibling::div[1]/text()').extract())
+        location = ''.join(item_res.xpath('//div[contains(text(), "Item location:")]/following-sibling::div[1]/text()').extract()).strip()
+        if not location:
+            location = ''.join(item_res.xpath('//div[contains(text(), "Item location:")]/following-sibling::div/span/text()').extract()).strip()
         date_time = ''.join(item_res.xpath('//*[@id="bb_tlft"]/span/span[@class="timeMs"]/@timems').extract())
         if date_time.strip():
             date_time = int(date_time)/1000
@@ -115,7 +117,11 @@ class EbayBrowse(XMLFeedSpider):
             price = ''.join(item_res.xpath('//div[contains(text(), "Price:")]/following-sibling::div[1]/span/text()').extract()).strip()
             if not price:
                 price = "".join(item_res.xpath('//span[@class="notranslate vi-VR-cvipPrice"]//text()').extract())
+            if not price:
+                price = ''.join(item_res.xpath('//span[@itemprop="price"]/text()').extract()).strip()
         img_url = ''.join(item_res.xpath('//*[@id="mainContent"]//table//tbody//tr//td//div//img[@class="img img140"]/@src').extract())
+        if not img_url:
+            img_url = item_res.xpath('//div[@id="vi_main_img_fs"]/ul/li/table/tr/td/div/img/@src').extract()
         item_id = ''.join(item_res.xpath('//*[@id="descItemNumber"]/text()').extract())
         brand = ''.join(item_res.xpath('//td[@class="attrLabels"][contains(text(), "Brand:")]/following-sibling::td//span[@itemprop="name"]//text()').extract())
         category = "".join(item_res.xpath('//li[@itemprop="itemListElement"]//a[@itemprop="item"][@class="scnd"]/span/text()').extract()).strip()
