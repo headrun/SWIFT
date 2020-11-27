@@ -21,7 +21,7 @@ class LoadFiles(object):
         os.system(q_mv)
 
     def dump_file_into_db(self, query_file, table):
-        cmd = 'mysql -uroot -phdrn59! -hlocalhost -A EBAY --local-infile=1 -e "%s"'
+        cmd = 'mysql -uroot -pP@tN3R#74#$ -hlocalhost -A EBAYDB --local-infile=1 -e "%s"'
         query = "LOAD DATA LOCAL INFILE '%s' REPLACE INTO TABLE %s CHARACTER SET utf8 FIELDS TERMINATED BY '#<>#'"   % (query_file, table)
         #query += " SET created_at=NOW(), modified_at=NOW();"
         try:

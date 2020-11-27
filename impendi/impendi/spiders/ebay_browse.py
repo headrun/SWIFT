@@ -17,7 +17,7 @@ import pandas as pd
 import re
 
 class EbayBrowse(XMLFeedSpider):
-    handle_httpstatus_list = [500, 404]
+    handle_httpstatus_list = [500, 404, 503]
     name = 'ebay_browse'
     start_urls = []
 
@@ -54,6 +54,12 @@ class EbayBrowse(XMLFeedSpider):
         self.queries_file.close()
         close_mysql_connection()
         move_file(self.queries_file.name, QUERY_FILES_PROCESSING_DIR)
+
+
+    def rep_spl(self, var):
+        var = var.replace('\r', '').replace('\n', '')\
+            .replace('\t', '').strip()
+        return var
 
     def start_requests(self):
         for crawl_list in self.crawl_list:
@@ -121,7 +127,7 @@ class EbayBrowse(XMLFeedSpider):
                 price = ''.join(item_res.xpath('//span[@itemprop="price"]/text()').extract()).strip()
         img_url = ''.join(item_res.xpath('//*[@id="mainContent"]//table//tbody//tr//td//div//img[@class="img img140"]/@src').extract())
         if not img_url:
-            img_url = item_res.xpath('//div[@id="vi_main_img_fs"]/ul/li/table/tr/td/div/img/@src').extract()
+            img_url = "".join(item_res.xpath('//div[@id="vi_main_img_fs"]/ul/li/table/tr/td/div/img/@src').extract())
         item_id = ''.join(item_res.xpath('//*[@id="descItemNumber"]/text()').extract())
         brand = ''.join(item_res.xpath('//td[@class="attrLabels"][contains(text(), "Brand:")]/following-sibling::td//span[@itemprop="name"]//text()').extract())
         category = "".join(item_res.xpath('//li[@itemprop="itemListElement"]//a[@itemprop="item"][@class="scnd"]/span/text()').extract()).strip()
@@ -142,21 +148,21 @@ class EbayBrowse(XMLFeedSpider):
             ebay_item.update({
                 'source_key': source_key,
                 'search_key': search_key,
-                'item_id': item_id,
+                'item_id': self.rep_spl(item_id),
                 'top_rated': '0', #extract_data(node, './/topRatedListing/text()'),
-                'title': title,
-                'location': location,
+                'title': self.rep_spl(title),
+                'location': self.rep_spl(location),
                 'postal_code': '',
                 'returns_accepted': '',#extract_data(node, './/returnsAccepted/text()'),
                 'is_multi': '', #extract_data(node, './/isMultiVariationListing/text()'),
-                'category_id': category_id,
-                'category': category,
-                'expedited_shipping': expedited_shipping,
+                'category_id': self.rep_spl(category_id),
+                'category': self.rep_spl(category),
+                'expedited_shipping': self.rep_spl(expedited_shipping),
                 'ship_to_locations' : '', #extract_data(node, './/shipToLocations/text()'),
-                'shipping_type': shiping_type,
-                'shipping_service_cost': shipping_cost,
+                'shipping_type': self.rep_spl(shiping_type),
+                'shipping_service_cost': self.rep_spl(shipping_cost),
                 'shipping_service_currency': '', #extract_data(node, './/shippingServiceCost/@currencyId'),
-                'current_price': price,
+                'current_price': self.rep_spl(price),
                 'current_price_currency': '', #extract_data(node, './/currentPrice/@currencyId'),
                 'converted_current_price': '', #extract_data(node, './/convertedCurrentPrice/text()'),
                 'converted_current_price_currency': '', #extract_data(node, './/convertedCurrentPrice/@currencyId'),
@@ -166,9 +172,9 @@ class EbayBrowse(XMLFeedSpider):
                 'buy_it_now_available': '', #extract_data(node, './/buyItNowAvailable/text()'),
                 'start_time': '', #extract_data(node, './/startTime/text()'),
                 'end_time': end_date,
-                'image_url': img_url,
+                'image_url': self.rep_spl(img_url),
                 'item_url': response.url,
-                'condition': condition,
+                'condition': self.rep_spl(condition),
                 'timestamp': datetime.datetime.now().strftime("%H:%M.%S"),
                 'created_at' : datetime.datetime.now().replace(microsecond=0),
                 'modified_at' : datetime.datetime.now().replace(microsecond=0)
