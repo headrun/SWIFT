@@ -114,7 +114,7 @@ class EbayBrowse(XMLFeedSpider):
             end_date = ''
         end_date = pd.to_datetime(end_date)
         if '0000' not in str(end_time) and '0000' not in str(input_end_date):
-            if (location.lower() == 'china') or (input_end_date > end_date) or ('nat' in str(end_date).lower()):
+            if ('china' in location.lower()) or (input_end_date > end_date) or ('nat' in str(end_date).lower()):
                 return []
 
         title = ''.join(item_res.xpath('//*[@id="itemTitle"]/text()').extract())
