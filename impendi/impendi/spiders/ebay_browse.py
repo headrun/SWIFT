@@ -58,7 +58,7 @@ class EbayBrowse(XMLFeedSpider):
 
     def rep_spl(self, var):
         var = var.replace('\r', '').replace('\n', '')\
-            .replace('\t', '').strip()
+            .replace('\t', '').replace(';', ',').strip()
         return var
 
     def start_requests(self):
@@ -91,6 +91,7 @@ class EbayBrowse(XMLFeedSpider):
         next_page = "".join(sel.xpath('//td[@class="pagn-next"]//a[@aria-label="Next page of results"]//@href').extract())
         if next_page and '_pgn=' in next_page and 'www.ebay.com/sch/i.html?' in next_page:
             yield Request(next_page, callback=self.parse, headers = self.headers, meta = response.meta)
+
     def parsedata(self, response):
         source_key = response.meta['source_key']
         search_key = response.meta['search_key']
@@ -115,6 +116,7 @@ class EbayBrowse(XMLFeedSpider):
         if '0000' not in str(end_time) and '0000' not in str(input_end_date):
             if (location.lower() == 'china') or (input_end_date > end_date) or ('nat' in str(end_date).lower()):
                 return []
+
         title = ''.join(item_res.xpath('//*[@id="itemTitle"]/text()').extract())
         condition = ''.join(item_res.xpath('//*[@id="vi-itm-cond"]/text()').extract())
         price = ''.join(item_res.xpath('//div[contains(text(), "Winning bid:")]/following-sibling::div[1]/span/text()').extract()).strip()
@@ -177,7 +179,7 @@ class EbayBrowse(XMLFeedSpider):
                 'image_url': self.rep_spl(img_url),
                 'item_url': response.url,
                 'condition': self.rep_spl(condition),
-                'timestamp': datetime.datetime.now().strftime("%H:%M.%S"),
+                'timestamp': datetime.datetime.now().strftime("%H:%M:%S"),
                 'created_at' : datetime.datetime.now().replace(microsecond=0),
                 'modified_at' : datetime.datetime.now().replace(microsecond=0)
                 })
