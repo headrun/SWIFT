@@ -91,7 +91,6 @@ class EbayBrowse(XMLFeedSpider):
         next_page = "".join(sel.xpath('//td[@class="pagn-next"]//a[@aria-label="Next page of results"]//@href').extract())
         if next_page and '_pgn=' in next_page and 'www.ebay.com/sch/i.html?' in next_page:
             yield Request(next_page, callback=self.parse, headers = self.headers, meta = response.meta)
-
     def parsedata(self, response):
         source_key = response.meta['source_key']
         search_key = response.meta['search_key']
@@ -134,8 +133,11 @@ class EbayBrowse(XMLFeedSpider):
         item_id = "".join(item_res.xpath('//div[@class="vi-cvip-dummyPad20"]//div//div[@id="vi-desc-maincntr"]//div[@id="descItemNumber"]//text()').extract())
         category_id = "".join(item_res.xpath('//li[@itemprop="itemListElement"]//a[@itemprop="item"][@class="scnd"]//@href').extract())
         shiping_type = "".join(item_res.xpath('//div[@class="u-flL sh-col"]//span[@id="shSummary"]//a[@class="si-pd sh-nwr"]//text()').extract())
+        to_loc = "".join(item_res.xpath('//span[@id="fShippingSvc"]//text()').extract())
+        ship_to_locations = "".join(re.findall('from.*to (.*)', self.rep_spl(to_loc)))
         shipping_cost = "".join(item_res.xpath('//span[@id="shSummary"]//span[@id="fshippingCost"]//span//text()').extract())
         expedited_shipping = "".join(item_res.xpath('//span[@id="fShippingSvc"]/text()').extract())
+        converted_price = "".join(item_res.xpath('//div[@id="prcIsumConv"][contains(text(), "Approximately")]/span[@id="convbidPrice"]/text()').extract()) or "".join(item_res.xpath('//div[contains(text(), "Approximately")]/span[@id="convbidPrice"]/text()').extract())
         if expedited_shipping:
             expedited_shipping = 'true'
         else:
@@ -158,13 +160,13 @@ class EbayBrowse(XMLFeedSpider):
                 'category_id': self.rep_spl(category_id),
                 'category': self.rep_spl(category),
                 'expedited_shipping': self.rep_spl(expedited_shipping),
-                'ship_to_locations' : '', #extract_data(node, './/shipToLocations/text()'),
+                'ship_to_locations' : self.rep_spl(ship_to_locations),
                 'shipping_type': self.rep_spl(shiping_type),
                 'shipping_service_cost': self.rep_spl(shipping_cost),
                 'shipping_service_currency': '', #extract_data(node, './/shippingServiceCost/@currencyId'),
                 'current_price': self.rep_spl(price),
                 'current_price_currency': '', #extract_data(node, './/currentPrice/@currencyId'),
-                'converted_current_price': '', #extract_data(node, './/convertedCurrentPrice/text()'),
+                'converted_current_price': converted_price,
                 'converted_current_price_currency': '', #extract_data(node, './/convertedCurrentPrice/@currencyId'),
                 'selling_state': '', #extract_data(node, './/sellingState/text()'),
                 'listing_type': '', #extract_data(node, './/listingType/text()'),
