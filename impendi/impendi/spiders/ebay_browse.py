@@ -55,7 +55,6 @@ class EbayBrowse(XMLFeedSpider):
         close_mysql_connection()
         move_file(self.queries_file.name, QUERY_FILES_PROCESSING_DIR)
 
-
     def rep_spl(self, var):
         var = var.replace('\r', '').replace('\n', '')\
             .replace('\t', '').replace(';', ',').strip()
@@ -79,15 +78,26 @@ class EbayBrowse(XMLFeedSpider):
     def parse(self, response):
         sel= Selector(response)
         item_urls = []
-        item_urls1 = sel.xpath('//li[following-sibling::li[@class="lvresult clearfix li"]]//h3[@class="lvtitle"]/a/@href').extract()
-        item_urls2 = sel.xpath('//ul//li//h3[@class="lvtitle"]//a//@href').extract()
+        item_urls1_nodes = sel.xpath('//li[following-sibling::li[@class="lvresult clearfix li"]]')
+        item_urls2_nodes = sel.xpath('//ul//li[@class="sresult lvresult clearfix li"]')
         next_page = "".join(sel.xpath('//td[@class="pagn-next"]//a[@aria-label="Next page of results"]//@href').extract())
         if next_page:
-            item_urls = item_urls2
+            item_urls = item_urls2_nodes
         else:
-            item_urls = item_urls1
+            item_urls = item_urls1_nodes
         for item_url in item_urls:
-            yield Request(item_url, callback=self.parsedata, headers = self.headers, meta = response.meta, dont_filter=True)
+            url = "".join(item_url.xpath('.//h3[@class="lvtitle"]//a//@href').extract())
+            returns = "".join(item_url.xpath('.//ul[@class="lvprices left space-zero"]/div[@class="lvreturns"]/span/text()').extract())
+            best_offer_buy_it = "".join(item_url.xpath('.//ul[@class="lvprices left space-zero"]/li[@class="lvformat"]/span//text()').extract()).lower()
+            but_it_now , best_offer_enabled, returns_accepted = False, False, False
+            if 'buy it now' in best_offer_buy_it:
+                but_it_now = True
+            elif 'best offer accepted' in best_offer_buy_it:
+                best_offer_enabled = True
+            if 'returns' in returns:
+                returns_accepted = True
+            response.meta.update({'best_offer_enabled' : best_offer_enabled, 'buy_it_now_available' : but_it_now, 'returns_accepted': returns_accepted})
+            yield Request(url, callback=self.parsedata, headers = self.headers, meta = response.meta, dont_filter=True)
         next_page = "".join(sel.xpath('//td[@class="pagn-next"]//a[@aria-label="Next page of results"]//@href').extract())
         if next_page and '_pgn=' in next_page and 'www.ebay.com/sch/i.html?' in next_page:
             yield Request(next_page, callback=self.parse, headers = self.headers, meta = response.meta)
@@ -157,7 +167,7 @@ class EbayBrowse(XMLFeedSpider):
                 'title': self.rep_spl(title),
                 'location': self.rep_spl(location),
                 'postal_code': '',
-                'returns_accepted': '',#extract_data(node, './/returnsAccepted/text()'),
+                'returns_accepted':  response.meta.get('returns_accepted', ''),
                 'is_multi': '', #extract_data(node, './/isMultiVariationListing/text()'),
                 'category_id': self.rep_spl(category_id),
                 'category': self.rep_spl(category),
@@ -172,8 +182,8 @@ class EbayBrowse(XMLFeedSpider):
                 'converted_current_price_currency': '', #extract_data(node, './/convertedCurrentPrice/@currencyId'),
                 'selling_state': '', #extract_data(node, './/sellingState/text()'),
                 'listing_type': '', #extract_data(node, './/listingType/text()'),
-                'best_offer_enabled': '', #extract_data(node, './/bestOfferEnabled/text()'),
-                'buy_it_now_available': '', #extract_data(node, './/buyItNowAvailable/text()'),
+                'best_offer_enabled': response.meta.get('best_offer_enabled', ''),
+                'buy_it_now_available': response.meta.get('buy_it_now_available', ''),
                 'start_time': '', #extract_data(node, './/startTime/text()'),
                 'end_time': end_date,
                 'image_url': self.rep_spl(img_url),
